@@ -57,14 +57,14 @@ def draw_firm_name_vertical_center(pdf_canvas, text, page_width, page_height):
     Moves the text near the left edge.
     """
     pdf_canvas.saveState()
-    pdf_canvas.setFont("Times-Roman", 10)
+    pdf_canvas.setFont("Times-Bold", 10)
 
-    text_width = pdf_canvas.stringWidth(text, "Times-Roman", 10)
+    text_width = pdf_canvas.stringWidth(text, "Times-Bold", 10)
     
-    # Move firm name near the left edge:
+    # Move firm name near the left edge
     x_pos = 0.2 * inch
     
-    # Vertically center:
+    # Vertically center
     y_center = (page_height / 2.0)
     y_pos = y_center - (text_width / 2.0)
     
@@ -86,7 +86,9 @@ def draw_page_content(
     case_name,
     line_offset_x,
     line_offset_y,
-    line_spacing
+    line_spacing,
+    page_number,
+    total_pages
 ):
     """
     Draw up to `max_lines_per_page` lines on the given canvas, starting
@@ -96,23 +98,27 @@ def draw_page_content(
     Adds line numbers on both left and right edges.
     Places the firm name vertically centered on the left side,
     and the case name at the top center horizontally.
+    
+    If the first line on the page ends early, center it.
+    If a line ends early and the previous line also ended early, center it.
 
     Returns the next line index after drawing (to continue on subsequent pages).
-
-    Additional requirement:
-    - Move left line numbering further left (compared to original code).
-    - For a line that ends early (ended_full_line_bool = False), and if
-      the previous line also ended early, center that line.
-      (Interpreted as a possible "title line".)
     """
-    pdf_canvas.setFont("Times-Roman", 10)
-    
+
     # Firm name on the left
     draw_firm_name_vertical_center(pdf_canvas, firm_name, page_width, page_height)
     
-    # Case name at top center
+    # Case name at top center in bold, slightly larger
+    pdf_canvas.setFont("Times-Bold", 12)
     pdf_canvas.drawCentredString(page_width / 2.0, page_height - 0.5 * inch, case_name)
     
+    # Draw a horizontal line under the case name for a professional look
+    pdf_canvas.setLineWidth(1)
+    pdf_canvas.line(0.5 * inch, page_height - 0.6 * inch, page_width - 0.5 * inch, page_height - 0.6 * inch)
+    
+    # Reset font for body text
+    pdf_canvas.setFont("Times-Roman", 10)
+
     # Starting position for body lines
     x_text = line_offset_x
     y_text = line_offset_y
@@ -123,23 +129,26 @@ def draw_page_content(
         line_number_str = f"{i + 1}"
         text_line, forced_break = line_tuples[i]
         
-        # Move left numbering further to the left compared to original (e.g. -0.6 inch)
-        # Adjust as desired (here we do -0.6 inch from x_text)
+        # Move left numbering further left (e.g. -0.6 inch from x_text)
         pdf_canvas.drawString(x_text - 0.6 * inch, y_text, line_number_str)
         
         # Right line number (near the far right)
         pdf_canvas.drawString(page_width - 0.4 * inch, y_text, line_number_str)
         
-        # Check if this line is short, and also the previous line was short
-        # (meaning the previous line ended early as well).
-        # If so, we center this line.
+        # Check the previous line's forced_break status
         if i > 0:
             _, prev_forced_break = line_tuples[i - 1]
         else:
-            prev_forced_break = True  # no previous line, so default to True
+            # If there's no previous line at all, pretend it forced
+            # so it doesn't trigger "consecutive short lines" logic
+            prev_forced_break = True
 
-        if (not forced_break) and (not prev_forced_break):
-            # Both this line and the previous line ended early: center it
+        # If the first line on the page is short, or if this line and the previous line
+        # are both short, center it.
+        # i == start_line_index indicates first line on this page
+        if (not forced_break) and (
+            i == start_line_index or (not prev_forced_break)
+        ):
             pdf_canvas.drawCentredString(page_width / 2.0, y_text, text_line)
         else:
             # Normal line draw (left aligned)
@@ -147,20 +156,26 @@ def draw_page_content(
         
         # Move up for next line
         y_text -= line_spacing
-    
+
+    # Draw page number at the bottom center for professionalism
+    pdf_canvas.setFont("Times-Italic", 9)
+    footer_text = f"Page {page_number} of {total_pages}"
+    pdf_canvas.drawCentredString(page_width / 2.0, 0.5 * inch, footer_text)
+
     return end_line_index
 
 def generate_legal_document(firm_name, case_name, output_filename, text_body):
     """
     Generates a legal-style PDF document:
      - Firm name placed vertically near the left edge, centered vertically.
-     - Case name placed horizontally at the top center of each page.
+     - Case name placed horizontally at the top center of each page in bold.
+     - Horizontal rule under the case name for professional appearance.
      - Numbered lines on both left (near firm name) and far right edges.
      - Automatically wraps the text to fit the page width.
-     - Uses Times-Roman font, size 10.
-     - Left line numbering is moved further left.
-     - If a line ends early and is also preceded by a line that ends early,
-       that line is centered (treated as a title-like line).
+     - Uses Times-Roman font, size 10 for body text.
+     - If the first line on the page is short, center it.
+     - If a line ends early and is also preceded by a line that ends early, center it.
+     - Page numbers at the bottom center ("Page X of Y").
     """
     page_width, page_height = letter
     
@@ -188,8 +203,11 @@ def generate_legal_document(firm_name, case_name, output_filename, text_body):
         max_width=max_text_width
     )
     
-    current_line_index = 0
     total_lines = len(wrapped_lines)
+    total_pages = (total_lines + max_lines_per_page - 1) // max_lines_per_page
+    
+    current_line_index = 0
+    page_number = 1
 
     # Paginate
     while current_line_index < total_lines:
@@ -204,9 +222,12 @@ def generate_legal_document(firm_name, case_name, output_filename, text_body):
             case_name,
             line_offset_x,
             line_offset_y,
-            line_spacing
+            line_spacing,
+            page_number,
+            total_pages
         )
         current_line_index = next_line_index
+        page_number += 1
         
         if current_line_index < total_lines:
             pdf_canvas.showPage()
@@ -216,7 +237,7 @@ def generate_legal_document(firm_name, case_name, output_filename, text_body):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate a legal-style PDF with a firm name, case name, and line numbering."
+        description="Generate a professional legal-style PDF with a firm name, case name, and line numbering."
     )
     parser.add_argument(
         "--firm_name",
