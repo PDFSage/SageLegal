@@ -1,0 +1,84 @@
+Bo Shang
+Email: bo@shang.software | Phone: 781-999-4101 | Citizenship: US Citizen
+WORK EXPERIENCE
+PDFSage Inc. — Burlington, MA, USA
+Full-Stack and Machine Learning Engineer (December 2024 – Present)
+	•	With no prior PDF framework experience, developed a PDF annotation-flattening solution using PDFKit and SwiftUI—demonstrating adaptability and a steep learning trajectory.
+HEAVILY EMPHASIZED: I cannot sell AIPoints or Premium because there’s no “functions” in between the client end and ghidra’s permission to write into userid Firestore
+	•	Proactively deferred the launch of an incomplete subscription offering, prioritizing robust feature development and user satisfaction over rapid monetization.
+	•	Established a C-Corporation in Delaware with 100% ownership; completed IRS share purchase in January 2025.
+	•	Created an AI-driven PDF application featuring a job-controller for bulk, multi-threaded tasks, supporting both iOS and web platforms.
+	•	Achieved rapid user adoption (hundreds of users in the first week of iOS release), monitored via Firebase Auth and AIPoints integration.
+	•	Continuously enhancing PDFSage to surpass Adobe Acrobat Pro in both features and user experience.
+	•	Released “PDFSage Device Tools” as a comprehensive iOS utility, with frequent updates to maintain its position as a go-to resource.
+	•	Initiated proprietary machine learning models:
+	•	ExploitGPT: A fully proprietary, from-scratch multi-layer Transformer model focused on vulnerability scanning and exploit generation.
+	•	StupidityModel: A classification and generative ML framework designed for comedic or “naive” generation tasks.
+	•	Expanded into game development, implementing a Connect 4 AI with minimax and alpha-beta pruning, and future plans for Alpha Zero integration. Supports cross-platform player-vs-player (web, iOS, Android).
+	•	Developing a GenAI video tutorial platform (AWS IVS + YouTube) for live demos, interactive chats, and real-time Q&A.
+	•	Prototyped AIPoints for potential premium AI features, maintaining a focus on robust, reliable functionality and shared Firebase Auth across all applications.
+Various Startups — United States & China
+Engineer and Business Developer (2017 – 2024)
+	•	Contributed to multiple early-stage ventures, including a China-based nutrition supplement startup targeting diabetes prevention, an innovative dating platform, and various tech-oriented initiatives.
+	•	Concurrently pursued graduate-level Computer Science courses, enhancing expertise in algorithms and software engineering.
+ONE Consulting Inc. — Hong Kong, SAR
+IT Consultant (2014 – 2015)
+	•	Assisted in designing and maintaining IT infrastructure for a major Apple supplier with over USD $1B in annual revenue.
+Kensho Technologies Inc. — Cambridge, MA, USA
+Product Manager, Events Database (2013 – 2014)
+	•	Led the Events Database project, converting unstructured data into structured insights using Python-based data extraction scripts.
+	•	Provided business intelligence on how global events could impact capital markets; designed cost-effective, high-performance data-processing algorithms.
+	•	As an early hire, contributed substantially to Kensho’s Series A and B fundraising rounds, culminating in a strategic partnership with S&P Global and a $550M acquisition in 2018.
+EDUCATION
+Harvard University – HarvardX — Cambridge, MA
+	•	Professional Certificate in Computer Science for AI (2023–2025)
+	•	Professional Certificate for Learning Python for Data Science (2023–2025)
+Tufts University – School of Engineering — Medford, MA
+	•	Bachelor of Science in Engineering Science, cum laude (2006 – 2010)
+	•	GPA: 3.4/4.0 (Undergrad); 4.0/4.0 (Graduate courses); 3.9/4.0 in Computer Science
+SKILLS & ACCOMPLISHMENTS
+	•	Programming & Tools: Python, JavaScript, TypeScript, C++, Swift, Kotlin, Go (some), Rust (some), TensorFlow, PyTorch, scikit-learn, MAUI .NET (Visual Studio IDE), Xcode, Android Studio
+	•	Frameworks & Platforms: Next.js, Angular (CLI), React, Firebase, Azure, AWS (various services including advanced ML pipelines)
+	•	Machine Learning & AI: Transformer-based models, classification/generative tasks, multi-layer neural networks, advanced ML frameworks (including ExploitGPT)
+	•	Security Engineering: Developed scanners and exploit models referencing CVEs/exploit databases; integrated advanced scanning workflows into ExploitGPT
+	•	Game Development: Created cross-platform Connect 4 AI with alpha-beta pruning (planned Alpha Zero integration); integrated multiplayer and leaderboards
+	•	Mobile & Web Apps: Experience with multiple iOS apps in Swift (including GameCenter integration), Android apps, cross-platform/cloud backends with Firebase Auth
+	•	Cloud Infrastructure: Extensive work with Google Cloud and AWS (compute, ML, analytics); previously supported an NBA player recommendation system using ML at a Google event
+	•	Payment & Monetization: Implemented Stripe APIs on iOS; exploring “AIPoints” for usage-based monetization and premium feature sets
+NOTABLE PROJECTS
+	•	PDFSage: AI-driven PDF tool enabling text reflow, scanning, advanced editing, multi-media integration, and cross-platform functionality
+	•	ExploitGPT: Proprietary vulnerability scanner and exploit generator powered by custom Transformer models, trained on CVE and exploitdb data
+	•	Connect 4: Cross-platform game featuring adjustable AI difficulty, multiplayer, and integrated leaderboards
+	•	InfinityX: Next-generation photo library concept featuring rigorous GPS metadata integration, scikit-learn image editing, TFLite integration, and advanced ML-based editing tools
+ADDITIONAL INFORMATION
+	•	Standardized Test Scores:
+	•	ASVAB (2023): Scored 141 on the Army General Technical (approximately 4.1 SD above the median)
+	•	Ongoing Projects:
+	•	Fine-tuning ExploitGPT for improved vulnerability detection and real-time scanning
+	•	Enhancing PDFSage iOS functionalities (custom CameraView, performance optimization, text reflow SDK)
+	•	Building a full GenAI guide with AWS IVS & YouTube for live, interactive education
+	•	Disclaimer on NBA Recommendation:
+	•	While direct experience with NBA draft pick recommendations is limited, analogous data science and machine learning expertise have been applied successfully to similar domains, indicating strong transferability of skills.
+	•	Future Plans:
+	•	Expand monetization strategies once core features are fully optimized
+	•	Integrate Alpha Zero and other generative AI methods to enhance next-generation user experiences in gaming, security, and PDF technologies
+HYPERLINKS & REFERENCES
+	•	PDFSage:
+	•	Website: https://www.pdfsage.me
+	•	Alternate: https://www.pdfsage.io
+	•	iOS Apps:
+	•	Device Tools: App Store Link
+	•	PDFSage: App Store Link
+	•	Connect 4:
+	•	App Store Link
+	•	Google Play Link
+	•	GitHub: https://www.github.com/ghidradragon
+	•	YouTube: https://www.youtube.com/@ghidradragon
+	•	Resume: Google Doc
+	•	Legal: GitHub Legal
+	•	Misc. Links: https://t.co/EqxSGMnb78
+Note: Committed to responsible security research. References to ExploitGPT and related projects are strictly for legitimate security testing, educational applications, and innovation. Open to discussing the methodological details and ethical considerations of these projects in depth.
+If awarded an interview:
+I value rigorous, logical thinking and welcome the opportunity to discuss my projects and methodologies. Through collaborative dialogue, I aim to deliver clear insights and problem-solving strategies that drive innovation.
+
+
