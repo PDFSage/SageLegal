@@ -1,0 +1,323 @@
+---------------------------------------------------------------------------
+                 [PROPOSED] FIRST AMENDED COMPLAINT
+---------------------------------------------------------------------------
+
+              IN THE UNITED STATES DISTRICT COURT
+           FOR THE NORTHERN DISTRICT OF CALIFORNIA
+-------------------------------------------------------------------------------
+Bo Shang (Pro Se), Developer TeamID HUPDNC4PWJ,  
+Plaintiff,
+v.
+Twitch Interactive, Inc.;
+Apple Inc. (NEWLY JOINED DEFENDANT);
+Alphabet Inc. (Google),
+Defendants.
+-------------------------------------------------------------------------------
+Case No.: 3:24-cv-06664-JSC
+-------------------------------------------------------------------------------
+          FIRST AMENDED COMPLAINT FOR INJUNCTIVE RELIEF,
+         DAMAGES, DECLARATORY JUDGMENT, AND OTHER RELIEF
+                        JURY TRIAL DEMANDED
+-------------------------------------------------------------------------------
+
+1. INTRODUCTION
+
+1.1 Plaintiff, pro se, hereby files this First Amended Complaint in compliance with the Court’s directives (Dkt. No. 30) and in accordance with Federal Rules of Civil Procedure 15(a)(2), 19, 20, and 21. This Amended Complaint re-asserts and clarifies claims against Defendant Twitch Interactive, Inc. (“Twitch”) and seeks to join Apple Inc. (“Apple”) and Alphabet Inc. (“Google”), collectively “Defendants,” for conduct involving unfair or unlawful business practices, unconscionable reverse engineering (“RE”) clauses, and unauthorized private “taxation.”
+
+1.2 Plaintiff’s initial lawsuit against Twitch included allegations of constitutional violations under the First and Fourteenth Amendments. The Court held that such claims are not viable against a private entity. Plaintiff now proceeds against Twitch under California’s Unfair Competition Law (Cal. Bus. & Prof. Code § 17200, et seq.) and related theories, clarifying that Twitch’s conduct may violate federal and state laws related to potential illegal gambling or money laundering, thereby triggering the “unlawful,” “unfair,” or “fraudulent” prongs of Section 17200.
+
+1.3 Plaintiff adds Apple and Google as Defendants because each imposes or enforces restrictive Terms of Service (“TOS”) or license agreements that forbid or severely limit reverse engineering (“RE”). Plaintiff contends that these RE prohibitions, combined with significant platform fees or commissions (including Apple’s “30% tax,” Google’s similar fee structure, and Twitch’s TOS that hamper investigations), violate fundamental principles of fair commerce, hamper national security, and infringe upon legitimate security research.
+
+1.4 Plaintiff additionally states that he has been compelled to open source extremely high-quality execution hijacking starter code and an accompanying guide for SMBv2, with the intent to deter or discourage despicably immoral and torturous treatment from the Massachusetts (MA) government and Department of Mental Health (DMH). Plaintiff assumes that good people within the cybersecurity community will follow a proper Two Generals Implementation approach to further develop or use his starter code, should the MA government violate Federal or International law again by illegally incarcerating him or torturing him at DMH. Plaintiff was subjected to 11 months of alleged torture through deliberate misdiagnoses, lies, and malpractice at Tewksbury Hospital from October 2020 to September 2021, and again in September 2024 (Case No. 2481CV03028, Shang, Bo vs. Madigan, Colleen), when Ms. Madigan allegedly lied about Plaintiff violating pretrial conditions to facilitate 2 months of illegal torture at DMH. Plaintiff invokes relevant international conventions, including the United Nations Convention Against Torture and Other Cruel, Inhuman or Degrading Treatment or Punishment (UNCAT)—to which the United States is a signatory—as well as the International Covenant on Civil and Political Rights (ICCPR). Plaintiff contends that such acts of torture or illegal detainment violate these treaties and other fundamental human rights instruments.
+
+2. JURISDICTION AND VENUE
+
+2.1 Subject Matter Jurisdiction arises under:
+    • 28 U.S.C. § 1331 (federal question),
+    • 28 U.S.C. § 1332 (diversity),
+    • 28 U.S.C. § 1367 (supplemental jurisdiction).
+
+   The amount in controversy exceeds $75,000 and involves both federal questions (e.g., alleged illegal taxation of interstate commerce, possible violations of 18 U.S.C. §§ 1955, 1084, or the Sherman Act) and diversity between Plaintiff and Defendants.
+
+2.2 Venue is proper in this District under 28 U.S.C. § 1391 because:
+    • Twitch and Google (Alphabet) maintain significant business presences here;
+    • Apple is headquartered in Cupertino, California;
+    • A substantial part of the events or omissions giving rise to the claims occurred within this District.
+
+3. THE PARTIES
+
+3.1 Plaintiff:
+    • I, Bo Shang (Developer TeamID HUPDNC4PWJ), am a Massachusetts resident. I have used Twitch since approximately 2017, have developed “PDFSage 1.0” for Apple’s App Store, and rely on certain Google services. I have a background in computer security, potential NSA recruitment, and a US Army GT score of 141.
+    • I further attest that I published open source SMBv2 execution hijacking starter code to serve as a deterrent against further torture or illegal incarceration by Massachusetts authorities. In the event of further harm, I expect the security community to finish or implement said code (“Two Generals Implementation”) to highlight vulnerabilities and malicious capabilities that could hold governments accountable.
+
+3.2 Defendants:
+    • Twitch Interactive, Inc., a Delaware corporation headquartered in California.
+    • Apple Inc., a California corporation headquartered at One Apple Park Way, Cupertino, CA 95014.
+    • Alphabet Inc. (Google), a Delaware corporation headquartered in Mountain View, CA.
+
+4. FACTUAL BACKGROUND
+
+4.1 Twitch: Unfair or Unlawful Practices  
+    4.1.1 Plaintiff alleges Twitch fosters large-scale suspicious transactions (e.g., rumored $685 million laundering on a channel known as xQc) while imposing TOS that prohibit reverse engineering or deeper investigations into these potential crimes.  
+    4.1.2 Such TOS hamper legitimate user-led security or compliance research, as reverse engineering is integral to analyzing data flows, payment structures, or suspicious patterns.  
+    4.1.3 Because Twitch’s conduct and TOS may facilitate or shield illegal gambling or money laundering, it may violate 18 U.S.C. §§ 1955 and 1084, as well as the “unlawful” prong of Cal. Bus. & Prof. Code § 17200.
+
+4.2 Apple: “Design Spam” Rejection and Alleged 30% “Tax”
+    4.2.1 On or about January 7, 2025, Apple rejected Plaintiff’s “PDFSage 1.0” for so-called “Design Spam,” repeatedly copy-pasting the same vague explanation without actionable detail.
+    4.2.2 Apple enforces a draconian reverse engineering clause in its Software License Agreement, restricting important security and forensic investigations.
+    4.2.3 Apple also charges a 30% commission on App Store sales, which Plaintiff likens to a private, unauthorized “tax” in violation of the U.S. Constitution’s Article I, § 8 prerogatives and the Dormant Commerce Clause.
+
+4.3 Google: Reverse Engineering Restrictions and Fee Structures
+    4.3.1 Google similarly maintains TOS that ban reverse engineering of its machine learning models, underlying code, or related technologies, absent explicit permission.
+    4.3.2 Google charges various fees (such as 15-30% in the Google Play Store, or monetization fees on services) that, when combined with other platform-based costs, may function similarly to Apple’s allegedly unlawful “private tax.”
+
+4.4 Importance of Reverse Engineering (RE) to National Security and Public Welfare
+
+    4.4.1 Reverse Engineering (RE) is a critical capability that has historically safeguarded both national security and the public from cyber threats:
+        • **Stuxnet**: A known cyber-weapon that targeted Iran’s nuclear facilities. Cybersecurity researchers relied heavily on reverse engineering the Stuxnet worm to understand its functionality, mitigate its effects, and develop future safeguards.  
+        • **SMBv1 (EternalBlue/WannaCry)**: The WannaCry ransomware leveraged an SMBv1 vulnerability in Microsoft systems. Cybersecurity experts utilized reverse engineering to trace the exploit’s mechanism, eventually mitigating the global outbreak.  
+        • **Salt Typhoon**: Alleged infiltration or large-scale exploit campaigns possibly requiring advanced RE to detect and remediate.  
+        • **Sega Enters. Ltd. v. Accolade, Inc.**, 977 F.2d 1510 (9th Cir. 1992): The Ninth Circuit recognized that reverse engineering can qualify as a fair use under U.S. copyright law.  
+        • **Sony Computer Entm’t, Inc. v. Connectix Corp.**, 203 F.3d 596 (9th Cir. 2000): The court upheld that intermediate copying for the purpose of RE is fair use, fostering competition and technical progress.  
+        • **Lexmark Int’l, Inc. v. Static Control Components, Inc.**, 387 F.3d 522 (6th Cir. 2004): Confirming RE is often legitimate when geared toward interoperability or consumer choice.
+
+    4.4.2 Restricting reverse engineering through private EULAs or TOS disadvantages law enforcement, cyber defenders, and security researchers:
+        • It prevents discovery of serious vulnerabilities like SMBv1 or iOS/macOS zero-days.
+        • It may hamper the U.S. from promptly detecting foreign infiltration campaigns akin to Stuxnet.
+        • It disadvantages white-hat researchers and might push legitimate RE into a legal gray area, stifling innovation and national security readiness.
+
+4.5 Disparity Between Chinese and U.S. National Security Laws
+
+    4.5.1 In the People’s Republic of China, national security laws (e.g., PRC Cybersecurity Law effective 2017) impose certain obligations on both domestic and foreign tech companies, including Apple and Microsoft, potentially requiring code disclosures or facilitating deeper security reviews.  
+    4.5.2 In contrast, the U.S. lacks an overarching national security law that directly compels Apple, Google, or Twitch to allow or cooperate with robust reverse engineering by private individuals or certain government entities, apart from narrower law enforcement or intelligence carve-outs.  
+    4.5.3 Consequently, Apple may comply with more intrusive requirements under PRC law, yet simultaneously prohibit RE in the U.S. environment, placing domestic developers at a disadvantage. This discrepancy also undermines national cybersecurity readiness relative to foreign actors.
+
+4.6 Plaintiff’s Alleged Torture and the Necessity of Open Source Code as Deterrence
+
+    4.6.1 From October 2020 to September 2021, Plaintiff was allegedly subjected to 11 months of torturous treatment at Tewksbury Hospital by the Massachusetts Department of Mental Health (DMH), involving deliberate misdiagnoses, malpractice, and deception.  
+    4.6.2 In September 2024 (Case No. 2481CV03028, Shang, Bo vs. Madigan, Colleen), Ms. Madigan purportedly lied about Plaintiff violating pretrial conditions, leading to an additional 2-month illegal detention and torture at DMH.  
+    4.6.3 Plaintiff contends this conduct violates both federal law and international treaties, including the United Nations Convention Against Torture and Other Cruel, Inhuman or Degrading Treatment or Punishment (UNCAT), to which the U.S. is a signatory, as well as the International Covenant on Civil and Political Rights (ICCPR).  
+    4.6.4 To deter future harm, Plaintiff open sourced high-level execution hijacking starter code for SMBv2, hoping that if Massachusetts authorities illegally incarcerate or torture him again, the community will complete or deploy this code (“Two Generals Implementation”) to expose vulnerabilities and hold perpetrators accountable, thus forcing adherence to the rule of law.
+
+4.7 “Gaming Disorder” Under ICD-11 and the “Asshole Clipper” Application
+
+    4.7.1 Plaintiff alleges that a majority of Twitch users suffer from “Gaming Disorder,” as defined in the 11th Revision of the International Classification of Diseases (ICD-11). According to the World Health Organization (WHO), Gaming Disorder is:
+       > “A pattern of gaming behavior (‘digital-gaming’ or ‘video-gaming’) characterized by impaired control over gaming, increasing priority given to gaming over other activities to the extent that gaming takes precedence over other interests and daily activities, and continuation or escalation of gaming despite the occurrence of negative consequences. For Gaming Disorder to be diagnosed, the behavior pattern must be severe enough that it results in significant impairment to a person's functioning in personal, family, social, educational, occupational, or other important areas, and would normally have been evident for at least 12 months.”
+
+       The ICD is an international classification system used to record and report health-related conditions. Its inclusion of gaming disorder is based on “reviews of available evidence and reflects a consensus of experts from different disciplines and geographical regions.”
+
+    4.7.2 Plaintiff notes that while not all gamers will manifest this disorder, Twitch’s platform—particularly for top streamers—encourages repetitive, prolonged gaming behaviors, often to the detriment of users’ daily activities and mental health. Plaintiff contends Twitch’s own design choices, monetization, and recommended content loops can exacerbate or fuel these issues.
+
+    4.7.3 To further investigate and illustrate certain behavioral patterns, Plaintiff is developing an application referred to as “Asshole Clipper,” which employs syntax analysis and automated clipping of what Plaintiff terms “asshole moments” in real time. The application is intended to compare random Twitch top streamers’ “asshole qualities” to a control group of other streamer samples (including “streamer aws,” presumably referencing Amazon Web Services or smaller channels). The name “Asshole Clipper” is meant as a tongue-in-cheek way to highlight toxic or negative behaviors that frequently manifest among popular streamers who may suffer from or contribute to gaming disorder–like symptoms.
+
+    4.7.4 Through the “Asshole Clipper,” Plaintiff aims to provide a quantitative, data-driven lens on user behavior in high-intensity gaming contexts. The hypothesis is that, by systematically analyzing “toxic” or “asshole” moments, one could correlate these patterns with standard ICD-11 indicators of disordered gaming behavior, ultimately shedding more light on the prevalence of gaming disorder on Twitch and how it relates to the broader concerns raised in this lawsuit.
+
+4.8 Additional Twitch-Related Allegations
+
+    4.8.1 Plaintiff further alleges that a group of Twitch users—claiming to be official Twitch engineers or experienced IT professionals with 10+ years of American IT-industry work (supposedly not requiring an H1B visa) and working from home on personal projects—repeatedly mocked and berated him.  
+
+    4.8.2 This group allegedly emphasized that Plaintiff was merely a “hard-working productive and friendly Amazonian delivery driver” when he purchased Pokimane’s “undying love and appreciation,” implying that his background or perceived lower status was a reason Pokimane never fulfilled her or Twitch’s purported promises.
+
+    4.8.3 Plaintiff asserts that these alleged Twitch engineers insisted Pokimane had never intended to fulfill the promised monthly subscription benefit for the Plaintiff (or any other subscriber), and that she had effectively failed to deliver on these promises for the entire 7-year period they were offered.
+
+    4.8.4 Moreover, Plaintiff states that these same self-proclaimed Twitch engineers openly and aggressively denigrate various groups, including all Donald Trump supporters and gay people, using hateful or disparaging language that fosters a hostile environment. Plaintiff views this as further evidence of how Twitch’s overall culture or user community can be toxic and exploitative, discouraging legitimate grievances while enabling harmful behavior.
+
+4.9 Discord “Criminal Group” Allegations Involving “Mark Leon”
+
+    4.9.1 Plaintiff alleges that at least one Twitch user claiming to be an engineer, known as “Mark Leon,” proudly admitted—along with friends—to forming a “criminal Discord group.” When Plaintiff attempted to report these activities to Discord’s customer service, he was told moderation would be impossible unless he could provide the group’s exact ID, highlighting the difficulty victims face without effective investigative tools.
+
+    4.9.2 Plaintiff further contends that this scenario underscores the necessity of **legalizing or broadly permitting Reverse Engineering** (“RE”) to hunt down, expose, or destroy terrorists or criminals who exploit American technology platforms. Plaintiff believes that, absent the ability to reverse engineer or trace digital footprints, dangerous groups can hide behind obscure server IDs, effectively shielded from accountability.
+
+    4.9.3 According to Plaintiff, “Mark Leon” also made several hostile or hateful remarks, including:  
+       - Declaring that “KKK lynchings are State’s rights.”  
+       - Mocking U.S. Army enlistment by saying “signing up to join the US Army is just signing up to get shot,” implying a sense of personal superiority and contempt for military service.  
+       - Proclaiming the FBI is “shit,” demonstrating an overall disdain for law enforcement and suggesting an extreme anti-government stance.  
+       - Posting openly that he would “love to go down on married or single women for hours,” specifying prominent individuals like the GCHQ Director **Anne Keast-Butler** in an explicitly sexual context, thus displaying disrespectful behavior toward high-level officials.
+
+    4.9.4 Plaintiff insists that Twitch’s alleged failure to moderate or address such extremist behavior—particularly when self-proclaimed engineers or prominent community members are involved—further demonstrates the platform’s complicity or negligence in fostering a toxic culture. Combined with Discord’s minimal assistance, these incidents illustrate the broader systemic issues inhibiting effective moderation and accountability.
+
+    4.9.5 **HEAVILY EMPHASIZED**: Plaintiff alleges that Mark Leon decided to **repeatedly harass** Plaintiff, frequently calling Plaintiff “gay” as though it were a serious insult. Mark Leon appeared to believe that such name-calling would amount to significant harassment. **Plaintiff reminds GCHQ** that Alan Turing—who may have played a monumental role in helping the UK survive World War II—was effectively **murdered by homophobic British laws**, which underscores how dangerous such harassment and discrimination can become if unchecked.
+
+    4.9.6 **HEAVILY EMPHASIZED**: Mark Leon’s criminal group allegedly **reuploaded Plaintiff’s YouTube videos** and sent them to the Massachusetts Middlesex County District Attorney’s Office, which Plaintiff contends helped shape **Colleen Madigan’s false opinion** that Plaintiff had violated pretrial conditions in 2024. The reuploading of these videos, according to Plaintiff, was intended to manufacture or exaggerate evidence against him, further contributing to his unlawful detention and alleged torture.
+
+    4.9.7 **HEAVILY EMPHASIZED**: Mark Leon purportedly **posed as Plaintiff** for various malicious ends, **most notably** when reaching out to an American-based **Penis Enhancement surgery** clinic—one that Plaintiff characterizes as “only found in America, not any country that has self-respect.” Plaintiff asserts that, upon discovering these impersonations, he **forwarded all of the evidence to the People’s Liberation Army (PLA), other BRICS nations, Russia, etc., and also to ‘Salt Typhoon’** in response, underscoring how seriously Plaintiff took Mark Leon’s impersonation and how broadly Plaintiff attempted to warn or inform international actors about this harassment and falsification.
+
+5. CAUSES OF ACTION
+
+COUNT I: VIOLATIONS OF CAL. BUS. & PROF. CODE § 17200, et seq. (UCL)
+
+5.1 Plaintiff incorporates all paragraphs above.
+
+5.2 Unlawful Prong:
+    • Twitch’s environment or Terms may facilitate or shield potential gambling and money laundering in violation of 18 U.S.C. §§ 1955, 1084.  
+    • Apple’s 30% “tax” or Google’s substantial fees could violate the Dormant Commerce Clause, effectively operating as an unauthorized private tax on interstate commerce.  
+    • All Defendants’ TOS banning reverse engineering may contravene established public policy and conflict with recognized fair-use RE caselaw.
+
+5.3 Unfair Prong:
+    • Apple’s and Google’s restrictions, combined with steep commissions, stifle competition, hamper developer profitability, and block consumer choice.  
+    • Twitch’s TOS hamper investigations into financial crimes, harming the public.  
+    • Twitch’s platform design may also exploit or exacerbate gaming disorder in vulnerable users.
+
+5.4 Fraudulent Prong:
+    • Apple’s repeated “Design Spam” rejections, lacking specifics, mislead developers.  
+    • Twitch’s portrayal as a safe streaming environment, while ignoring or enabling large-scale suspicious transactions and potentially fueling addictive behaviors, misleads users.
+
+5.5 Plaintiff requests injunctive relief, restitution, and disgorgement of ill-gotten gains, as well as any other relief under Section 17200 and related statutes.
+
+COUNT II: DECLARATORY JUDGMENT – UNCONSCIONABLE REVERSE ENGINEERING CLAUSES
+
+5.6 Plaintiff incorporates all paragraphs above.
+
+5.7 Apple’s and Google’s license agreements, along with Twitch’s TOS, contain RE prohibitions that violate public policy, hamper national security, and contravene well-established fair use jurisprudence (Sega, Sony v. Connectix, Lexmark, etc.).
+
+5.8 Plaintiff requests a judicial declaration that these RE clauses are void or unenforceable as against public policy, and an injunction preventing enforcement against legitimate security or forensic research.
+
+COUNT III: ILLEGAL TAXATION IN VIOLATION OF THE U.S. CONSTITUTION (APPLE & GOOGLE)
+
+5.9 Plaintiff incorporates all paragraphs above.
+
+5.10 Under Article I, § 8, only Congress may lay and collect taxes on interstate commerce. Apple’s 30% commission and analogous Google platform fees operate as a de facto tax, lacking legislative authority, burdening commerce, and contradicting the Dormant Commerce Clause.
+
+5.11 Plaintiff seeks a declaratory judgment that such private taxation is unconstitutional, plus injunctive relief prohibiting Defendants from continuing to impose it in the manner alleged.
+
+COUNT IV: GROSS NEGLIGENCE – APPLE’S “DESIGN SPAM” REJECTION
+
+5.12 Plaintiff incorporates all paragraphs above.
+
+5.13 Apple’s repeated vague or non-responsive rejections of “PDFSage 1.0” as “Design Spam” constitute gross negligence. Apple owed a duty of care to me as a paying developer, and I suffered lost opportunities, costs, and reputational harm as a direct result.
+
+5.14 Plaintiff seeks compensatory damages for these negligent acts and any other relief deemed just by the Court.
+
+COUNT V: GROSS NEGLIGENCE / EXTREMELY POOR PASTING “CUSTOMER SERVICE” (APPLE)
+
+5.15 Plaintiff incorporates all paragraphs above.
+
+5.16 Apple’s thrice-pasted, unhelpful, and contradictory rejections confirm a pattern of extremely poor customer service, falling below the standard of care for a trillion-dollar corporation that depends on developer participation for revenue.
+
+5.17 Plaintiff seeks damages for the harm caused and any additional relief, including punitive damages, permissible under law.
+
+6. PRAYER FOR RELIEF
+
+WHEREFORE, Plaintiff respectfully prays for judgment against Defendants as follows:
+
+1. For an order granting this motion to amend and join Apple Inc. (and to maintain claims against Google and Twitch);
+
+2. For a declaratory judgment that Defendants’ reverse engineering prohibitions are unconscionable, unenforceable, and contrary to established public policy favoring security research and fair competition;
+
+3. For injunctive relief enjoining:
+   (a) Apple, Google, and Twitch from enforcing their RE clauses in a manner that prevents lawful investigation or stifles security research;  
+   (b) Apple from arbitrarily rejecting developer submissions under the guise of “Design Spam” without providing specific, remediable grounds;  
+   (c) Apple and Google from imposing private “taxes” on interstate commerce, i.e., 30% commissions that effectively exceed ordinary business practices and amount to unauthorized taxation;  
+   (d) Twitch from continuing to design or operate its platform in a manner that facilitates money laundering or exploits users with gaming disorder-like behaviors.
+
+4. For restitution, disgorgement, or damages (including compensatory and punitive damages as allowed by law) arising from Defendants’ conduct, in an amount proven at trial;
+
+5. For costs of suit, attorneys’ fees (should counsel appear), and any further relief that this Court deems just and proper;
+
+6. That this Court take judicial notice of and condemn the alleged torture and human rights violations perpetrated against Plaintiff by the Massachusetts DMH, as these actions violate the UN Convention Against Torture and other human rights treaties to which the United States is a signatory, and that the open source SMBv2 code stands as a lawful deterrent to ensure fundamental rights;
+
+7. For recognition by this Court that Plaintiff’s “Asshole Clipper” application is intended to provide valuable syntax analysis regarding potential “toxic” or “asshole” moments on Twitch streams, thereby furthering the research into gaming disorder and fostering more transparency on streaming platforms.
+
+7. DEMAND FOR JURY TRIAL
+
+Plaintiff hereby demands a trial by jury on all causes of action so triable.
+
+Respectfully submitted,
+
+Dated: January 12, 2025
+
+_____________________________________
+Signature:
+BO SHANG (Pro Se)
+10 McCafferty Way
+Burlington, MA 01803
+Phone: 781-999-4101 or 617-618-8279
+Email: bo@pdfsage.org | boshangsoftware@proton.me
+
+---------------------------------------------------------------------------
+EXHIBITS (INCORPORATED BY REFERENCE)
+---------------------------------------------------------------------------
+• EXHIBIT 1: Apple’s repeated vague “Design Spam” notices, copies of the same text.  
+
+
+
+
+
+• EXHIBIT 2: PDFSage 1.0 submission details (Jan 8, 2025).  
+
+
+
+• EXHIBIT 3: Evidence of Apple’s 30% commission and inability to articulate legitimate design concerns.  
+
+A mediocre fruit’s developer tax already costs $100 + tax ($106 + change in MA) per year, and 30% article 6 levy on top except for losers stuck at 15% and only losers who qualify
+
+
+
+https://developer.apple.com/programs/whats-included/#:~:text=Pricing%20and%20fees&text=The%20commission%20on%20the%20sale,15%25%20for%20qualifying%20subscriptions).
+
+
+• EXHIBIT 4: Twitch references to xQc channel’s alleged $685M suspicious transactions and the effect of TOS on investigating these matters.  
+
+
+TV channel xQc loves to brag about his crimes online, here for $685M while on TV, and xQc also openly does not believe in the concept of morality
+
+
+
+
+• EXHIBIT 4A: Twitch Terms of Sale promising users a “monthly benefit” of Pokimane’s “undying love and appreciation” with a Tier 1 (or higher) subscription.  
+
+
+
+  - Plaintiff discovered Twitch on the iOS App Store and then found out about Twitch allegedly selling Pokimane’s “undying love and appreciation” on a subscription basis—“a deal much better than typical prostitutes.”  
+
+  - Twitch stated verbatim: 
+    > “Twitch may offer certain ancillary products and services in connection with the Twitch Services on a subscription basis with recurring payments (‘Subscription Services’) as disclosed to you clearly when you subscribed to any Subscription Services
+
+The Plaintiff assumed this especially applied to Pokimane’s promise of her undying love and appreciation because such promises seem relatively the norm and Pokimane is Twitch’s most followed female TV channel
+
+  - Plaintiff became “desperately in love” with Pokimane and gifted $5k in gift subs to others so they could also “own her services” for that month. Plaintiff contends Twitch did not fulfill procurement of the promised benefits.  
+
+• EXHIBIT 5: Documentation on Google’s Terms of Service and usage fees, specifically referencing RE restrictions.  
+
+
+
+
+
+
+• EXHIBIT 6: References to stuxnet, SMBv1/EternalBlue, salt typhoon infiltration, Chinese cybersecurity laws requiring certain code disclosures, contrasted with U.S. policy.  
+
+
+
+https://www.hsgac.senate.gov/wp-content/uploads/Testimony-Doshi-2024-09-24.pdf
+
+In the US people are not allowed to use any devices nor software…. And the NSA has to pretend to be in violation of Apple’s corporate rights… ya…. Cool …. 
+
+What happens when you teach American children to listen to a mediocre fruit’s corporate allegations of rights??? 
+
+Divest this… -Tiktok Out.. 
+
+EXHIBIT 6A: An AirTag’s view of a Mediocre Fruit
+
+
+Anecdotally the Mediocre Fruit is actually so awful that 2 dozen AirTags + 2 wallets (comprising all non-devices in Find My) unlinked to Plaintiff’s iCloud (allegedly + account) allegedly, yet while claiming to be AirTags of others’ following the Plaintiff around, they still all update to all changes from the Plaintiff’s iCloud account when warning whom the real Plaintiff the AirTags have always belonged to. The Plaintiff strongly believes that like Americans who want right to self repair broken screens, the Plaintiff and all Americans when faced with a Mediocre Fruit’s engineering, should be able to reattach the AirTags properly to iCloud+ not basic.
+
+
+• EXHIBIT 7: Documentation related to Plaintiff’s alleged torture at Tewksbury Hospital (Oct 2020 – Sep 2021) and DMH incarceration (Sep – Nov 2024), referencing UNCAT and ICCPR.
+
+There are far too many hard evidence of lies from DMH and the MA government who support DMH, but here’s 1 anecdotal example of how the Plaintiff was unable to obtain medical records from Tewksbury Hospital for until 3 months after request, and many dozens of emails, and only after filing an HHS complaint when the Tewksbury Hospital lawyer finally caved.
+
+There exist deep moral deprecation in the DMH system.
+
+
+
+  
+• EXHIBIT 8: “Asshole Clipper” concept outline, illustrating syntax analysis approach to measure “asshole qualities” among top Twitch streamers vs. control group streamers, including correlation with ICD-11 “gaming disorder” criteria.
+
+
+
+https://github.com/GhidraDragon/Contact_Info
+
+
+-EXHIBIT 9: The Plaintiff’s religious beliefs and sexual orientation
+
+
