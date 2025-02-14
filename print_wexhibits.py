@@ -23,9 +23,13 @@ class Lawsuit:
                   and each value as the full text of that heading.
       - exhibits: an OrderedDict keyed by a simple index string ("1", "2", etc.).
                   Each value is another OrderedDict with 'caption' and 'image_path'.
+
+    This class also automatically stores case_information and law_firm_information
+    from command line arguments.
     """
 
-    def __init__(self, sections=None, exhibits=None, header=None):
+    def __init__(self, sections=None, exhibits=None, header=None,
+                 case_information="", law_firm_information=""):
         if sections is None:
             sections = OrderedDict()
         if exhibits is None:
@@ -38,9 +42,14 @@ class Lawsuit:
         self.exhibits = OrderedDict(exhibits)
         self.header   = OrderedDict(header)
 
+        # Store the command-line-provided info
+        self.case_information     = case_information
+        self.law_firm_information = law_firm_information
+
     def __repr__(self):
         """
-        Print the Lawsuit object clearly, showing all keys and values in each OrderedDict fully.
+        Print the Lawsuit object clearly, showing all keys and values in each OrderedDict fully,
+        as well as the case_information and law_firm_information fields.
         """
         header_str = "\n".join([f"  {k}: {v}" for k, v in self.header.items()])
         sections_str = "\n".join([f"  {sec_key}: {sec_value}" for sec_key, sec_value in self.sections.items()])
@@ -52,6 +61,10 @@ class Lawsuit:
 
         return (
             "Lawsuit Object:\n\n"
+            "CASE INFORMATION:\n"
+            f"  {self.case_information}\n\n"
+            "LAW FIRM INFORMATION:\n"
+            f"  {self.law_firm_information}\n\n"
             "HEADER:\n"
             f"{header_str}\n\n"
             "SECTIONS:\n"
@@ -66,8 +79,6 @@ class Lawsuit:
 def is_line_all_caps(line_str):
     """Returns True if the line contains at least one uppercase letter
        and no lowercase letters (a-z)."""
-    # The user requirement is to ensure the heading text is fully capitalized,
-    # so we strictly enforce that there's at least one uppercase letter and no lowercase.
     if not re.search(r'[A-Z]', line_str):
         return False
     return not re.search(r'[a-z]', line_str)
@@ -91,9 +102,6 @@ def wrap_text_to_lines(pdf_canvas, full_text, font_name, font_size, max_width):
     """
     Splits a large text into a list of (line_string, ended_full_line) pairs,
     respecting max_width so that text does not overflow.
-
-    The ended_full_line boolean is True if that line was the result of wrapping
-    mid-paragraph.
     """
     pdf_canvas.setFont(font_name, font_size)
     paragraphs = full_text.split('\n')
@@ -393,7 +401,7 @@ def draw_page_of_segments(pdf_canvas,
 
     heading_positions is a list; whenever we encounter a heading or subheading segment,
     we record (text, page_number, line_number, is_subheading) so that we can build
-    the Table of Contents (with page/line info).
+    the Table of Contents.
     """
     # Bounding box
     pdf_canvas.setLineWidth(2)
@@ -456,12 +464,9 @@ def draw_page_of_segments(pdf_canvas,
 ###############################################################################
 def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
     """
-    Generates a table of contents PDF that lists each section or subsection
-    in the order encountered in the main PDF (heading_positions). Next to
-    each entry on the far right, prints the page number and line number from
-    the original PDF. Subsections are 9pt normal; main sections are 10pt bold.
-
-    The layout is flexible and supports wrapping long headings. 
+    Generates a table of contents PDF (index_filename) that lists each section or subsection
+    in the order encountered in the main PDF (heading_positions). Next to each entry,
+    prints the page number and line number. Subsections are smaller font than main sections.
     """
     pdf_canvas = canvas.Canvas(index_filename, pagesize=letter)
     pdf_canvas.setTitle("Table of Contents")
@@ -473,12 +478,10 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
     right_margin = 0.5 * inch
     line_spacing = 0.25 * inch
 
-    # We'll measure text width with a temporary canvas:
+    # We'll measure text widths with a temporary canvas:
     temp_canvas = canvas.Canvas("dummy.pdf", pagesize=letter)
 
-    # Prepare a flattened list of lines (with page/line info)
-    # heading_positions is a list of (heading_text, page_number, line_number, is_subsection)
-    # We wrap the heading_text to fit a narrower width so there's room for the page/line on the right.
+    # Flatten out headings to account for wrapping
     max_entry_width = page_width - left_margin - 1.5 * inch
 
     flattened_lines = []
@@ -493,18 +496,15 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
         wrapped = wrap_text_to_lines(temp_canvas, heading_text, font_name, font_size, max_entry_width)
         text_lines = [w[0] for w in wrapped] if wrapped else [""]
 
-        # For each heading, we produce multiple lines; the first line will show the page:line on the right,
-        # subsequent lines won't.
         for i, txt_line in enumerate(text_lines):
             flattened_lines.append((
                 txt_line,
                 page_num,
                 ln_num,
                 is_sub,
-                (i == 0)  # is_first_line?
+                (i == 0)  # is this the first line of the heading text?
             ))
 
-    # Calculate how many lines per page in the index
     usable_height = page_height - (top_margin + bottom_margin) - 1.0 * inch
     max_lines_per_page = int(usable_height // line_spacing)
 
@@ -580,19 +580,15 @@ def parse_header_and_sections(raw_text):
     Anything before the first valid heading is stored in header['content'].
 
     A valid heading must:
-        1) Match '^((?:\d+\.)+)\s+(.*)$'
-        2) The text portion (group(2)) must be fully capitalized (all caps) 
-           to qualify as a section heading.
-
+        1) Match '^((?:\\d+\\.)+)\\s+(.*)$'
+        2) The text portion must be fully capitalized (all caps).
     Returns:
       header_od, sections_od
     """
     header_od = OrderedDict()
     sections_od = OrderedDict()
 
-    # Basic numeric pattern for headings: "1. INTRO", "1.1 BACKGROUND", etc.
     heading_pattern = re.compile(r'^((?:\d+\.)+)\s+(.*)$')
-
     lines = raw_text.splitlines()
     idx = 0
     header_lines = []
@@ -601,13 +597,11 @@ def parse_header_and_sections(raw_text):
         line = lines[idx].rstrip('\n').rstrip('\r')
         m = heading_pattern.match(line)
         if m:
-            heading_number = m.group(1).strip()  # e.g. "1." or "1.1."
-            heading_title = m.group(2).strip()   # e.g. "INTRODUCTION"
-            # Only treat as heading if heading_title is ALL CAPS:
+            heading_number = m.group(1).strip()
+            heading_title = m.group(2).strip()
+            # Check for all-caps
             if is_line_all_caps(heading_title):
-                # We've found the first valid heading
                 break
-        # Otherwise it's just header text
         header_lines.append(line)
         idx += 1
 
@@ -631,13 +625,10 @@ def parse_header_and_sections(raw_text):
 
                 if heading_number.endswith('.'):
                     heading_number = heading_number[:-1]
-                # Combine numeric + title
                 current_heading_key = f"{heading_number} {heading_title}"
             else:
-                # Not a fully-capitalized heading, treat as body text
                 current_body_lines.append(line)
         else:
-            # just a line of body text
             current_body_lines.append(line)
         idx += 1
 
@@ -652,7 +643,6 @@ def classify_headings(sections_od):
       If the numeric portion has more than one dot, it's a subheading.
       E.g. "1 INTRODUCTION" => main section
            "1.1 BACKGROUND" => subheading
-
     Return a dict: { full_key: "section" or "subsection" }
     """
     heading_styles = {}
@@ -713,8 +703,7 @@ def generate_legal_document(firm_name,
 
     usable_height = page_height - (top_margin + bottom_margin)
     lines_that_fit = int(usable_height // line_spacing)
-    # Subtract 2 lines to create some internal spacing in the box
-    max_lines_per_page = lines_that_fit - 2
+    max_lines_per_page = lines_that_fit - 2  # Some internal spacing in the box
 
     line_offset_x = left_margin
     line_offset_y = page_height - top_margin
@@ -821,16 +810,18 @@ def main():
         ])
         exhibit_index += 1
 
-    # Extra metadata in header if needed
+    # Example extra metadata in header if needed
     header_od["DocumentTitle"] = "Complaint for Damages"
     header_od["DateFiled"] = "2025-02-14"
     header_od["Court"] = "Sample Court"
 
-    # Build our Lawsuit object
+    # Build our Lawsuit object, storing the new fields automatically
     lawsuit_obj = Lawsuit(
         sections=sections_od,
         exhibits=exhibits_od,
-        header=header_od
+        header=header_od,
+        case_information=args.case,
+        law_firm_information=args.firm_name
     )
 
     # Convert exhibits to pass to PDF generator
@@ -868,7 +859,6 @@ def main():
             pickle.dump(lawsuit_obj, pf)
         pkl_path = pickle_filename
     else:
-        # Even if not requested, we can still store it or skip it. Here we just skip.
         pkl_path = "Not saved (not requested)."
 
     # Print summary
