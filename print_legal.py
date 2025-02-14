@@ -10,9 +10,8 @@ def wrap_text_to_lines(pdf_canvas, full_text, font_name, font_size, max_width):
     Splits a large text into a list of (line_string, ended_full_line) pairs.
     Each tuple is (str, bool), where:
       str  = the actual text line,
-      bool = True if this line was forced at max width, False if it ended early.
-    This is used later to detect lines that "end early" vs. lines that
-    went all the way to the end.
+      bool = True if this line was forced at max width (ends the line fully),
+             False if it ended early.
     """
     pdf_canvas.setFont(font_name, font_size)
 
@@ -35,7 +34,7 @@ def wrap_text_to_lines(pdf_canvas, full_text, font_name, font_size, max_width):
                 if pdf_canvas.stringWidth(test_line, font_name, font_size) <= max_width:
                     current_line = test_line
                 else:
-                    # The current line is at or near the max width (forced break)
+                    # The current line hit the max width (forced break)
                     all_lines.append((current_line, True))
                     current_line = word
 
@@ -85,17 +84,16 @@ def draw_page_content(
 ):
     """
     Draw up to `max_lines_per_page` lines on the given canvas, starting
-    from `start_line_index` in `line_tuples`. Each element in line_tuples
+    from `start_line_index` in `line_tuples`. Each element in `line_tuples`
     is (line_text, ended_full_line_bool).
 
     Adds:
       - Firm name vertically on the left, centered along the page's height
       - Case name at top center, with a horizontal rule below it
-      - Numbered lines on both left edge and right edge
-      - Centering logic for short lines that follow another short line
-      - BUT: If it's the first line of a new page and the previous line ended early, do NOT center.
+      - Numbered lines on both left and right edges
+      - Lines are only centered if both the current line and the preceding line ended early
       - Page numbers at bottom center
-      - A bounding box around the page for a professional look
+      - A bounding box around the page for a more professional look
 
     Returns the index of the next line after this page.
     """
@@ -143,42 +141,18 @@ def draw_page_content(
         # Right numbering
         pdf_canvas.drawString(page_width - 0.4 * inch, y_text, line_number_str)
         
-        # We want to figure out if the current line ended early or not.
-        line_ended_early = not forced_break
-
-        # The previous line ended early if i>0 and the stored bool was False
-        # (because forced_break == True means it reached full width).
+        # Check previous line's forced_break status (True if it was at max width)
+        # i.e., if previous line ended early => prev_forced_break is False
         if i > 0:
             _, prev_forced_break = line_tuples[i - 1]
-            prev_line_ended_early = not prev_forced_break
         else:
-            prev_line_ended_early = False  # No previous line at all
-
-        # Check if this is the first line on the current page
-        line_is_first_on_page = (i == start_line_index)
-
-        # Logic:
-        # - If a line ends early and directly follows another short line (on the same page), center it.
-        # - Normally, if it's the first line of a page and ends early, we center it.
-        # - EXCEPTION: If it's the first line of a new page AND the previous page's last line ended early,
-        #              we do NOT center (left-align instead).
-        if line_ended_early:
-            # If it's the first line on the page and the previous line ended early,
-            # do NOT center.
-            if line_is_first_on_page and prev_line_ended_early and i > 0:
-                pdf_canvas.drawString(x_text, y_text, text_line)
-            # If it's the first line on the page, but the last line from the previous page was forced
-            # or there's no previous line at all, then center.
-            elif line_is_first_on_page:
-                pdf_canvas.drawCentredString(page_width / 2.0, y_text, text_line)
-            # If it's not the first line on the page and the previous line was also short, center it.
-            elif prev_line_ended_early:
-                pdf_canvas.drawCentredString(page_width / 2.0, y_text, text_line)
-            else:
-                # Normal short line that doesn't follow another short line => left align
-                pdf_canvas.drawString(x_text, y_text, text_line)
+            prev_forced_break = True  # so the very first line cannot be centered
+        
+        # Center only if *both* this line and the previous line ended early
+        if (not forced_break) and (i > 0) and (not prev_forced_break):
+            pdf_canvas.drawCentredString(page_width / 2.0, y_text, text_line)
         else:
-            # forced_break == True => it used the entire width => always left align
+            # Normal left-aligned
             pdf_canvas.drawString(x_text, y_text, text_line)
         
         y_text -= line_spacing
@@ -193,19 +167,17 @@ def draw_page_content(
 def generate_legal_document(firm_name, case_name, output_filename, text_body):
     """
     Generates a legal-style PDF document with:
-      - Vertical firm name on left
+      - Vertical firm name on the left
       - Case name top center, bold, with a horizontal rule
       - Numbered lines on left and right
       - Wrapped text, Times-Roman, size 10
-      - Centering logic for short lines
-      - Exception: If the first line on a new page follows a short line on the previous page,
-                   do NOT center it.
-      - Page numbering at bottom center
+      - Lines are centered only if they and their preceding line ended early
+      - Page numbering at bottom center ("Page X of Y")
       - A bounding box around each page
     """
     page_width, page_height = letter
 
-    # Create the PDF canvas with metadata
+    # Basic metadata
     pdf_canvas = canvas.Canvas(output_filename, pagesize=letter)
     pdf_canvas.setTitle("Legal Document")
     pdf_canvas.setAuthor(firm_name)
@@ -221,20 +193,20 @@ def generate_legal_document(firm_name, case_name, output_filename, text_body):
     # Line spacing
     line_spacing = 0.25 * inch
 
-    # Calculate how many lines fit in the vertical space,
-    # leaving a little extra at the bottom for the footer
+    # Calculate how many lines fit in the usable height
     usable_height = page_height - (top_margin + bottom_margin)
     lines_that_fit = int(usable_height // line_spacing)
-    max_lines_per_page = lines_that_fit - 2  # reserve a couple lines for safety
+    # Reserve a couple of lines for any spacing near footer/header
+    max_lines_per_page = lines_that_fit - 2
 
     # Coordinates for text start
     line_offset_x = left_margin
     line_offset_y = page_height - top_margin
 
-    # Maximum width for wrapped text (account for margins)
+    # Maximum width for wrapped text
     max_text_width = page_width - right_margin - line_offset_x - 0.2 * inch
 
-    # Convert the raw text into wrapped lines
+    # Wrap text
     wrapped_lines = wrap_text_to_lines(
         pdf_canvas,
         text_body,
@@ -269,7 +241,6 @@ def generate_legal_document(firm_name, case_name, output_filename, text_body):
         current_line_index = next_line_index
         page_number += 1
         
-        # If there are more lines to draw, start a new page
         if current_line_index < total_lines:
             pdf_canvas.showPage()
     
@@ -278,7 +249,7 @@ def generate_legal_document(firm_name, case_name, output_filename, text_body):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate a professional legal-style PDF with firm name, case name, and custom line centering rules."
+        description="Generate a professional legal-style PDF with a firm name, case name, and line numbering."
     )
     parser.add_argument(
         "--firm_name",

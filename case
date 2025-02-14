@@ -1,196 +1,243 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Container,
-  Typography,
-  Link as MuiLink,
-  List,
-  ListItem,
-  Box,
-} from '@mui/material';
+                    IN THE UNITED STATES DISTRICT COURT
+                 FOR THE NORTHERN DISTRICT OF CALIFORNIA
+---------------------------------------------------------------------------
+BO SHANG,  
+Plaintiff (Pro Se),
+v.
+TWITCH INTERACTIVE, INC., 
+[Proposed New Defendant] APPLE INC.,
+ALPHABET INC. (GOOGLE),
+Defendants.
+---------------------------------------------------------------------------
+Case No.: 3:24-cv-06664-JSC
+---------------------------------------------------------------------------
+ PLAINTIFF’S MOTION FOR LEAVE TO FILE FIRST AMENDED COMPLAINT AND
+             TO JOIN APPLE INC. AS A DEFENDANT; AND
+        [PROPOSED] FIRST AMENDED COMPLAINT FOR INJUNCTIVE
+      RELIEF, DAMAGES, DECLARATORY JUDGMENT, AND OTHER RELIEF
+                         JURY TRIAL DEMANDED
+---------------------------------------------------------------------------
 
-export default function Home() {
-  const [darkMode, setDarkMode] = useState(false);
+        PLEASE TAKE NOTICE that Plaintiff, pro se, hereby moves this Court for leave to file a First Amended Complaint and to add Apple Inc. as a newly joined Defendant, pursuant to Federal Rules of Civil Procedure 15(a)(2), 19, 20, and 21. In support of this motion, Plaintiff respectfully shows the Court as follows:
 
-  // Toggle the "dark-mode" class on the body element whenever darkMode changes
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
-  }, [darkMode]);
+                                 MOTION FOR LEAVE
 
-  const handleToggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
+1. Pursuant to Judge Scott Corley’s Order issued on or about January 9, 2025 (Dkt. No. 30), the Court directed Plaintiff to clarify and refile claims consistent with the Court’s ruling on prior allegations against Twitch Interactive, Inc. (“Twitch”). Plaintiff was further directed that if he intends to bring claims against Apple Inc., he must file the appropriate motion to amend the complaint and join Apple as a defendant, rather than simply filing new claims on the existing docket.
 
-  return (
-    <>
-      {/* Main content */}
-      <Container maxWidth="md" sx={{ marginTop: '2rem' }}>
-        <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <Typography variant="h3" gutterBottom>
-            Welcome to PDFSage Inc (fakeopenai.co)
-          </Typography>
-          <Typography variant="body1">
-            We’re excited to announce a{' '}
-            <strong>far more advanced, fully word-like editable PDF SDK</strong>{' '}
-            is coming to iOS very soon!
-          </Typography>
-        </Box>
+2. Plaintiff respectfully submits that good cause exists to grant leave to file this First Amended Complaint, as it reflects compliance with the Court’s Order, clarifies Plaintiff’s causes of action, removes certain previously dismissed constitutional claims against private actors, and properly joins Apple Inc. given the related subject matter and overlapping factual and legal issues. Plaintiff has also included Alphabet Inc. (Google) as a defendant for the same reasons previously stated.
 
-        <Typography variant="body1" paragraph>
-          In the meantime, check out our existing iOS apps here:
-        </Typography>
-        <List sx={{ textAlign: 'center' }}>
-          <ListItem>
-            <Box sx={{ textAlign: 'center' }}>
-              <Box
-                component="img"
-                src="/assets/AlgorithmicAI.jpg"
-                alt="PDFSage Algorithmic AI"
-                sx={{
-                  display: 'block',
-                  margin: '0 auto',
-                  maxWidth: '100%',
-                  height: 'auto',
-                  mb: 2,
-                }}
-              />
-              <MuiLink
-                href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=6741389058"
-                target="_blank"
-                rel="noopener noreferrer"
-                underline="hover"
-              >
-                PDFSage Algorithmic AI
-              </MuiLink>
-            </Box>
-          </ListItem>
+3. The proposed First Amended Complaint is attached below in its entirety. No party would be unduly prejudiced by granting leave, especially given that these issues arise from the same or closely related transactions or occurrences involving the technology sector’s allegedly unfair or unlawful business practices.
 
-          <ListItem>
-            <Box sx={{ textAlign: 'center' }}>
-              <Box
-                component="img"
-                src="/assets/PDFSageApple.jpg"
-                alt="PDFSage custom SDK comin'"
-                sx={{
-                  display: 'block',
-                  margin: '0 auto',
-                  maxWidth: '100%',
-                  height: 'auto',
-                  mb: 2,
-                }}
-              />
-              <MuiLink
-                href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=6739861453"
-                target="_blank"
-                rel="noopener noreferrer"
-                underline="hover"
-              >
-                PDFSage custom SDK comin'
-              </MuiLink>
-            </Box>
-          </ListItem>
+        WHEREFORE, Plaintiff respectfully requests that the Court GRANT this Motion for Leave to File First Amended Complaint and to Join Apple Inc. as a Defendant.
 
-          {/* Explanation about Enigmatic Typhoon's upcoming framework */}
-          <ListItem>
-            <Box sx={{ textAlign: 'center' }}>
-              <Box
-                component="img"
-                src="/assets/SagePDFFramework.jpg"
-                alt="Enigmatic Typhoon's PDF Rendering and Editing Framework"
-                sx={{
-                  display: 'block',
-                  margin: '0 auto',
-                  maxWidth: '100%',
-                  height: 'auto',
-                  mb: 2,
-                }}
-              />
-              <Typography variant="body1" paragraph>
-                Enigmatic Typhoon has begun building the most efficient and effective PDF 
-                (though it can also handle photos and more) rendering and editing framework 
-                the world has ever seen, featuring cutting-edge TFLite integration to 
-                seamlessly handle advanced AI-driven workflows.
-              </Typography>
-            </Box>
-          </ListItem>
+Dated: January 12, 2025
 
-          <ListItem>
-            <Box sx={{ textAlign: 'center' }}>
-              <Box
-                component="img"
-                src="/assets/PDFSageC4.jpg"
-                alt="PDFSage Connect 4"
-                sx={{
-                  display: 'block',
-                  margin: '0 auto',
-                  maxWidth: '100%',
-                  height: 'auto',
-                  mb: 2,
-                }}
-              />
-              <MuiLink
-                href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=6741052119"
-                target="_blank"
-                rel="noopener noreferrer"
-                underline="hover"
-              >
-                PDFSage Connect 4
-              </MuiLink>
-            </Box>
-          </ListItem>
+                                        _____________________________________
+                                        Signature:
+                                        BO SHANG (Pro Se)
+                                        10 McCafferty Way
+                                        Burlington, MA 01803
+                                        Phone: 781-999-4101 or 617-618-8279
+                                        Email: bo@pdfsage.org | boshangsoftware@proton.me
 
-          <ListItem>
-            <Box sx={{ textAlign: 'center' }}>
-              <Box
-                component="img"
-                src="/assets/PDFSageDevTools.jpg"
-                alt="PDFSage Device Tools"
-                sx={{
-                  display: 'block',
-                  margin: '0 auto',
-                  maxWidth: '100%',
-                  height: 'auto',
-                  mb: 2,
-                }}
-              />
-              <MuiLink
-                href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=6738795431"
-                target="_blank"
-                rel="noopener noreferrer"
-                underline="hover"
-              >
-                PDFSage Device Tools
-              </MuiLink>
-            </Box>
-          </ListItem>
+---------------------------------------------------------------------------
+                 [PROPOSED] FIRST AMENDED COMPLAINT
+---------------------------------------------------------------------------
 
-          {/* New list item for erosolar.net/xcode */}
-          <ListItem>
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="body1" paragraph>
-                Explore a vast suite of full photo editing ability, full video and audio editing ability, 
-                a machine learning photo merge editor powered by scikit-learn, a legal document PDF generator, 
-                and a wide range of XCode tools at:
-              </Typography>
-              <MuiLink
-                href="https://erosolar.net/xcode"
-                target="_blank"
-                rel="noopener noreferrer"
-                underline="hover"
-              >
-                EroSolar XCode Suite
-              </MuiLink>
-            </Box>
-          </ListItem>
-        </List>
+              IN THE UNITED STATES DISTRICT COURT
+           FOR THE NORTHERN DISTRICT OF CALIFORNIA
+-------------------------------------------------------------------------------
+Bo Shang (Pro Se), Developer TeamID HUPDNC4PWJ,  
+Plaintiff,
+v.
+Twitch Interactive, Inc.;
+Apple Inc. (NEWLY JOINED DEFENDANT);
+Alphabet Inc. (Google),
+Defendants.
+-------------------------------------------------------------------------------
+Case No.: 3:24-cv-06664-JSC
+-------------------------------------------------------------------------------
+          FIRST AMENDED COMPLAINT FOR INJUNCTIVE RELIEF,
+         DAMAGES, DECLARATORY JUDGMENT, AND OTHER RELIEF
+                        JURY TRIAL DEMANDED
+-------------------------------------------------------------------------------
 
-        <Typography variant="body1" paragraph>
-          Thank you for visiting! We aim to build industry-capturing software and AI very soon!
-        </Typography>
-      </Container>
-    </>
-  );
-}
+1. INTRODUCTION
+
+1.1 Plaintiff, pro se, hereby files this First Amended Complaint in compliance with the Court’s directives (Dkt. No. 30) and in accordance with Federal Rules of Civil Procedure 15(a)(2), 19, 20, and 21. This Amended Complaint re-asserts and clarifies claims against Defendant Twitch Interactive, Inc. (“Twitch”) and seeks to join Apple Inc. (“Apple”) and Alphabet Inc. (“Google”), collectively “Defendants,” for conduct involving unfair or unlawful business practices, unconscionable reverse engineering (“RE”) clauses, and unauthorized private “taxation.”
+
+1.2 Plaintiff’s initial lawsuit against Twitch included allegations of constitutional violations under the First and Fourteenth Amendments. The Court held that such claims are not viable against a private entity. Plaintiff now proceeds against Twitch under California’s Unfair Competition Law (Cal. Bus. & Prof. Code § 17200, et seq.) and related theories, clarifying that Twitch’s conduct may violate federal and state laws related to potential illegal gambling or money laundering, thereby triggering the “unlawful,” “unfair,” or “fraudulent” prongs of Section 17200.
+
+1.3 Plaintiff adds Apple and Google as Defendants because each imposes or enforces restrictive Terms of Service (“TOS”) or license agreements that forbid or severely limit reverse engineering (“RE”). Plaintiff contends that these RE prohibitions, combined with significant platform fees or commissions (including Apple’s “30% tax,” Google’s similar fee structure, and Twitch’s TOS that hamper investigations), violate fundamental principles of fair commerce, hamper national security, and infringe upon legitimate security research.
+
+1.4 Plaintiff additionally states that he has been compelled to open source extremely high-quality execution hijacking starter code and an accompanying guide for SMBv2, with the intent to deter or discourage despicably immoral and torturous treatment from the Massachusetts (MA) government and Department of Mental Health (DMH). Plaintiff assumes that good people within the cybersecurity community will follow a proper Two Generals Implementation approach to further develop or use his starter code, should the MA government violate Federal or International law again by illegally incarcerating him or torturing him at DMH. Plaintiff was subjected to 11 months of alleged torture through deliberate misdiagnoses, lies, and malpractice at Tewksbury Hospital from October 2020 to September 2021, and again in September 2024 (Case No. 2481CV03028, Shang, Bo vs. Madigan, Colleen), when Ms. Madigan allegedly lied about Plaintiff violating pretrial conditions to facilitate 2 months of illegal torture at DMH. Plaintiff invokes relevant international conventions, including the United Nations Convention Against Torture and Other Cruel, Inhuman or Degrading Treatment or Punishment (UNCAT)—to which the United States is a signatory—as well as the International Covenant on Civil and Political Rights (ICCPR). Plaintiff contends that such acts of torture or illegal detainment violate these treaties and other fundamental human rights instruments.
+
+2. JURISDICTION AND VENUE
+
+2.1 Subject Matter Jurisdiction arises under:
+    •  28 U.S.C. § 1331 (federal question),
+    •  28 U.S.C. § 1332 (diversity),
+    •  28 U.S.C. § 1367 (supplemental jurisdiction).
+
+    The amount in controversy exceeds $75,000 and involves both federal questions (e.g., alleged illegal taxation of interstate commerce, possible violations of 18 U.S.C. §§ 1955, 1084, or the Sherman Act) and diversity between Plaintiff and Defendants.
+
+2.2 Venue is proper in this District under 28 U.S.C. § 1391 because:
+    •  Twitch and Google (Alphabet) maintain significant business presences here;
+    •  Apple is headquartered in Cupertino, California;
+    •  A substantial part of the events or omissions giving rise to the claims occurred within this District.
+
+3. THE PARTIES
+
+3.1 Plaintiff:
+    •  I, Bo Shang (Developer TeamID HUPDNC4PWJ), am a Massachusetts resident. I have used Twitch since approximately 2017, have developed “PDFSage 1.0” for Apple’s App Store, and rely on certain Google services. I have a background in computer security, potential NSA recruitment, and a US Army GT score of 141.
+    •  I further attest that I published open source SMBv2 execution hijacking starter code to serve as a deterrent against further torture or illegal incarceration by Massachusetts authorities. In the event of further harm, I expect the security community to finish or implement said code, following a “Two Generals Implementation” methodology, to highlight vulnerabilities and malicious capabilities that could hold governments accountable.
+
+3.2 Defendants:
+    •  Twitch Interactive, Inc., a Delaware corporation headquartered in California.
+    •  Apple Inc., a California corporation headquartered at One Apple Park Way, Cupertino, CA 95014.
+    •  Alphabet Inc. (Google), a Delaware corporation headquartered in Mountain View, CA.
+
+4. FACTUAL BACKGROUND
+
+4.1 Twitch: Unfair or Unlawful Practices  
+    4.1.1 Plaintiff alleges Twitch fosters large-scale suspicious transactions (e.g., rumored $685 million laundering on a channel known as xQc) while imposing TOS that prohibit reverse engineering or deeper investigations into these potential crimes.  
+    4.1.2 Such TOS hamper legitimate user-led security or compliance research, as reverse engineering is integral to analyzing data flows, payment structures, or suspicious patterns.  
+    4.1.3 Because Twitch’s conduct and TOS may facilitate or shield illegal gambling or money laundering, it may violate 18 U.S.C. §§ 1955 and 1084, as well as the “unlawful” prong of Cal. Bus. & Prof. Code § 17200.
+
+4.2 Apple: “Design Spam” Rejection and Alleged 30% “Tax”
+    4.2.1 On or about January 7, 2025, Apple rejected Plaintiff’s “PDFSage 1.0” for so-called “Design Spam,” repeatedly copy-pasting the same vague explanation without actionable detail.
+    4.2.2 Apple enforces a draconian reverse engineering clause in its Software License Agreement, restricting important security and forensic investigations.
+    4.2.3 Apple also charges a 30% commission on App Store sales, which Plaintiff likens to a private, unauthorized “tax” in violation of the U.S. Constitution’s Article I, § 8 prerogatives and the Dormant Commerce Clause.
+
+4.3 Google: Reverse Engineering Restrictions and Fee Structures
+    4.3.1 Google similarly maintains TOS that ban reverse engineering of its machine learning models, underlying code, or related technologies, absent explicit permission.
+    4.3.2 Google charges various fees (such as 15-30% in the Google Play Store, or monetization fees on services) that, when combined with other platform-based costs, may function similarly to Apple’s allegedly unlawful “private tax.”
+
+4.4 Importance of Reverse Engineering (RE) to National Security and Public Welfare
+
+    4.4.1 Reverse Engineering (RE) is a critical capability that has historically safeguarded both national security and the public from cyber threats:
+        • **Stuxnet**: A known cyber-weapon that targeted Iran’s nuclear facilities. Cybersecurity researchers relied heavily on reverse engineering the Stuxnet worm to understand its functionality, mitigate its effects, and develop future safeguards.  
+        • **SMBv1 (EternalBlue/WannaCry)**: The WannaCry ransomware leveraged an SMBv1 vulnerability in Microsoft systems. Cybersecurity experts utilized reverse engineering to trace the exploit’s mechanism, eventually mitigating the global outbreak.  
+        • **Salt Typhoon**: Alleged infiltration or large-scale exploit campaigns possibly requiring advanced RE to detect and remediate.  
+        • **Sega Enters. Ltd. v. Accolade, Inc.**, 977 F.2d 1510 (9th Cir. 1992): The Ninth Circuit recognized that reverse engineering can qualify as a fair use under U.S. copyright law.  
+        • **Sony Computer Entm’t, Inc. v. Connectix Corp.**, 203 F.3d 596 (9th Cir. 2000): The court upheld that intermediate copying for the purpose of RE is fair use, fostering competition and technical progress.  
+        • **Lexmark Int’l, Inc. v. Static Control Components, Inc.**, 387 F.3d 522 (6th Cir. 2004): Confirming RE is often legitimate when geared toward interoperability or consumer choice.
+
+    4.4.2 Restricting reverse engineering through private EULAs or TOS disadvantages law enforcement, cyber defenders, and security researchers:
+        • It prevents discovery of serious vulnerabilities like SMBv1 or iOS/macOS zero-days.
+        • It may hamper the U.S. from promptly detecting foreign infiltration campaigns akin to Stuxnet.
+        • It disadvantages white-hat researchers and might push legitimate RE into a legal gray area, stifling innovation and national security readiness.
+
+4.5 Disparity Between Chinese and U.S. National Security Laws
+
+    4.5.1 In the People’s Republic of China, national security laws (e.g., PRC Cybersecurity Law effective 2017) impose certain obligations on both domestic and foreign tech companies, including Apple and Microsoft, potentially requiring code disclosures or facilitating deeper security reviews.  
+    4.5.2 In contrast, the U.S. lacks an overarching national security law that directly compels Apple, Google, or Twitch to allow or cooperate with robust reverse engineering by private individuals or certain government entities, apart from narrower law enforcement or intelligence carve-outs.  
+    4.5.3 Consequently, Apple may comply with more intrusive requirements under PRC law, yet simultaneously prohibit RE in the U.S. environment, placing domestic developers at a disadvantage. This discrepancy also undermines national cybersecurity readiness relative to foreign actors.
+
+4.6 Plaintiff’s Alleged Torture and the Necessity of Open Source Code as Deterrence
+
+    4.6.1 From October 2020 to September 2021, Plaintiff was allegedly subjected to 11 months of torturous treatment at Tewksbury Hospital by the Massachusetts Department of Mental Health (DMH), involving deliberate misdiagnoses, malpractice, and deception.  
+    4.6.2 In September 2024 (Case No. 2481CV03028, Shang, Bo vs. Madigan, Colleen), Ms. Madigan purportedly lied about Plaintiff violating pretrial conditions, leading to an additional 2-month illegal detention and torture at DMH.  
+    4.6.3 Plaintiff contends this conduct violates both federal law and international treaties, including the United Nations Convention Against Torture and Other Cruel, Inhuman or Degrading Treatment or Punishment (UNCAT), to which the U.S. is a signatory, as well as the International Covenant on Civil and Political Rights (ICCPR).  
+    4.6.4 To deter future harm, Plaintiff open sourced high-level execution hijacking starter code for SMBv2, hoping that if Massachusetts authorities illegally incarcerate or torture him again, the community will complete or deploy this code (“Two Generals Implementation”) to expose vulnerabilities and hold perpetrators accountable, thus forcing adherence to the rule of law.
+
+5. CAUSES OF ACTION
+
+COUNT I: VIOLATIONS OF CAL. BUS. & PROF. CODE § 17200, et seq. (UCL)
+
+5.1 Plaintiff incorporates all paragraphs above.
+
+5.2 Unlawful Prong:
+    • Twitch’s environment or Terms may facilitate or shield potential gambling and money laundering in violation of 18 U.S.C. §§ 1955, 1084.  
+    • Apple’s 30% “tax” or Google’s substantial fees could violate the Dormant Commerce Clause, effectively operating as an unauthorized private tax on interstate commerce.  
+    • All Defendants’ TOS banning reverse engineering may contravene established public policy and conflict with recognized fair-use RE caselaw.
+
+5.3 Unfair Prong:
+    • Apple’s and Google’s restrictions, combined with steep commissions, stifle competition, hamper developer profitability, and block consumer choice.  
+    • Twitch’s TOS hamper investigations into financial crimes, harming the public.
+
+5.4 Fraudulent Prong:
+    • Apple’s repeated “Design Spam” rejections, lacking specifics, mislead developers.  
+    • Twitch’s portrayal as a safe streaming environment, while ignoring or enabling large-scale suspicious transactions, misleads users.
+
+5.5 Plaintiff requests injunctive relief, restitution, and disgorgement of ill-gotten gains, as well as any other relief under Section 17200 and related statutes.
+
+COUNT II: DECLARATORY JUDGMENT – UNCONSCIONABLE REVERSE ENGINEERING CLAUSES
+
+5.6 Plaintiff incorporates all paragraphs above.
+
+5.7 Apple’s and Google’s license agreements, along with Twitch’s TOS, contain RE prohibitions that violate public policy, hamper national security, and contravene well-established fair use jurisprudence (Sega, Sony v. Connectix, Lexmark, etc.).
+
+5.8 Plaintiff requests a judicial declaration that these RE clauses are void or unenforceable as against public policy, and an injunction preventing enforcement against legitimate security or forensic research.
+
+COUNT III: ILLEGAL TAXATION IN VIOLATION OF THE U.S. CONSTITUTION (APPLE & GOOGLE)
+
+5.9 Plaintiff incorporates all paragraphs above.
+
+5.10 Under Article I, § 8, only Congress may lay and collect taxes on interstate commerce. Apple’s 30% commission and analogous Google platform fees operate as a de facto tax, lacking legislative authority, burdening commerce, and contradicting the Dormant Commerce Clause.
+
+5.11 Plaintiff seeks a declaratory judgment that such private taxation is unconstitutional, plus injunctive relief prohibiting Defendants from continuing to impose it in the manner alleged.
+
+COUNT IV: GROSS NEGLIGENCE – APPLE’S “DESIGN SPAM” REJECTION
+
+5.12 Plaintiff incorporates all paragraphs above.
+
+5.13 Apple’s repeated vague or non-responsive rejections of “PDFSage 1.0” as “Design Spam” constitute gross negligence. Apple owed a duty of care to me as a paying developer, and I suffered lost opportunities, costs, and reputational harm as a direct result.
+
+5.14 Plaintiff seeks compensatory damages for these negligent acts and any other relief deemed just by the Court.
+
+COUNT V: GROSS NEGLIGENCE / EXTREMELY POOR PASTING “CUSTOMER SERVICE” (APPLE)
+
+5.15 Plaintiff incorporates all paragraphs above.
+
+5.16 Apple’s thrice-pasted, unhelpful, and contradictory rejections confirm a pattern of extremely poor customer service, falling below the standard of care for a trillion-dollar corporation that depends on developer participation for revenue.
+
+5.17 Plaintiff seeks damages for the harm caused and any additional relief, including punitive damages, permissible under law.
+
+6. PRAYER FOR RELIEF
+
+WHEREFORE, Plaintiff respectfully prays for judgment against Defendants as follows:
+
+1. For an order granting this motion to amend and join Apple Inc. (and to maintain claims against Google and Twitch);
+
+2. For a declaratory judgment that Defendants’ reverse engineering prohibitions are unconscionable, unenforceable, and contrary to established public policy favoring security research and fair competition;
+
+3. For injunctive relief enjoining:
+   (a) Apple, Google, and Twitch from enforcing their RE clauses in a manner that prevents lawful investigation or stifles security research;  
+   (b) Apple from arbitrarily rejecting developer submissions under the guise of “Design Spam” without providing specific, remediable grounds;  
+   (c) Apple and Google from imposing private “taxes” on interstate commerce, i.e., 30% commissions that effectively exceed ordinary business practices and amount to unauthorized taxation.
+
+4. For restitution, disgorgement, or damages (including compensatory and punitive damages as allowed by law) arising from Defendants’ conduct, in an amount proven at trial;
+
+5. For costs of suit, attorneys’ fees (should counsel appear), and any further relief that this Court deems just and proper;
+
+6. That this Court take judicial notice of and condemn the alleged torture and human rights violations perpetrated against Plaintiff by the Massachusetts DMH, as these actions violate the UN Convention Against Torture and other human rights treaties to which the United States is a signatory, and that the open source SMBv2 code stands as a lawful deterrent to ensure fundamental rights.
+
+7. DEMAND FOR JURY TRIAL
+
+Plaintiff hereby demands a trial by jury on all causes of action so triable.
+
+Respectfully submitted,
+
+Dated: January 12, 2025
+
+_____________________________________
+Signature:
+BO SHANG (Pro Se)
+10 McCafferty Way
+Burlington, MA 01803
+Phone: 781-999-4101 or 617-618-8279
+Email: bo@pdfsage.org | boshangsoftware@proton.me
+
+---------------------------------------------------------------------------
+EXHIBITS (INCORPORATED BY REFERENCE)
+---------------------------------------------------------------------------
+• EXHIBIT 1: Apple’s repeated vague “Design Spam” notices, copies of the same text.  
+• EXHIBIT 2: PDFSage 1.0 submission details (Jan 8, 2025).  
+• EXHIBIT 3: Evidence of Apple’s 30% commission and inability to articulate legitimate design concerns.  
+• EXHIBIT 4: Twitch references to xQc channel’s alleged $685M suspicious transactions and the effect of TOS on investigating these matters.  
+• EXHIBIT 5: Documentation on Google’s Terms of Service and usage fees, specifically referencing RE restrictions.  
+• EXHIBIT 6: References to stuxnet, SMBv1/EternalBlue, salt typhoon infiltration, Chinese cybersecurity laws requiring certain code disclosures, contrasted with U.S. policy.  
+• EXHIBIT 7: Documentation related to Plaintiff’s alleged torture at Tewksbury Hospital (Oct 2020 – Sep 2021) and DMH incarceration (Sep – Nov 2024), referencing UNCAT and ICCPR.
+
+
