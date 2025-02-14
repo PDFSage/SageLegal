@@ -194,6 +194,7 @@ def draw_wrapped_caption(
     Wraps the exhibit caption if it's long and draws it at the
     top of the page, left-aligned, following the same line wrap
     style as the main body text.
+    Returns the final y-coordinate after drawing the caption.
     """
     # Determine the maximum width for wrapping
     max_caption_width = page_width - (2 * left_margin)
@@ -206,9 +207,8 @@ def draw_wrapped_caption(
         max_width=max_caption_width
     )
 
-    # We'll start below the line for the case name (which is at page_height - 0.6 inch).
-    # Let's start around (page_height - 0.8 inch) for the first line.
     current_y = top_margin
+    pdf_canvas.setFont(font_name, font_size)
 
     for (line_text, _) in wrapped_caption_lines:
         pdf_canvas.drawString(left_margin, current_y, line_text)
@@ -233,8 +233,8 @@ def draw_exhibit_page(
       - Firm name vertically on the left
       - Case name at top center
       - Page numbering at bottom center
-      - Exhibit caption near the top (wrapped like the main text)
-      - The exhibit image centered and scaled
+      - Exhibit caption near the top (wrapped)
+      - The exhibit image placed directly beneath the caption with 1-2 lines of spacing.
     """
     # Draw an outer bounding box
     pdf_canvas.setLineWidth(2)
@@ -261,15 +261,14 @@ def draw_exhibit_page(
         page_height - 0.6 * inch
     )
 
-    # Now draw the exhibit caption, wrapped, just below the line
+    # Now draw the exhibit caption, wrapped, a bit lower to avoid clashing with the top
+    # We'll push it lower than 0.8" to be safe. Let's start at 1.2" down from the top.
     pdf_canvas.setFont("Times-Roman", 10)
-    # We'll assume the top margin is the same as used for main text
-    top_margin = page_height - 0.8 * inch
+    top_margin = page_height - 1.2 * inch
     left_margin = 1.2 * inch
     line_spacing = 0.25 * inch
 
-    # Draw the wrapped caption
-    # The function returns the new y-position after drawing
+    # Draw the wrapped caption; get the new y position
     new_y = draw_wrapped_caption(
         pdf_canvas,
         page_width,
@@ -281,7 +280,8 @@ def draw_exhibit_page(
         line_spacing=line_spacing
     )
 
-    # Place the exhibit image
+    # Calculate image placement directly below caption with 1-2 lines of spacing
+    spacing_lines = 2  # Adjust to 1 or 2 as desired
     margin = 1.0 * inch
     max_img_width = page_width - 2 * margin
     max_img_height = page_height - 2 * margin
@@ -290,7 +290,7 @@ def draw_exhibit_page(
         img_reader = ImageReader(exhibit_image)
         img_width, img_height = img_reader.getSize()
     except Exception as e:
-        # If there's an error reading the image, place a placeholder text
+        # If there's an error reading the image, place a message
         pdf_canvas.setFont("Times-Italic", 10)
         pdf_canvas.drawCentredString(
             page_width / 2.0, 
@@ -302,22 +302,25 @@ def draw_exhibit_page(
         scale = min(max_img_width / img_width, max_img_height / img_height, 1.0)
         new_width = img_width * scale
         new_height = img_height * scale
-        
-        x_img = (page_width - new_width) / 2.0
-        # Place the image so it doesn't clash with the caption region
-        # We'll push it down from the 'new_y' if there's enough space
-        # or just center it if the caption is short.
-        # For simplicity, let's center it on the remaining page:
-        y_img = (page_height / 2.0) - (new_height / 2.0)
 
-        # If the caption is very large, we can push the image a bit lower if needed
-        # but still not below bottom margin. We'll do a max check:
-        y_img = max(y_img, 1.0 * inch)
+        # The top of the image (y_img_top) is 2 line-spacings below the final caption line
+        y_img_top = new_y - (spacing_lines * line_spacing)
+        y_img_bottom = y_img_top - new_height
+
+        # Ensure it doesn't drop below the bounding box bottom margin (0.5" from bottom).
+        # We'll keep at least 1.0" to be consistent with text margin:
+        bottom_margin = 1.0 * inch
+        if y_img_bottom < bottom_margin:
+            y_img_bottom = bottom_margin
+            y_img_top = y_img_bottom + new_height
+
+        # Center the image horizontally
+        x_img = (page_width - new_width) / 2.0
 
         pdf_canvas.drawImage(
             img_reader,
             x_img,
-            y_img,
+            y_img_bottom,
             width=new_width,
             height=new_height,
             preserveAspectRatio=True,
@@ -347,24 +350,23 @@ def generate_legal_document(
       - Page numbering at bottom center ("Page X of Y")
       - A bounding box around each page
       - Following the main text, any number of exhibits (each on its own page),
-        where the exhibit caption is also wrapped with the same logic.
+        where the exhibit caption is also wrapped and placed a bit lower to avoid clashing at the top,
+        then the exhibit image is inserted directly underneath with some spacing.
     """
     page_width, page_height = letter
 
-    # Basic metadata
+    # Create the PDF canvas and set metadata
     pdf_canvas = canvas.Canvas(output_filename, pagesize=letter)
     pdf_canvas.setTitle("Legal Document")
     pdf_canvas.setAuthor(firm_name)
     pdf_canvas.setSubject(case_name)
     pdf_canvas.setCreator("Legal PDF Generator")
 
-    # Margins
+    # Margins and spacing
     top_margin = 1.0 * inch
     bottom_margin = 1.0 * inch
     left_margin = 1.2 * inch
     right_margin = 0.5 * inch
-
-    # Line spacing
     line_spacing = 0.25 * inch
 
     # Calculate how many lines fit into the vertical space
@@ -380,7 +382,7 @@ def generate_legal_document(
     # Maximum width for wrapped text (account for right margin + a bit of buffer)
     max_text_width = page_width - right_margin - line_offset_x - 0.2 * inch
 
-    # Wrap text
+    # Wrap the main text
     wrapped_lines = wrap_text_to_lines(
         pdf_canvas,
         text_body,
@@ -390,13 +392,13 @@ def generate_legal_document(
     )
 
     total_lines = len(wrapped_lines)
-    # How many pages are needed for the main text?
+    # How many pages for the main text?
     text_pages = (total_lines + max_lines_per_page - 1) // max_lines_per_page
 
-    # We'll add one page per exhibit
+    # One page per exhibit
     exhibit_pages = len(exhibits)
 
-    # Total pages = text pages + exhibit pages
+    # Total pages = pages for text + pages for exhibits
     total_pages = text_pages + exhibit_pages
 
     current_line_index = 0
@@ -426,24 +428,24 @@ def generate_legal_document(
         if current_line_index < total_lines:
             pdf_canvas.showPage()
 
-    # --- Now add exhibits, each on its own fresh page ---
+    # --- Add exhibits, each on its own fresh page ---
     for (caption, image_path) in exhibits:
-        if page_number <= total_pages:
-            pdf_canvas.showPage()
-            draw_exhibit_page(
-                pdf_canvas,
-                page_width,
-                page_height,
-                firm_name,
-                case_name,
-                caption,
-                image_path,
-                page_number,
-                total_pages
-            )
-            page_number += 1
+        # Start a new page for each exhibit
+        pdf_canvas.showPage()
+        draw_exhibit_page(
+            pdf_canvas,
+            page_width,
+            page_height,
+            firm_name,
+            case_name,
+            caption,
+            image_path,
+            page_number,
+            total_pages
+        )
+        page_number += 1
 
-    # Save the final PDF
+    # Finalize the PDF
     pdf_canvas.save()
 
 def main():
@@ -470,29 +472,31 @@ def main():
         required=True,
         help="Path to a text file (UTF-8) containing the body of the document."
     )
-    # Argument for exhibits, each entry is: --exhibits "Exhibit X:" path/to/image
-    # We use nargs=2 and 'append' so each --exhibits yields a pair [caption, image_path].
+    # We read exhibit captions from separate text files, each paired with an image.
+    # Usage example:
+    #   --exhibits exhibit1_caption.txt exhibit1.png
+    #   --exhibits exhibit2_caption.txt exhibit2.jpg
     parser.add_argument(
         "--exhibits",
         nargs=2,
         action="append",
-        metavar=("CAPTION", "IMAGE_PATH"),
+        metavar=("CAPTION_FILE", "IMAGE_PATH"),
         default=[],
-        help="Add an exhibit with a caption and an image file. Use multiple times for multiple exhibits. Example: --exhibits 'Exhibit 1:' image1.png --exhibits 'Exhibit 2:' image2.jpg"
+        help="Add an exhibit by specifying a text file (UTF-8) for the caption and an image file."
     )
     
     args = parser.parse_args()
     
-    # Read the text from file
+    # Read the main document text
     with open(args.file, 'r', encoding='utf-8') as f:
         text_body = f.read()
     
-    # Prepare exhibits list
+    # Build a list of (caption_text, image_path) for each exhibit
     exhibits = []
-    if args.exhibits:
-        for item in args.exhibits:
-            caption, image_path = item
-            exhibits.append((caption, image_path))
+    for cap_file, image_path in args.exhibits:
+        with open(cap_file, 'r', encoding='utf-8') as cf:
+            caption_text = cf.read()
+        exhibits.append((caption_text, image_path))
 
     generate_legal_document(
         firm_name=args.firm_name,
