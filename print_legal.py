@@ -10,8 +10,7 @@ def wrap_text_to_lines(pdf_canvas, full_text, font_name, font_size, max_width):
     Splits a large text into a list of (line_string, ended_full_line) pairs.
     Each tuple is (str, bool), where:
       str  = the actual text line,
-      bool = True if this line was forced at max width (ends the line fully),
-             False if it ended early.
+      bool = True if this line was forced at max width, False if it ended early.
     """
     pdf_canvas.setFont(font_name, font_size)
 
@@ -34,7 +33,7 @@ def wrap_text_to_lines(pdf_canvas, full_text, font_name, font_size, max_width):
                 if pdf_canvas.stringWidth(test_line, font_name, font_size) <= max_width:
                     current_line = test_line
                 else:
-                    # The current line hit the max width (forced break)
+                    # The current line is at or near the max width (forced break)
                     all_lines.append((current_line, True))
                     current_line = word
 
@@ -84,14 +83,18 @@ def draw_page_content(
 ):
     """
     Draw up to `max_lines_per_page` lines on the given canvas, starting
-    from `start_line_index` in `line_tuples`. Each element in `line_tuples`
+    from `start_line_index` in `line_tuples`. Each element in line_tuples
     is (line_text, ended_full_line_bool).
 
     Adds:
       - Firm name vertically on the left, centered along the page's height
       - Case name at top center, with a horizontal rule below it
-      - Numbered lines on both left and right edges
-      - Lines are only centered if both the current line and the preceding line ended early
+      - Numbered lines on both left edge and right edge
+      - Special rule for the first page:
+          If the very first line on the first page (page_number == 1 and the first line on that page)
+          ends early (not forced_break), it should be centered.
+      - For all other lines, center them only if both the current line
+        and the preceding line ended early (consecutive short lines).
       - Page numbers at bottom center
       - A bounding box around the page for a more professional look
 
@@ -141,15 +144,27 @@ def draw_page_content(
         # Right numbering
         pdf_canvas.drawString(page_width - 0.4 * inch, y_text, line_number_str)
         
-        # Check previous line's forced_break status (True if it was at max width)
-        # i.e., if previous line ended early => prev_forced_break is False
+        # Check the previous line's forced_break status
         if i > 0:
             _, prev_forced_break = line_tuples[i - 1]
         else:
-            prev_forced_break = True  # so the very first line cannot be centered
-        
-        # Center only if *both* this line and the previous line ended early
-        if (not forced_break) and (i > 0) and (not prev_forced_break):
+            prev_forced_break = True  # No preceding line
+
+        # Decide whether to center this line
+        # 1) If it's the first page and this is the first line on that page, and it ended early
+        # 2) Or if this line and the previous line ended early (consecutive short lines)
+        center_first_line_on_first_page = (
+            page_number == 1 
+            and i == start_line_index 
+            and (not forced_break)
+        )
+        center_consecutive_short_lines = (
+            (not forced_break) 
+            and (not prev_forced_break)
+            and i > 0
+        )
+
+        if center_first_line_on_first_page or center_consecutive_short_lines:
             pdf_canvas.drawCentredString(page_width / 2.0, y_text, text_line)
         else:
             # Normal left-aligned
@@ -171,13 +186,14 @@ def generate_legal_document(firm_name, case_name, output_filename, text_body):
       - Case name top center, bold, with a horizontal rule
       - Numbered lines on left and right
       - Wrapped text, Times-Roman, size 10
-      - Lines are centered only if they and their preceding line ended early
+      - On the first page only, the first line is centered if it ends early
+      - For subsequent lines, center them only if both they and their preceding line ended early
       - Page numbering at bottom center ("Page X of Y")
       - A bounding box around each page
     """
     page_width, page_height = letter
 
-    # Basic metadata
+    # Basic metadata for extra professionalism
     pdf_canvas = canvas.Canvas(output_filename, pagesize=letter)
     pdf_canvas.setTitle("Legal Document")
     pdf_canvas.setAuthor(firm_name)
@@ -193,17 +209,17 @@ def generate_legal_document(firm_name, case_name, output_filename, text_body):
     # Line spacing
     line_spacing = 0.25 * inch
 
-    # Calculate how many lines fit in the usable height
+    # Calculate how many lines fit into the vertical space,
+    # leaving a little extra at the bottom for the footer
     usable_height = page_height - (top_margin + bottom_margin)
     lines_that_fit = int(usable_height // line_spacing)
-    # Reserve a couple of lines for any spacing near footer/header
-    max_lines_per_page = lines_that_fit - 2
+    max_lines_per_page = lines_that_fit - 2  # reserve a couple of lines for any footer spacing
 
     # Coordinates for text start
     line_offset_x = left_margin
     line_offset_y = page_height - top_margin
 
-    # Maximum width for wrapped text
+    # Maximum width for wrapped text (account for right margin + a bit of buffer)
     max_text_width = page_width - right_margin - line_offset_x - 0.2 * inch
 
     # Wrap text
