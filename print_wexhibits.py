@@ -280,8 +280,8 @@ def draw_exhibit_page(
         line_spacing=line_spacing
     )
 
-    # Calculate image placement directly below caption with 1-2 lines of spacing
-    spacing_lines = 2  # Adjust to 1 or 2 as desired
+    # Calculate image placement directly below caption with a bit of spacing
+    spacing_lines = 2
     margin = 1.0 * inch
     max_img_width = page_width - 2 * margin
     max_img_height = page_height - 2 * margin
@@ -307,8 +307,7 @@ def draw_exhibit_page(
         y_img_top = new_y - (spacing_lines * line_spacing)
         y_img_bottom = y_img_top - new_height
 
-        # Ensure it doesn't drop below the bounding box bottom margin (0.5" from bottom).
-        # We'll keep at least 1.0" to be consistent with text margin:
+        # Ensure it doesn't drop below our chosen bottom margin
         bottom_margin = 1.0 * inch
         if y_img_bottom < bottom_margin:
             y_img_bottom = bottom_margin
@@ -379,7 +378,7 @@ def generate_legal_document(
     line_offset_x = left_margin
     line_offset_y = page_height - top_margin
 
-    # Maximum width for wrapped text (account for right margin + a bit of buffer)
+    # Maximum width for wrapped text
     max_text_width = page_width - right_margin - line_offset_x - 0.2 * inch
 
     # Wrap the main text
@@ -430,7 +429,6 @@ def generate_legal_document(
 
     # --- Add exhibits, each on its own fresh page ---
     for (caption, image_path) in exhibits:
-        # Start a new page for each exhibit
         pdf_canvas.showPage()
         draw_exhibit_page(
             pdf_canvas,
@@ -472,17 +470,21 @@ def main():
         required=True,
         help="Path to a text file (UTF-8) containing the body of the document."
     )
-    # We read exhibit captions from separate text files, each paired with an image.
-    # Usage example:
-    #   --exhibits exhibit1_caption.txt exhibit1.png
-    #   --exhibits exhibit2_caption.txt exhibit2.jpg
+    #
+    # We now support passing multiple exhibit caption/image pairs in one go, like:
+    #   --exhibits e1 pokimane.jpg e2 pokimanellc.jpg e3 johndoemirror.jpg
+    #
+    # This is done by specifying nargs='+' and then processing them in pairs.
+    #
     parser.add_argument(
         "--exhibits",
-        nargs=2,
-        action="append",
-        metavar=("CAPTION_FILE", "IMAGE_PATH"),
+        nargs='+',
         default=[],
-        help="Add an exhibit by specifying a text file (UTF-8) for the caption and an image file."
+        help=(
+            "Exhibit caption-text-file / image-file pairs. Example:\n"
+            "  --exhibits e1 pokimane.jpg e2 pokimanellc.jpg e3 johndoemirror.jpg\n"
+            "Each pair is (CAPTION_FILE, IMAGE_PATH)."
+        ),
     )
     
     args = parser.parse_args()
@@ -491,9 +493,18 @@ def main():
     with open(args.file, 'r', encoding='utf-8') as f:
         text_body = f.read()
     
-    # Build a list of (caption_text, image_path) for each exhibit
+    # The exhibits list must come in pairs
+    exhibits_cli_list = args.exhibits
+    if len(exhibits_cli_list) % 2 != 0:
+        raise ValueError(
+            "Exhibits must be provided in pairs: caption_file image_file "
+            "(e.g., e1 pokimane.jpg e2 pokimanellc.jpg)"
+        )
+
     exhibits = []
-    for cap_file, image_path in args.exhibits:
+    for i in range(0, len(exhibits_cli_list), 2):
+        cap_file = exhibits_cli_list[i]
+        image_path = exhibits_cli_list[i+1]
         with open(cap_file, 'r', encoding='utf-8') as cf:
             caption_text = cf.read()
         exhibits.append((caption_text, image_path))
