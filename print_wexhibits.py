@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import re
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
@@ -93,15 +94,17 @@ def draw_page_content(
       - Numbered lines on both left edge and right edge
       - Special rule for the first page:
           If the very first line on the first page (page_number == 1 and the first line on that page)
-          ends early (not forced_break), it should be centered.
+          ends early (not forced_break), it should be centered (unless it starts with a number/bullet).
       - For all other lines, center them only if both the current line
-        and the preceding line ended early (consecutive short lines).
+        and the preceding line ended early (unless it starts with a number/bullet).
       - Page numbers at bottom center
       - A bounding box around the page for a more professional look
 
     Returns the index of the next line after this page.
-    """
 
+    Note: Lines that start with a number or bullet point ('*', '-', '•', or digit)
+    should always be left-aligned, regardless of any "ended early" checks.
+    """
     # Draw an outer bounding box, lowered so it doesn't overlap the case name
     pdf_canvas.setLineWidth(2)
     pdf_canvas.rect(
@@ -151,25 +154,33 @@ def draw_page_content(
         else:
             prev_forced_break = True  # No preceding line
 
-        # Decide whether to center this line
+        # Decide whether to center this line:
         # 1) If it's the first page and this is the first line on that page, and it ended early
         # 2) Or if this line and the previous line ended early (consecutive short lines)
-        center_first_line_on_first_page = (
-            page_number == 1 
-            and i == start_line_index 
-            and (not forced_break)
-        )
-        center_consecutive_short_lines = (
-            (not forced_break) 
-            and (not prev_forced_break)
-            and i > 0
-        )
+        # BUT only if the line does NOT start with a number/bullet.
+        # Any line starting with a digit or one of these bullets ('*', '-', '•')
+        # should remain left-aligned, ignoring the centering rules.
 
-        if center_first_line_on_first_page or center_consecutive_short_lines:
-            pdf_canvas.drawCentredString(page_width / 2.0, y_text, text_line)
-        else:
-            # Normal left-aligned
+        # Quick check for "starts with number or bullet"
+        if re.match(r'^[0-9\*\-•]', text_line.strip()):
+            # Force left alignment
             pdf_canvas.drawString(x_text, y_text, text_line)
+        else:
+            center_first_line_on_first_page = (
+                page_number == 1
+                and i == start_line_index
+                and (not forced_break)
+            )
+            center_consecutive_short_lines = (
+                (not forced_break)
+                and (not prev_forced_break)
+                and i > 0
+            )
+
+            if center_first_line_on_first_page or center_consecutive_short_lines:
+                pdf_canvas.drawCentredString(page_width / 2.0, y_text, text_line)
+            else:
+                pdf_canvas.drawString(x_text, y_text, text_line)
         
         y_text -= line_spacing
 
@@ -262,7 +273,6 @@ def draw_exhibit_page(
     )
 
     # Now draw the exhibit caption, wrapped, a bit lower to avoid clashing with the top
-    # We'll push it lower than 0.8" to be safe. Let's start at 1.2" down from the top.
     pdf_canvas.setFont("Times-Roman", 10)
     top_margin = page_height - 1.2 * inch
     left_margin = 1.2 * inch
@@ -344,13 +354,15 @@ def generate_legal_document(
       - Case name top center, bold, with a horizontal rule
       - Numbered lines on left and right for the text
       - Wrapped text, Times-Roman, size 10
-      - On the first page only, the first line is centered if it ends early
-      - For subsequent lines, center them only if both they and their preceding line ended early
+      - On the first page only, the first line is centered if it ends early (unless it starts with a number/bullet)
+      - For subsequent lines, center them only if both they and their preceding line ended early (unless it starts with a number/bullet)
       - Page numbering at bottom center ("Page X of Y")
       - A bounding box around each page
       - Following the main text, any number of exhibits (each on its own page),
         where the exhibit caption is also wrapped and placed a bit lower to avoid clashing at the top,
         then the exhibit image is inserted directly underneath with some spacing.
+
+    Also, any line that starts with a number or bullet ('*', '-', '•') is always left-aligned.
     """
     page_width, page_height = letter
 
