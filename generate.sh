@@ -1,4 +1,4 @@
 python3.11 print_legal.py --firm_name "PDFSage Inc." \
-  --case "US District Court of Northern California - Case 3:24-cv-06664-JSC" \
-  --output "Bo_VS_Apple.pdf" \
+  --case "Superior Court of California at San Francisco" \
+  --output "Bo_VS_Pokimane.pdf" \
   --file case
