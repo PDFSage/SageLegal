@@ -1,320 +1,196 @@
-   SUPERIOR COURT OF THE STATE OF CALIFORNIA
-             COUNTY OF SANTA CLARA
-                UNLIMITED CIVIL
-
-BO SHANG,                                )
-                                         )   Case No.:
-            Plaintiff, Pro Se,           )
-                                         )
-     v.                                  )   COMPLAINT FOR:
-                                         )
-ALPHABE INC (INTENTIONALLY               )   1) VIOLATION OF CAL. BUS. & PROF.
-MISSING ONE CHARACTER),                  )      CODE § 17200, et seq. (“UCL”);
-a Delaware Corporation,                  )   2) VIOLATION OF CAL. BUS. & PROF.
-                                         )      CODE § 17500 (“FAL”);
-            Defendant.                   )   3) VIOLATION OF CAL. CIV. CODE
-                                         )      § 1750, et seq. (“CLRA”);
-                                         )   4) COMMON LAW CONTRACT THEORIES;
-                                         )   5) DECLARATORY RELIEF
-                                         )      (CAL. CODE CIV. PROC. § 1060);
-                                         )   6) OTHER GROUNDS (LANHAM ACT,
-                                         )      ANTITRUST, ETC.)
-_________________________________________)
-
-         COMPLAINT FOR DAMAGES, INJUNCTIVE, AND DECLARATORY RELIEF
-
-Plaintiff, BO SHANG (“Plaintiff” or “Shang”), appearing pro se, alleges as follows:
-
-I.   NATURE OF THE ACTION
-
-1.   Plaintiff brings this action against Defendant ALPHABE INC (hereinafter “Defendant,”
-     “Google,” or “Alphabet”) under various California consumer-protection and unfair-
-     competition statutes, as well as common-law doctrines and other potential grounds.
-     Plaintiff challenges Defendant’s Terms of Service (“TOS”) regarding generative artificial
-     intelligence (“AI”) content.
-
-2.   Specifically, Plaintiff alleges:
-     - Defendant’s so-called AI-generated content is merely “branded math” resulting from
-       mathematical transformations of data.
-     - Defendant’s TOS purport to prohibit the public’s acquisition or use of this “math” in
-       ways that infringe on fundamental principles of intellectual freedom and fair
-       competition.
-     - Defendant’s contradictory conduct (providing free trial credits, developer assistance,
-       etc.) while threatening enforcement under these TOS has caused Plaintiff and the
-       public to suffer confusion, wasted time, and potential liability concerns.
-
-3.   Plaintiff seeks injunctive and declaratory relief, damages, restitution, and other remedies
-     under:
-     - California’s Unfair Competition Law (Cal. Bus. & Prof. Code § 17200, et seq.);
-     - California’s False Advertising Law (Cal. Bus. & Prof. Code § 17500, et seq.);
-     - California’s Consumer Legal Remedies Act (Cal. Civ. Code § 1750, et seq.);
-     - Common-law contract theories (e.g., unconscionability, void for public policy);
-     - Declaratory relief (Cal. Code Civ. Proc. § 1060);
-     - and, as applicable, the Lanham Act, antitrust laws, or other doctrines.
-
-4.   Plaintiff additionally seeks substantial monetary damages to compensate for injuries
-     caused by Defendant’s purported attempt to monopolize or control access to “basic math
-     knowledge,” interfering with scientific freedom and the public’s right to learn and
-     innovate.
-
-II.  JURISDICTION AND VENUE
-
-5.   Jurisdiction in the Superior Court of California: This Court has subject-matter
-     jurisdiction over the causes of action asserted under California law. To the extent
-     Plaintiff asserts federal statutes (Lanham Act, Sherman Act, etc.), state courts have
-     concurrent jurisdiction unless/until removed to federal court.
-
-6.   Venue is proper in Santa Clara County because Defendant maintains its headquarters
-     and principal place of business in Mountain View, California (which is located in Santa
-     Clara County). A substantial part of the events or omissions giving rise to the claims
-     occurred in this County.
-
-III. THE PARTIES
-
-7.   Plaintiff BO SHANG is a natural person acting pro se, residing in __________________,
-     who researches and develops machine-learning technologies. Plaintiff has been subject
-     to Defendant’s TOS that purport to prohibit usage of “AI-generated content” for ML
-     purposes, thereby causing confusion, wasted time, and chilling effects on Plaintiff’s
-     research.
-
-8.   Defendant ALPHABE INC (intentionally missing one character) is a Delaware
-     corporation headquartered in Mountain View, California. It is the parent company of
-     Google and offers AI-powered products and services worldwide, including “Gemini,”
-     “Bard,” and other generative models.
-
-IV.  FACTUAL ALLEGATIONS
-
-     A. Defendant’s Generative AI as “Branded Math”
-
-9.   Defendant operates generative AI models producing text, images, or other content based
-     on user prompts. From a scientific standpoint, these models rely on linear algebra,
-     probability distributions, and other fundamental mathematical processes to generate
-     outputs. Plaintiff contends that labeling such output “proprietary” is akin to
-     monopolizing “math transformations.”
-
-10.  Plaintiff alleges that by branding these outputs as “Google AI content,” Defendant claims
-     the right to impose broad licensing restrictions that effectively ban others from using
-     or re-transforming that “math” for competing ML/AI projects.
-
-     B. TOS Restricting Use of AI Outputs
-
-11.  On or about __________, 202__, Defendant revised or introduced TOS stating: “You may
-     not use AI-generated content from our services to develop machine learning models or
-     related AI technology.” Plaintiff asserts that these provisions are vague, overbroad,
-     and/or unconscionable—conflicting with open research norms.
-
-12.  Because no consistent method exists to label or watermark Google’s AI outputs, users
-     risk inadvertently ingesting “AI content” into their own ML workflows, potentially
-     violating the TOS and causing fear and uncertainty.
-
-     C. Free Trials, Prompt Assistance, & Contradictory Conduct
-
-13.  Defendant entices developers (including Plaintiff) with free credits (e.g., a $1,000 trial) to
-     experiment with “Gemini” or “GenAI Builder.” These tools even guide users in writing
-     prompts or scripts—yet at the same time, the TOS suggest that using such “output” in
-     any derivative AI model might be disallowed.
-
-14.  Plaintiff claims that the TOS’s sweeping prohibition is self-contradictory, leading to
-     confusion, wasted resources, and potential liability for simply handling “branded math.”
-
-     D. Harm to Plaintiff
-
-15.  Plaintiff’s ML research was effectively chilled by fear of TOS violations. Plaintiff
-     suffered direct damages in the form of lost time, potential cancellations of research
-     projects, and an unwillingness to further experiment with Gemini or similar services.
-     Plaintiff demands compensatory damages, as well as punitive or exemplary damages
-     to deter future overreach by Defendant.
-
-16.  Plaintiff contends that restricting the flow of “math knowledge” is harmful to the public,
-     threatens open scientific inquiry, and violates fundamental societal norms in technology
-     and free speech.
-
-17.  Additionally, Plaintiff is subscribed to Gemini for Google Workspace as well as Colab
-     Premium. Each communication that might contain or respond to AI-generated content
-     potentially subjects Plaintiff or third parties (e.g., MIT) to future legal claims under
-     Defendant’s TOS, further exacerbating confusion and a chilling effect.
-
-18.  On or about __________, 202__, Plaintiff contacted Google One Support to complain
-     about the allegedly “illegal” TOS and to seek clarification regarding whether Defendant
-     genuinely intended to ban the public from using “mathematical transformations.” The
-     support personnel did not provide clear guidance, reinforcing the confusion over the
-     TOS’s broad reach.
-
-19.  Plaintiff explicitly pointed out that Google’s search engine itself is fundamentally built
-     on “basic math,” and that restricting the use of math would be both infeasible and
-     contrary to open scientific inquiry. The support representative appeared unaware that
-     math underpinned Google’s core offerings.
-
-20.  Plaintiff believes that if Google’s legal department insists on barring third parties from
-     using “basic math transformations,” then logically Google should also bar its own
-     engineers from continuing to develop math-based technology—illustrating the TOS’s
-     contradictory and unworkable nature.
-
-V.   FIRST CAUSE OF ACTION
-     (VIOLATION OF CALIFORNIA BUSINESS & PROFESSIONS CODE § 17200, et seq.)
-
-21.  Plaintiff incorporates by reference all preceding paragraphs as though fully set forth
-     herein.
-
-22.  Statutory Basis: California’s Unfair Competition Law (“UCL”), Cal. Bus. & Prof. Code
-     § 17200, et seq., prohibits “unlawful, unfair or fraudulent” business practices.
-
-23.  “Unfair” Prong:
-     - Under Cel-Tech Commc’ns, Inc. v. Los Angeles Cellular Tel. Co., 20 Cal.4th 163 (1999),
-       an act is “unfair” if it violates the policy or spirit of antitrust or other laws.
-     - Defendant’s TOS that purportedly restrict fundamental math transformations for AI
-       research violate public policy favoring open science and fair competition.
-
-24.  “Unlawful” Prong:
-     - Defendant’s TOS and conduct may also violate other laws (including antitrust or
-       consumer protection laws) and thus be “unlawful” under the UCL.
-
-25.  Relief Sought: Injunctive relief preventing enforcement of the TOS, restitution, and any
-     other relief authorized under Cal. Bus. & Prof. Code § 17203.
-
-VI.  SECOND CAUSE OF ACTION
-     (VIOLATION OF CALIFORNIA BUSINESS & PROFESSIONS CODE § 17500, et seq.)
-
-26.  Plaintiff incorporates by reference all preceding paragraphs as though fully set forth
-     herein.
-
-27.  Statutory Basis: California’s False Advertising Law (“FAL”), Cal. Bus. & Prof. Code
-     § 17500, et seq., prohibits disseminating untrue or misleading statements in connection
-     with the sale of goods or services.
-
-28.  Defendant’s promotional materials and TOS disclaimers are misleading or contradictory
-     because they simultaneously:
-     - Encourage users to experiment with AI tools (e.g., “GenAI Builder”),
-     - Yet purport to ban “using AI-generated content” for machine-learning models.
-
-29.  Such contradictory statements likely mislead developers and the general public
-     regarding the permissible scope of AI usage, in violation of the FAL.
-
-30.  Relief Sought: Injunctive relief, restitution, and other appropriate remedies under Cal.
-     Bus. & Prof. Code § 17535.
-
-VII. THIRD CAUSE OF ACTION
-     (VIOLATION OF THE CALIFORNIA CONSUMER LEGAL REMEDIES ACT (“CLRA”),
-      CAL. CIV. CODE § 1750, et seq.)
-
-31.  Plaintiff incorporates by reference all preceding paragraphs as though fully set forth
-     herein.
-
-32.  Statutory Basis: The CLRA (Cal. Civ. Code §§ 1750–1784) bars deceptive practices
-     in consumer transactions. Civil Code § 1770(a) enumerates unlawful acts such as
-     misrepresenting the nature of goods or services or their usage limitations.
-
-33.  Plaintiff qualifies as a “consumer” when using Google’s AI services for personal or
-     research purposes. Defendant’s contradictory TOS and marketing materials allegedly
-     misrepresent the permissible uses of its AI output.
-
-34.  Relief Sought: Actual damages, injunctive relief, restitution, potential punitive
-     damages, and attorneys’ fees (if awarded) under Cal. Civ. Code § 1780.
-
-VIII. FOURTH CAUSE OF ACTION
-      (COMMON-LAW CONTRACT THEORIES & UNCONSCIONABILITY)
-
-35.  Plaintiff incorporates by reference all preceding paragraphs as though fully set forth
-     herein.
-
-36.  California contract law deems a contract (or TOS) void or unenforceable if it is
-     unconscionable, ambiguous, or contrary to public policy. See Cal. Civ. Code §§ 1667,
-     1670.5; Armendariz v. Found. Health Psychare Servs., Inc., 24 Cal.4th 83 (2000).
-
-37.  Procedural Unconscionability: Defendant’s TOS is a non-negotiable “clickwrap” or
-     “browsewrap,” leaving users no meaningful choice.
-
-38.  Substantive Unconscionability: The TOS purports to ban an essential category of
-     intellectual endeavor (“math transformations”)—offending public policy favoring
-     scientific progress and open competition.
-
-39.  Plaintiff therefore asserts that the TOS is unconscionable or otherwise void against
-     public policy, and seeks a court declaration to that effect.
-
-40.  Remedy: Plaintiff seeks declaratory relief finding the TOS void or unenforceable,
-     plus compensatory and/or punitive damages for the harm caused by reliance on or
-     confusion arising from these TOS.
-
-IX.   FIFTH CAUSE OF ACTION
-      (DECLARATORY RELIEF – CAL. CODE CIV. PROC. § 1060)
-
-41.  Plaintiff incorporates by reference all preceding paragraphs as though fully set forth
-     herein.
-
-42.  An actual controversy exists as to whether Defendant’s TOS is lawful or enforceable
-     insofar as it purports to bar others from using or acquiring “AI-generated content”
-     (i.e., “branded math”).
-
-43.  Under Cal. Code Civ. Proc. § 1060, the Court may “make a binding declaration of
-     [the parties’] rights or duties.”
-
-44.  Plaintiff requests a judicial declaration that:
-     - Defendant’s TOS is overbroad, unconscionable, and unenforceable;
-     - Enforcement of these provisions violates California law; and
-     - Users (including Plaintiff) have the lawful right to incorporate “AI outputs” for
-       machine-learning or research purposes, consistent with open science.
-
-45.  Such a declaration will resolve ongoing confusion and prevent further harm to Plaintiff
-     and the public.
-
-X.    OTHER POTENTIAL GROUNDS
-
-46.  Lanham Act (15 U.S.C. § 1125(a)): If Defendant’s statements about controlling “branded
-     math” or restricting the “nature, characteristics, or qualities” of AI content are false or
-     misleading in commercial advertising, Plaintiff may have a claim under Section 43(a)
-     of the Lanham Act. State courts have concurrent jurisdiction over Lanham Act claims.
-
-47.  Sherman Act (15 U.S.C. §§ 1–2) & Clayton Act (15 U.S.C. §§ 12–27): If Defendant’s
-     conduct effectively monopolizes or restrains the use of AI content for ML research,
-     substantially lessening competition in the relevant market or tending to create a
-     monopoly, antitrust liability could arise. Plaintiff reserves the right to pursue these
-     claims or any related state antitrust provisions as discovery warrants.
-
-48.  Plaintiff reserves the right to amend this Complaint to assert additional causes of action
-     or theories of liability, including but not limited to any copyright-related issues, if
-     warranted by further investigation.
-
-XI.   PRAYER FOR RELIEF
-
-WHEREFORE, Plaintiff respectfully prays for judgment in Plaintiff’s favor and against
-Defendant as follows:
-
-1.    **Injunctive Relief**: Enjoining Defendant from enforcing the TOS to prohibit lawful ML
-      research or usage of AI-generated content, or from misleading users about their rights
-      to apply “branded math.”
-
-2.    **Declaratory Relief**: Declaring that Defendant’s TOS provisions restricting the use of AI
-      outputs are void and unenforceable under California law, as they are contrary to public
-      policy and/or unconscionable.
-
-3.    **Restitution and Damages**: Awarding restitution, compensatory damages, and
-      consequential damages, including but not limited to:
-      - The monetary value of wasted time, lost research opportunities, or resources expended
-        in attempting to comply with ambiguous TOS.
-      - Any fees or expenses incurred due to fear of litigation under these TOS.
-
-4.    **Punitive/Exemplary Damages**: Imposing punitive damages in an amount sufficient to
-      deter similar conduct by Defendant or others, in light of Defendant’s attempt to
-      monopolize or restrict fundamental mathematical knowledge.
-
-5.    **Attorneys’ Fees and Costs**: Awarding attorneys’ fees and costs (to the extent allowed
-      for pro se litigants or upon subsequent retention of counsel) under applicable statutes,
-      including but not limited to the CLRA (Cal. Civ. Code § 1780(e)), UCL, or private attorney
-      general provisions.
-
-6.    **Pre- and Post-Judgment Interest**: Awarding interest at the highest lawful rate on all
-      sums awarded.
-
-7.    **Other Relief**: Granting such other and further relief as this Court deems just, equitable,
-      and proper.
-
-Dated: Feb 13, 2025               Respectfully submitted,
-
-                                      ___________________________________________
-                                      BO SHANG, Pro Se
-                                      Plaintiff
-                                      10 McCafferty Way
-                                      Burlington, MA 01803
-                                      Tel: 781-999-4191 or 617-618-8279
-                                      Email: bo@shang.software
-                                             boshangsoftware@proton.me
+import React, { useState, useEffect } from 'react';
+import {
+  Container,
+  Typography,
+  Link as MuiLink,
+  List,
+  ListItem,
+  Box,
+} from '@mui/material';
+
+export default function Home() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Toggle the "dark-mode" class on the body element whenever darkMode changes
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
+
+  const handleToggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  return (
+    <>
+      {/* Main content */}
+      <Container maxWidth="md" sx={{ marginTop: '2rem' }}>
+        <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Typography variant="h3" gutterBottom>
+            Welcome to PDFSage Inc (fakeopenai.co)
+          </Typography>
+          <Typography variant="body1">
+            We’re excited to announce a{' '}
+            <strong>far more advanced, fully word-like editable PDF SDK</strong>{' '}
+            is coming to iOS very soon!
+          </Typography>
+        </Box>
+
+        <Typography variant="body1" paragraph>
+          In the meantime, check out our existing iOS apps here:
+        </Typography>
+        <List sx={{ textAlign: 'center' }}>
+          <ListItem>
+            <Box sx={{ textAlign: 'center' }}>
+              <Box
+                component="img"
+                src="/assets/AlgorithmicAI.jpg"
+                alt="PDFSage Algorithmic AI"
+                sx={{
+                  display: 'block',
+                  margin: '0 auto',
+                  maxWidth: '100%',
+                  height: 'auto',
+                  mb: 2,
+                }}
+              />
+              <MuiLink
+                href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=6741389058"
+                target="_blank"
+                rel="noopener noreferrer"
+                underline="hover"
+              >
+                PDFSage Algorithmic AI
+              </MuiLink>
+            </Box>
+          </ListItem>
+
+          <ListItem>
+            <Box sx={{ textAlign: 'center' }}>
+              <Box
+                component="img"
+                src="/assets/PDFSageApple.jpg"
+                alt="PDFSage custom SDK comin'"
+                sx={{
+                  display: 'block',
+                  margin: '0 auto',
+                  maxWidth: '100%',
+                  height: 'auto',
+                  mb: 2,
+                }}
+              />
+              <MuiLink
+                href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=6739861453"
+                target="_blank"
+                rel="noopener noreferrer"
+                underline="hover"
+              >
+                PDFSage custom SDK comin'
+              </MuiLink>
+            </Box>
+          </ListItem>
+
+          {/* Explanation about Enigmatic Typhoon's upcoming framework */}
+          <ListItem>
+            <Box sx={{ textAlign: 'center' }}>
+              <Box
+                component="img"
+                src="/assets/SagePDFFramework.jpg"
+                alt="Enigmatic Typhoon's PDF Rendering and Editing Framework"
+                sx={{
+                  display: 'block',
+                  margin: '0 auto',
+                  maxWidth: '100%',
+                  height: 'auto',
+                  mb: 2,
+                }}
+              />
+              <Typography variant="body1" paragraph>
+                Enigmatic Typhoon has begun building the most efficient and effective PDF 
+                (though it can also handle photos and more) rendering and editing framework 
+                the world has ever seen, featuring cutting-edge TFLite integration to 
+                seamlessly handle advanced AI-driven workflows.
+              </Typography>
+            </Box>
+          </ListItem>
+
+          <ListItem>
+            <Box sx={{ textAlign: 'center' }}>
+              <Box
+                component="img"
+                src="/assets/PDFSageC4.jpg"
+                alt="PDFSage Connect 4"
+                sx={{
+                  display: 'block',
+                  margin: '0 auto',
+                  maxWidth: '100%',
+                  height: 'auto',
+                  mb: 2,
+                }}
+              />
+              <MuiLink
+                href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=6741052119"
+                target="_blank"
+                rel="noopener noreferrer"
+                underline="hover"
+              >
+                PDFSage Connect 4
+              </MuiLink>
+            </Box>
+          </ListItem>
+
+          <ListItem>
+            <Box sx={{ textAlign: 'center' }}>
+              <Box
+                component="img"
+                src="/assets/PDFSageDevTools.jpg"
+                alt="PDFSage Device Tools"
+                sx={{
+                  display: 'block',
+                  margin: '0 auto',
+                  maxWidth: '100%',
+                  height: 'auto',
+                  mb: 2,
+                }}
+              />
+              <MuiLink
+                href="https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=6738795431"
+                target="_blank"
+                rel="noopener noreferrer"
+                underline="hover"
+              >
+                PDFSage Device Tools
+              </MuiLink>
+            </Box>
+          </ListItem>
+
+          {/* New list item for erosolar.net/xcode */}
+          <ListItem>
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="body1" paragraph>
+                Explore a vast suite of full photo editing ability, full video and audio editing ability, 
+                a machine learning photo merge editor powered by scikit-learn, a legal document PDF generator, 
+                and a wide range of XCode tools at:
+              </Typography>
+              <MuiLink
+                href="https://erosolar.net/xcode"
+                target="_blank"
+                rel="noopener noreferrer"
+                underline="hover"
+              >
+                EroSolar XCode Suite
+              </MuiLink>
+            </Box>
+          </ListItem>
+        </List>
+
+        <Typography variant="body1" paragraph>
+          Thank you for visiting! We aim to build industry-capturing software and AI very soon!
+        </Typography>
+      </Container>
+    </>
+  );
+}
