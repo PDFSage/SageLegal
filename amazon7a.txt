@@ -1,0 +1,259 @@
+====================================================================
+                   KING COUNTY SUPERIOR COURT
+              CASE INFORMATION COVER SHEET (CICS)
+====================================================================
+
+1. COURT: KING COUNTY SUPERIOR COURT
+
+2. CASE ASSIGNMENT AREA:
+   ☐ Kent     ☒ Seattle
+
+3. CASE TITLE:
+   Bo Shang v. Amazon.com, Inc.
+
+4. CASE NUMBER (Clerk to Assign): ______________________
+
+5. CASE CATEGORY (Check the one category that best describes this case):
+   ☒ Civil
+
+6. CASE TYPE:
+   ☒ TTO – Tort/Other
+
+7. DOCUMENT/S BEING FILED:
+   ☐ Initial Pleadings and Petitions
+   ☐ Additional/Amended Pleadings
+   ☒ Complaint for Tort – Other (CMPTTO)
+   ☒ Summons
+
+8. RELIEF REQUESTED:
+   ☒ Damages
+   ☒ Injunctive Relief
+   ☐ Other: ____________________
+
+9. JURY DEMAND:
+   ☒ Yes
+   ☐ No
+
+10. ATTORNEY OR PARTY SIGNING COVER SHEET:
+   Name:      Bo Shang (Plaintiff Pro Se)
+   Address:   10 McCafferty Way
+Burlington, MA 01803-3127
+   Phone:     781-999-4101
+   Email:     enigmatictyphoon@gmail.com
+   WSBA No.:  Pro Se
+
+I certify that the information provided on this form is true and accurate
+to the best of my knowledge and belief.
+
+Date: February 15, 2025
+
+/s/  __________________________
+     Signature of Plaintiff Pro Se
+Printed Name:  Bo Shang
+
+
+
+====================================================================
+                              SUMMONS
+====================================================================
+
+TO: Amazon.com, Inc., the above-named Defendant.
+
+A lawsuit has been started against you in the above-entitled court. Plaintiff’s 
+claims are stated in the Complaint, a copy of which is served on you with this 
+Summons.
+
+In order to defend against this lawsuit, you must respond to the Complaint by 
+stating your defense in writing and serving a copy upon the person signing this 
+Summons within twenty (20) days after the service of this Summons, or within 
+sixty (60) days if service is outside the State of Washington, excluding the day 
+of service. If you fail to do so, judgment by default may be rendered against 
+you for the relief demanded in the Complaint.
+
+You must also file your written response with the Clerk of the Court at the 
+following address:
+
+    Clerk of the Court
+    King County Superior Court
+    516 Third Avenue
+    Seattle, WA 98104
+
+You may demand that the plaintiff file this lawsuit with the court. If the 
+plaintiff fails to do so, the Summons will be void and the lawsuit dismissed.
+
+If you wish to seek the advice of an attorney in this matter, you should do so 
+promptly so that your written response, if any, may be served on time.
+
+This Summons is issued pursuant to Rule 4 of the Superior Court Civil Rules of 
+the State of Washington.
+
+DATED this February 4, 2025.
+
+/s/  __________________________
+    Signature of Plaintiff Pro Se
+
+Printed Name:  Bo Shang
+Address:       10 McCafferty Way
+Burlington, MA 01803-3127
+Phone:         781-999-4101
+Email:         enigmatictyphoon@gmail.com
+
+
+
+====================================================================
+   COMPLAINT FOR DAMAGES, INJUNCTIVE RELIEF, AND OTHER RELIEF
+====================================================================
+
+SUPERIOR COURT OF WASHINGTON
+
+FOR KING COUNTY
+
+BO SHANG, an individual,               )
+Plaintiff,                            )
+)   Case No. ___________________
+v.                                        )
+)   COMPLAINT FOR DAMAGES,
+AMAZON.COM, INC.,                     )   INJUNCTIVE RELIEF, AND
+Defendant.                           )   OTHER RELIEF
+
+I. INTRODUCTION
+	1.	Plaintiff, Bo Shang (“Plaintiff”), brings this action against Amazon.com, Inc. (“Amazon” or “Defendant”), alleging that Defendant sold or facilitated the sale of a stolen Google Pixel 7A smartphone through its Amazon Prime shipping program, in contravention of Washington law prohibiting trafficking or possession of stolen property.
+1.1. See RCW 9A.56.140–.170 (defining possession of stolen property and trafficking in stolen property).
+1.2. See also RCW 9A.56.010(20) (defining “stolen” as property wrongfully obtained by theft).
+	2.	Plaintiff discovered that the Pixel 7A was reported stolen only after using the device past Amazon’s 90-day return window. In response, Amazon:
+2.1. Required Plaintiff to personally drop off the stolen phone at an Amazon-approved site (risking potential criminal liability for transporting stolen goods).
+2.2. Imposed a 20% “restocking fee” on the allegedly stolen item despite the fact that the 90-day limitation was exceeded only because the theft status was undiscoverable through ordinary, good-faith use.
+	3.	Critically, the phone’s IMEI was blacklisted by the carrier, Visible, leading Visible to lock Plaintiff’s entire cellular account. Because that account remains locked for lack of verified IMEI clearance, Plaintiff has been unable to receive text/call verifications for vital personal and financial services for over three weeks, causing serious economic and personal harm.
+3.1. See CTIA – The Wireless Association, Best Practices to Deter Stolen Device Trafficking;
+3.2. 47 U.S.C. § 201(b) (FCC authority over common carriers; carriers block or investigate phones flagged stolen to protect network integrity and consumers).
+	4.	Accordingly, Plaintiff brings causes of action under the Washington Consumer Protection Act (RCW 19.86), Breach of Implied Warranty of Merchantability (RCW 62A.2-314), Negligence / Negligent Misrepresentation, and other theories. Plaintiff seeks damages (including treble damages under the CPA), injunctive relief, attorneys’ fees (if permitted by law), and all other appropriate remedies.
+
+II. JURISDICTION AND VENUE
+	5.	Subject Matter Jurisdiction
+5.1. This Court has jurisdiction pursuant to RCW 2.08.010, which grants superior courts original jurisdiction in all civil actions involving amounts beyond the statutory limits for courts of limited jurisdiction.
+	6.	Personal Jurisdiction
+6.1. Defendant is headquartered in Seattle, King County, Washington, and conducts substantial business there, thus “purposely availing” itself of the benefits of Washington law.
+6.2. Personal jurisdiction is proper under RCW 4.28.185 and International Shoe Co. v. Washington, 326 U.S. 310 (1945).
+	7.	Venue
+7.1. Venue is proper in King County under RCW 4.12.025(1) because Defendant’s principal place of business is located in King County, and substantial events giving rise to Plaintiff’s claims occurred in King County.
+
+III. PARTIES
+	8.	Plaintiff, Bo Shang, is an individual residing at 10 McCafferty Way, who purchased a stolen Pixel 7A smartphone from or via Amazon’s Prime program.
+	9.	Defendant, Amazon.com, Inc., is a Delaware corporation with its principal place of business at 410 Terry Avenue North, Seattle, Washington 98109.
+
+IV. FACTUAL BACKGROUND
+	10.	Purchase of Allegedly Stolen Device
+10.1. On or about [date], Plaintiff purchased a Google Pixel 7A labeled “Amazon Prime.”
+10.2. Plaintiff later discovered (through manufacturer/carrier data, a police report, or other verification) that the phone’s IMEI had been reported stolen prior to purchase, making the device contraband under Washington law.
+	•	RCW 9A.56.010(20) defines “stolen” property.
+	•	RCW 9A.56.140 (Possessing stolen property in the second degree) and
+	•	RCW 9A.56.170 (Trafficking in stolen property).
+	11.	Carrier Lockout Triggered by Blacklisted IMEI
+11.1. Because the device’s IMEI was flagged in the GSMA or other stolen-phone databases, Plaintiff’s carrier, Visible, automatically “blacklisted” or locked Plaintiff’s cellular account.
+	•	Industry best practices per CTIA guidelines direct carriers to lock or block stolen IMEIs to stem phone theft and fraud.
+	•	Federal oversight under 47 U.S.C. § 201(b) allows carriers to protect subscribers from the use of stolen devices on their networks.
+11.2. Visible informed Plaintiff that they cannot unlock the account until the device is cleared from “stolen” status. Amazon, however, declined to produce or facilitate official IMEI clearance documentation.
+	12.	Amazon’s Response and Imposition of Restocking Fee
+12.1. Personal Drop-Off: Amazon demanded that Plaintiff personally deliver the device to a designated drop-off site for return, effectively requiring Plaintiff to handle stolen property—potentially implicating Plaintiff in “trafficking” if not done in coordination with law enforcement.
+	•	See RCW 9A.56.170(1) (“A person who knowingly initiates, organizes, plans, finances, directs, manages, or supervises the theft of property and traffics in such stolen property” is guilty of trafficking in stolen property).
+	•	Although Plaintiff lacked criminal intent, the forced return procedure created legal and logistical peril.
+12.2. 20% Restocking Fee: Defendant insisted that since the return request was made outside the 90-day window, a 20% restocking fee applied—even though the phone was stolen before Plaintiff’s purchase and that stolen status was not discoverable through ordinary consumer diligence.
+	•	Such a fee may constitute an “unfair or deceptive act or practice” under RCW 19.86.020, as recognized in Hangman Ridge Training Stables, Inc. v. Safeco Title Ins. Co., 105 Wn.2d 778 (1986) and subsequent Washington Consumer Protection Act (“WCPA”) case law.
+	13.	Extended Lockout of All Personal/Financial Accounts
+13.1. Due to the “SIM/IMEI mismatch” and blacklisted device, Visible locked Plaintiff’s entire cellular line for over three weeks (as of filing), preventing reception of two-factor authentication codes and calls.
+	•	Many banks, email services, investment accounts, and personal services require phone-based verification for account access.
+13.2. Plaintiff has thereby been unable to access or manage vital financial and personal accounts, incurring substantial monetary losses (e.g., missed payments, late fees) and intangible harm (stress, reputational impact, etc.).
+	•	This harm is a direct and proximate result of Amazon’s facilitation of stolen property sales.
+	14.	No Good Title from a Thief
+14.1. Under RCW 62A.2-403(1) and well-settled UCC principles, “A purchaser of goods acquires all title which the transferor had or had power to transfer.” A thief has no valid title, so subsequent purchasers cannot obtain lawful title.
+	•	Baughn v. Honda Motor Co., Ltd., 107 Wn.2d 127 (1986) (implied warranties and product legitimacy requirements).
+	•	Touchet Valley Grain Growers, Inc. v. Opp & Seibold Gen. Constr., Inc., 119 Wn.2d 334 (1992) (product must be free from major defects or legal encumbrances under implied warranty of merchantability).
+14.2. As a result, the phone is effectively contraband, and the carrier is justified in locking the associated account until the stolen IMEI classification is cleared or overridden by lawful documentation—which Amazon has not provided.
+	15.	Damages to Plaintiff
+15.1. Economic and personal disruption from extended cellphone lockout, including inability to execute financial transactions, loss of access to personal email or accounts, and missed deadlines.
+15.2. Costs incurred to return the stolen device, risk of handling stolen goods, and the withheld 20% restocking fee.
+15.3. Emotional distress, inconvenience, and intangible losses due to protracted inability to access daily services requiring phone-based authentication.
+
+V. CAUSES OF ACTION
+
+Plaintiff realleges and incorporates each of the foregoing paragraphs as if fully set forth herein.
+
+COUNT I – VIOLATION OF THE WASHINGTON CONSUMER PROTECTION ACT (RCW 19.86)
+	16.	WCPA Liability
+16.1. Under RCW 19.86.020, “Unfair or deceptive acts or practices in the conduct of any trade or commerce are hereby declared unlawful.”
+16.2. Hangman Ridge Training Stables v. Safeco Title, 105 Wn.2d 778 (1986), establishes a five-part test for a private CPA claim, including (1) an unfair or deceptive act or practice, (2) occurring in trade or commerce, (3) public interest impact, (4) injury to the plaintiff, and (5) causation.
+	17.	Unfair or Deceptive Acts
+17.1. Defendant’s facilitation of the sale of stolen property under “Prime,” and subsequent imposition of a restocking fee despite the item’s contraband status, is an unfair or deceptive practice likely to mislead reasonable consumers.
+17.2. Charging a restocking fee for a stolen product that was never lawfully merchantable is unconscionable and violates Washington’s broad standard for unfair acts.
+	•	Klem v. Washington Mut. Bank, 176 Wn.2d 771, 787 (2013) (defining “unfair” or “deceptive” in broad terms under WCPA).
+	18.	Injury and Damages
+18.1. Plaintiff has suffered concrete financial harm (restocking fee, lost time, etc.) and substantial intangible harm (lockout from personal/financial accounts).
+18.2. Defendant’s unfair or deceptive acts proximately caused Plaintiff’s injuries, satisfying Hangman Ridge.
+	19.	Relief Under WCPA
+19.1. Pursuant to RCW 19.86.090, Plaintiff seeks actual damages, treble damages (up to the statutory maximum), and reasonable attorneys’ fees (if Plaintiff retains counsel or any pro se fees are allowable), along with costs of suit.
+
+COUNT II – BREACH OF IMPLIED WARRANTY OF MERCHANTABILITY (RCW 62A.2-314)
+	20.	Warranty of Merchantability
+20.1. Under RCW 62A.2-314, goods sold by a merchant carry an implied warranty of merchantability—they must be fit for the ordinary purposes for which such goods are used and must be lawfully transferable.
+20.2. A stolen device cannot be lawfully resold, which destroys any notion of “merchantability.”
+	21.	No Good Title
+21.1. RCW 62A.2-403(1) clarifies that a thief cannot pass good title to subsequent purchasers. The phone’s status as stolen renders it unmerchantable from the outset.
+	22.	Proximate Cause and Damages
+22.1. Plaintiff’s purchase of the stolen Pixel 7A and the resulting lockout constitute a direct and proximate consequence of Defendant’s breach.
+22.2. Plaintiff incurred:
+	•	The phone’s purchase price and wrongful restocking fee.
+	•	Costs associated with returning the contraband device.
+	•	Extended phone service lockout and corresponding damages (lost access to finances, personal data, etc.).
+
+COUNT III – NEGLIGENCE / NEGLIGENT MISREPRESENTATION
+	23.	Duty of Care
+23.1. Defendant owed a duty of care to consumers purchasing “Prime” items, including a duty to ensure items are not stolen.
+	•	Mbewe v. Amazon.com, Inc., No. 2:18-cv-00848-RAJ, 2019 WL 2994693 (W.D. Wash. July 9, 2019) (recognizing arguments that Amazon owes certain duties relating to listings and product authenticity).
+	•	Erie Ins. Co. v. Amazon.com, Inc., 925 F.3d 135 (4th Cir. 2019) (discussing possible liability under product liability / negligence theories).
+	24.	Breach
+24.1. By failing to verify or adequately screen for stolen IMEIs, Defendant allowed contraband merchandise to enter the stream of commerce, breaching its duty to consumers.
+24.2. Defendant also misrepresented or negligently labeled the Pixel 7A as a legitimate “Prime” product, leading Plaintiff to rely on that representation.
+	25.	Causation and Damages
+25.1. Plaintiff reasonably relied on Amazon’s “Prime” branding. Had Plaintiff known the device was stolen, Plaintiff would not have purchased it.
+25.2. Defendant’s negligence and misrepresentations caused Plaintiff foreseeable harm, including phone lockout, financial disruption, and personal inconvenience.
+
+VI. DAMAGES AND RELIEF SOUGHT
+
+WHEREFORE, Plaintiff prays for judgment against Defendant as follows:
+	1.	Compensatory Damages
+1.1. For the purchase price of the Pixel 7A;
+1.2. The wrongful 20% restocking fee;
+1.3. Costs/time expended returning stolen property;
+1.4. Damages for the multi-week lockout from critical accounts and services (financial, personal, etc.), in an amount to be proven at trial.
+	2.	Treble Damages
+2.1. As authorized by RCW 19.86.090 for willful or knowing violations of the WCPA, up to the statutory maximum.
+	3.	Injunctive Relief
+3.1. Prohibiting Amazon from charging restocking fees on stolen products;
+3.2. Requiring Amazon to implement enhanced inventory/IMEI checks to avoid facilitating the sale of stolen devices;
+3.3. Compelling Amazon to cooperate directly with carriers (Visible, etc.) to expedite IMEI clearance in cases of stolen device sales, preventing indefinite consumer lockouts.
+	4.	Attorneys’ Fees and Costs
+4.1. Pursuant to RCW 19.86.090 (CPA), if Plaintiff obtains counsel or if any pro se fee provision is determined applicable.
+	5.	Pre- and Post-Judgment Interest
+5.1. As allowed by law.
+	6.	Other Relief
+6.1. Any additional or alternative relief deemed just and proper by the Court.
+
+VII. JURY DEMAND
+
+Pursuant to CR 38, Plaintiff demands a jury on all triable issues.
+
+PRAYER FOR RELIEF
+
+WHEREFORE, Plaintiff Bo Shang respectfully requests judgment against Defendant Amazon.com, Inc. for an amount to be proven at trial, including compensatory damages, treble damages (as permitted by RCW 19.86.090), injunctive relief, interest, costs, and attorney fees (if awarded by the Court or permitted under law), and for such other and further relief as this Court deems just and proper.
+
+DATED: February 15, 2025.
+
+/s/  __________________________
+Signature of Plaintiff Pro Se
+
+Printed Name:  Bo Shang
+Address:       10 McCafferty Way
+Burlington, MA 01803-3127
+Phone:         781-999-4101
+Email:         bo@shang.software
+Pro Se

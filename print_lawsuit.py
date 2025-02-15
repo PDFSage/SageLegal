@@ -842,8 +842,13 @@ def generate_legal_document(firm_name,
 
     usable_height = page_height - (top_margin + bottom_margin)
     lines_that_fit = int(usable_height // line_spacing)
-    max_lines_per_page = lines_that_fit - 2  # Some internal spacing in the box
-
+    
+    # -------------------------------------------------------------------------
+    # MODIFICATION: Ensure lines go to bottom by adding 3 extra lines compared
+    # to the previous approach that subtracted 2. This helps utilize more space.
+    # -------------------------------------------------------------------------
+    max_lines_per_page = lines_that_fit + 1  # +1 is effectively 3 more than the old "-2"
+    
     line_offset_x = left_margin
     line_offset_y = page_height - top_margin
     max_text_width = page_width - right_margin - line_offset_x - 0.2 * inch
