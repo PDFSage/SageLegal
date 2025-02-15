@@ -1,0 +1,3 @@
+EXHIBIT 1: Twitch and Samantha Briasco-Stewart, via Linkedin's suggestion algorihms intentionally designed to promote both "legally blonde" and "application security blonde" among numerous other types of blondes, claims that Twitch and erosolar built a "Credential Checker" system, when Twitch also publicly claims that they follow dumbass-standards (industry standards) of an asymetrric encryption system in their log-in OAuth flow. 
+
+It's not mathematically possible for Twitch to alert users of plaintext leaks, unless Samantha Briasco-Stewart wanted to run a while loop on leaked FBI plaintext passwords, and see if they hash collide onto any of the hashed login authorizations Twitch publicly claims to use.

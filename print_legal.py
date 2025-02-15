@@ -17,6 +17,7 @@ from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
 
+
 ###############################################################################
 #  LAWSUIT CLASS
 ###############################################################################
@@ -78,6 +79,7 @@ class Lawsuit:
             "EXHIBITS:\n"
             f"{exhibits_str}\n"
         )
+
 
 ###############################################################################
 #  HELPER FUNCTIONS (PDF)
@@ -146,7 +148,7 @@ def draw_exhibit_page(pdf_canvas,
                       total_pages):
     """
     Draws a single exhibit page with bounding box, firm/case name, exhibit caption at top,
-    and the exhibit image centered below.
+    and the exhibit image auto-shrunk to fit below the caption and fill the rest of the page.
     """
     # Bounding box
     pdf_canvas.setLineWidth(2)
@@ -177,11 +179,16 @@ def draw_exhibit_page(pdf_canvas,
         pdf_canvas.drawString(left_margin, current_y, cap_line)
         current_y -= line_spacing
 
-    # Prepare to place the exhibit image
+    # After printing caption, we'll place the image below:
+    # We'll define the bottom margin and how many lines to skip:
     spacing_lines = 2
+    bottom_margin = 1.0 * inch
+    # This top coordinate for the image is right below the caption
+    y_img_top = current_y - (spacing_lines * line_spacing)
+
+    # Maximum available width in the bounding box:
     margin = 1.0 * inch
     max_img_width = page_width - 2 * margin
-    max_img_height = page_height - 2 * margin
 
     # Try loading the image
     try:
@@ -195,146 +202,70 @@ def draw_exhibit_page(pdf_canvas,
             f"Unable to load image: {exhibit_image} Error: {e}"
         )
     else:
-        scale = min(max_img_width / img_width, max_img_height / img_height, 1.0)
+        # Compute how much vertical space is left from y_img_top down to bottom_margin:
+        available_height = y_img_top - bottom_margin
+        if available_height < 0:
+            available_height = 0
+
+        # Scale the image so it fits in (max_img_width x available_height).
+        # Also preserve the aspect ratio and allow it to grow if it's smaller
+        # (remove the ", 1.0" limit to let it fill the page if needed).
+        scale = min(max_img_width / img_width, available_height / img_height)
+
+        # If scale is < 0, it means not enough space or negative.
+        # But we at least want to avoid negative or zero scaling:
+        if scale < 0:
+            scale = 0.01
+
         new_width = img_width * scale
         new_height = img_height * scale
 
-        y_img_top = current_y - (spacing_lines * line_spacing)
+        # The bottom of the image is top - new_height:
         y_img_bottom = y_img_top - new_height
-        bottom_margin = 1.0 * inch
 
-        # If the image goes too low, adjust upward
+        # If y_img_bottom is still below bottom_margin, shift upward so that it exactly touches bottom_margin.
         if y_img_bottom < bottom_margin:
             y_img_bottom = bottom_margin
             y_img_top = y_img_bottom + new_height
 
+        # Center the image horizontally
         x_img = (page_width - new_width) / 2.0
-        pdf_canvas.drawImage(img_reader,
-                             x_img,
-                             y_img_bottom,
-                             width=new_width,
-                             height=new_height,
-                             preserveAspectRatio=True,
-                             anchor='c')
+
+        pdf_canvas.drawImage(
+            img_reader,
+            x_img,
+            y_img_bottom,
+            width=new_width,
+            height=new_height,
+            preserveAspectRatio=True,
+            anchor='c'
+        )
 
     # Footer with page number
     pdf_canvas.setFont("Times-Italic", 9)
     footer_text = f"Page {page_number} of {total_pages}"
     pdf_canvas.drawCentredString(page_width / 2.0, 0.5 * inch - 0.1 * inch, footer_text)
 
-###############################################################################
-#  BUILDING THE MAIN PDF CONTENT
-###############################################################################
-def prepare_main_pdf_segments(header_text, sections_od, heading_styles):
+
+def draw_firm_name_and_header(pdf_canvas, firm_name, case_name, page_width, page_height):
     """
-    Prepares a list of segments for the main PDF from the given header text
-    and sections. Each segment is a dict:
-        {
-            "text": <string>,
-            "font_name": "Times-Roman" or "Times-Bold",
-            "font_size": 10 or 9,
-            "alignment": "left" or "center",
-            "is_heading": True/False,
-            "is_subheading": True/False
-        }
-
-    Requirements:
-      - Within the 'header_text' lines, center-align any lines that are all caps,
-        otherwise left-align, using normal 10 pt Times-Roman.
-      - Main section headings => Bold, 10 pt, center-aligned, preceded by a blank line.
-      - Subsection headings => Not bold, 9 pt, center-aligned, preceded by a blank line.
-      - Body text for main sections => Normal 10 pt.
-      - Body text for subsections => Normal 9 pt.
+    Helper to draw the bounding box, vertical firm name, case name, and top line on each page.
     """
-    segments = []
+    # Bounding box
+    pdf_canvas.setLineWidth(2)
+    pdf_canvas.rect(0.5 * inch, 0.5 * inch, page_width - 1.0 * inch, page_height - 1.3 * inch)
 
-    # 1) Handle the header text lines
-    header_lines = header_text.splitlines()
-    for line in header_lines:
-        line_stripped = line.strip()
-        if not line_stripped:
-            segments.append({
-                "text": "",
-                "font_name": "Times-Roman",
-                "font_size": 10,
-                "alignment": "left",
-                "is_heading": False,
-                "is_subheading": False
-            })
-            continue
+    # Vertical firm name
+    draw_firm_name_vertical_center(pdf_canvas, firm_name, page_width, page_height)
 
-        if is_line_all_caps(line_stripped):
-            segments.append({
-                "text": line_stripped,
-                "font_name": "Times-Roman",
-                "font_size": 10,
-                "alignment": "center",
-                "is_heading": False,
-                "is_subheading": False
-            })
-        else:
-            segments.append({
-                "text": line_stripped,
-                "font_name": "Times-Roman",
-                "font_size": 10,
-                "alignment": "left",
-                "is_heading": False,
-                "is_subheading": False
-            })
+    # Case name at top center
+    pdf_canvas.setFont("Times-Bold", 12)
+    pdf_canvas.drawCentredString(page_width / 2.0, page_height - 0.5 * inch, case_name)
 
-    # 2) Handle each section
-    for section_key, section_body in sections_od.items():
-        style = heading_styles.get(section_key, "section")
-        if style == "section":
-            # main section
-            heading_font_name = "Times-Bold"
-            heading_font_size = 10
-            body_font_name = "Times-Roman"
-            body_font_size = 10
-            is_heading = True
-            is_subheading = False
-        else:
-            # subsection
-            heading_font_name = "Times-Roman"  # not bold
-            heading_font_size = 9             # smaller
-            body_font_name = "Times-Roman"
-            body_font_size = 9
-            is_heading = False
-            is_subheading = True
+    # Horizontal line below case name
+    pdf_canvas.setLineWidth(1)
+    pdf_canvas.line(0.5 * inch, page_height - 0.6 * inch, page_width - 0.5 * inch, page_height - 0.6 * inch)
 
-        # Insert a blank line before the heading
-        segments.append({
-            "text": "",
-            "font_name": heading_font_name,
-            "font_size": heading_font_size,
-            "alignment": "left",
-            "is_heading": False,
-            "is_subheading": False
-        })
-
-        # Add the heading segment (center aligned)
-        segments.append({
-            "text": section_key,
-            "font_name": heading_font_name,
-            "font_size": heading_font_size,
-            "alignment": "center",
-            "is_heading": is_heading,
-            "is_subheading": is_subheading
-        })
-
-        # Add the body segments
-        body_lines = section_body.splitlines()
-        for body_line in body_lines:
-            segments.append({
-                "text": body_line,
-                "font_name": body_font_name,
-                "font_size": body_font_size,
-                "alignment": "left",
-                "is_heading": False,
-                "is_subheading": False
-            })
-
-    return segments
 
 def wrap_segments(pdf_canvas, segments, max_width):
     """
@@ -409,20 +340,8 @@ def draw_page_of_segments(pdf_canvas,
     we record (text, page_number, line_number, is_subheading) so that we can build
     the Table of Contents.
     """
-    # Bounding box
-    pdf_canvas.setLineWidth(2)
-    pdf_canvas.rect(0.5 * inch, 0.5 * inch, page_width - 1.0 * inch, page_height - 1.3 * inch)
-
-    # Vertical firm name
-    draw_firm_name_vertical_center(pdf_canvas, firm_name, page_width, page_height)
-
-    # Case name at top center
-    pdf_canvas.setFont("Times-Bold", 12)
-    pdf_canvas.drawCentredString(page_width / 2.0, page_height - 0.5 * inch, case_name)
-
-    # Horizontal line below case name
-    pdf_canvas.setLineWidth(1)
-    pdf_canvas.line(0.5 * inch, page_height - 0.6 * inch, page_width - 0.5 * inch, page_height - 0.6 * inch)
+    # Draw bounding box / top header
+    draw_firm_name_and_header(pdf_canvas, firm_name, case_name, page_width, page_height)
 
     end_index = min(start_index + max_lines_per_page, len(segments))
     y_text = line_offset_y
@@ -464,6 +383,7 @@ def draw_page_of_segments(pdf_canvas,
     pdf_canvas.drawCentredString(page_width / 2.0, 0.5 * inch - 0.1 * inch, footer_text)
 
     return end_index
+
 
 ###############################################################################
 #  GENERATE TABLE OF CONTENTS (PDF)
@@ -521,11 +441,9 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
     current_page_index = 1
 
     while i < total_lines:
-        # Draw bounding box
+        # Draw the bounding box and top area
         pdf_canvas.setLineWidth(2)
         pdf_canvas.rect(0.5 * inch, 0.5 * inch, page_width - 1.0 * inch, page_height - 1.3 * inch)
-
-        # Vertical firm name
         draw_firm_name_vertical_center(pdf_canvas, firm_name, page_width, page_height)
 
         # Case name at top center
@@ -578,6 +496,7 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
 
     pdf_canvas.save()
 
+
 ###############################################################################
 #  GENERATE DOCX VERSIONS (COMPLAINT + TABLE OF CONTENTS)
 ###############################################################################
@@ -609,7 +528,6 @@ def generate_complaint_docx(docx_filename, firm_name, case_name, header_od, sect
     for line in header_text.splitlines():
         para = doc.add_paragraph()
         line_stripped = line.strip()
-        # If line is all caps, we center it, else left-align
         if is_line_all_caps(line_stripped):
             para.alignment = WD_ALIGN_PARAGRAPH.CENTER
         else:
@@ -633,7 +551,6 @@ def generate_complaint_docx(docx_filename, firm_name, case_name, header_od, sect
         else:
             # Subsection
             run = heading_para.add_run(section_key)
-            # We'll do normal font but slightly smaller
             run.bold = False
             run.font.size = Pt(11)
 
@@ -650,19 +567,15 @@ def generate_complaint_docx(docx_filename, firm_name, case_name, header_od, sect
     doc.save(docx_filename)
     print(f"DOCX complaint saved as: {docx_filename}")
 
+
 def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions):
     """
-    Generates a Table of Contents in DOCX form (similar to the PDF index),
-    listing each heading with (page:line) to the right.
-    Subsections are smaller font than main sections.
-
-    We avoid Paragraph.tabs (which some python-docx versions lack) by using a table:
-      - Column 1: heading text (left-aligned)
-      - Column 2: page:line (right-aligned)
+    Generates a Table of Contents in DOCX form (similar to the PDF index).
+    We'll simply list each heading with (page:line) on the right. Subsections
+    will be smaller or non-bold.
     """
     doc = Document()
 
-    # Basic styling
     style = doc.styles['Normal']
     font = style.font
     font.name = 'Times New Roman'
@@ -675,11 +588,7 @@ def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions):
     run.bold = True
     run.font.size = Pt(14)
 
-    # We'll create a table with 2 columns
-    #   Col 1: Heading text
-    #   Col 2: Page:Line
-    table = doc.add_table(rows=0, cols=2)
-
+    # List headings in order encountered
     for (heading_text, pg_num, ln_num, is_sub) in heading_positions:
         if is_sub:
             this_font_size = 11
@@ -688,20 +597,25 @@ def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions):
             this_font_size = 12
             this_bold = True
 
-        row_cells = table.add_row().cells
-        # Cell 1: heading text
-        left_run = row_cells[0].paragraphs[0].add_run(heading_text)
-        left_run.font.size = Pt(this_font_size)
-        left_run.bold = this_bold
+        para = doc.add_paragraph()
+        para_format = para.paragraph_format
+        # We'll do a simple left alignment for text, and place page:line to the far right via tab
+        tab_stops = para.tabs
+        # Add a right tab stop around 6.5 inches (page width minus margins)
+        tab_stops.add_tab_stop(docx.shared.Inches(6.5), alignment=WD_ALIGN_PARAGRAPH.RIGHT)
 
-        # Cell 2: page:line (right-aligned)
-        row_cells[1].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        right_run = row_cells[1].paragraphs[0].add_run(f"{pg_num}:{ln_num}")
-        right_run.font.size = Pt(this_font_size)
-        right_run.bold = False
+        run_heading = para.add_run(heading_text)
+        run_heading.font.size = Pt(this_font_size)
+        run_heading.bold = this_bold
+
+        run_tab = para.add_run("\t")  # move to the right tab stop
+        run_pgline = para.add_run(f"{pg_num}:{ln_num}")
+        run_pgline.font.size = Pt(this_font_size)
+        run_pgline.bold = False
 
     doc.save(docx_filename)
     print(f"Table of Contents DOCX saved as: {docx_filename}")
+
 
 ###############################################################################
 #  PARSING THE INPUT TEXT (HEADER, SECTIONS/SUBSECTIONS)
@@ -790,6 +704,7 @@ def classify_headings(sections_od):
             heading_styles[full_key] = "section"
     return heading_styles
 
+
 ###############################################################################
 #  MAIN PDF GENERATION WRAPPER
 ###############################################################################
@@ -818,14 +733,14 @@ def generate_legal_document(firm_name,
     # 1) Determine main vs. sub sections
     heading_styles = classify_headings(sections_od)
 
-    # 2) Prepare segment objects from the header + sections
+    # 2) Build structured segments for the PDF text
     segments = prepare_main_pdf_segments(
         header_text=header_od.get("content", ""),
         sections_od=sections_od,
         heading_styles=heading_styles
     )
 
-    # 3) Wrap them to ensure no overflow
+    # 3) Wrap them so that no line overflows
     top_margin = 1.0 * inch
     bottom_margin = 1.0 * inch
     left_margin = 1.2 * inch
@@ -834,7 +749,7 @@ def generate_legal_document(firm_name,
 
     usable_height = page_height - (top_margin + bottom_margin)
     lines_that_fit = int(usable_height // line_spacing)
-    max_lines_per_page = lines_that_fit - 2  # Some internal spacing in the box
+    max_lines_per_page = lines_that_fit - 2  # Some internal spacing
 
     line_offset_x = left_margin
     line_offset_y = page_height - top_margin
@@ -850,7 +765,7 @@ def generate_legal_document(firm_name,
     current_index = 0
     page_number = 1
 
-    # Draw the main text pages
+    # Draw main text pages
     while current_index < total_text_lines:
         next_index = draw_page_of_segments(
             pdf_canvas=pdf_canvas,
@@ -873,7 +788,7 @@ def generate_legal_document(firm_name,
         if current_index < total_text_lines:
             pdf_canvas.showPage()
 
-    # Draw exhibits (one page per exhibit)
+    # Add exhibits (each on its own page)
     for (caption, image_path) in exhibits:
         pdf_canvas.showPage()
         draw_exhibit_page(
@@ -891,7 +806,7 @@ def generate_legal_document(firm_name,
 
     pdf_canvas.save()
 
-    # Once the PDF is done, also create the docx version of the complaint (similar text).
+    # Also create a DOCX version of the complaint
     heading_styles = classify_headings(sections_od)
     generate_complaint_docx(
         docx_filename=os.path.splitext(output_filename)[0] + ".docx",
@@ -901,6 +816,117 @@ def generate_legal_document(firm_name,
         sections_od=sections_od,
         heading_styles=heading_styles
     )
+
+
+def prepare_main_pdf_segments(header_text, sections_od, heading_styles):
+    """
+    Prepares a list of segments for the main PDF from the given header text
+    and sections. Each segment is a dict:
+        {
+            "text": <string>,
+            "font_name": "Times-Roman" or "Times-Bold",
+            "font_size": 10 or 9,
+            "alignment": "left" or "center",
+            "is_heading": True/False,
+            "is_subheading": True/False
+        }
+
+    Requirements:
+      - Within the 'header_text' lines, center-align any lines that are all caps,
+        otherwise left-align, using normal 10 pt Times-Roman.
+      - Main section headings => Bold, 10 pt, center-aligned, preceded by a blank line.
+      - Subsection headings => Not bold, 9 pt, center-aligned, preceded by a blank line.
+      - Body text for main sections => Normal 10 pt.
+      - Body text for subsections => Normal 9 pt.
+    """
+    segments = []
+
+    # 1) Handle the header text lines
+    header_lines = header_text.splitlines()
+    for line in header_lines:
+        line_stripped = line.strip()
+        if not line_stripped:
+            segments.append({
+                "text": "",
+                "font_name": "Times-Roman",
+                "font_size": 10,
+                "alignment": "left",
+                "is_heading": False,
+                "is_subheading": False
+            })
+            continue
+
+        if is_line_all_caps(line_stripped):
+            segments.append({
+                "text": line_stripped,
+                "font_name": "Times-Roman",
+                "font_size": 10,
+                "alignment": "center",
+                "is_heading": False,
+                "is_subheading": False
+            })
+        else:
+            segments.append({
+                "text": line_stripped,
+                "font_name": "Times-Roman",
+                "font_size": 10,
+                "alignment": "left",
+                "is_heading": False,
+                "is_subheading": False
+            })
+
+    # 2) Handle each section
+    for section_key, section_body in sections_od.items():
+        style = heading_styles.get(section_key, "section")
+        if style == "section":
+            heading_font_name = "Times-Bold"
+            heading_font_size = 10
+            body_font_name = "Times-Roman"
+            body_font_size = 10
+            is_heading = True
+            is_subheading = False
+        else:
+            heading_font_name = "Times-Roman"  # not bold
+            heading_font_size = 9
+            body_font_name = "Times-Roman"
+            body_font_size = 9
+            is_heading = False
+            is_subheading = True
+
+        # Insert a blank line before each heading
+        segments.append({
+            "text": "",
+            "font_name": heading_font_name,
+            "font_size": heading_font_size,
+            "alignment": "left",
+            "is_heading": False,
+            "is_subheading": False
+        })
+
+        # Add the heading segment (center aligned)
+        segments.append({
+            "text": section_key,
+            "font_name": heading_font_name,
+            "font_size": heading_font_size,
+            "alignment": "center",
+            "is_heading": is_heading,
+            "is_subheading": is_subheading
+        })
+
+        # Add the body segments
+        body_lines = section_body.splitlines()
+        for body_line in body_lines:
+            segments.append({
+                "text": body_line,
+                "font_name": body_font_name,
+                "font_size": body_font_size,
+                "alignment": "left",
+                "is_heading": False,
+                "is_subheading": False
+            })
+
+    return segments
+
 
 ###############################################################################
 #  MAIN
@@ -953,12 +979,12 @@ def main():
         ])
         exhibit_index += 1
 
-    # Example extra metadata in header if needed
+    # Example metadata in header if needed
     header_od["DocumentTitle"] = "Complaint for Damages"
     header_od["DateFiled"] = "2025-02-14"
     header_od["Court"] = "Sample Court"
 
-    # Build our Lawsuit object, storing the new fields automatically
+    # Build our Lawsuit object
     lawsuit_obj = Lawsuit(
         sections=sections_od,
         exhibits=exhibits_od,
@@ -967,12 +993,13 @@ def main():
         law_firm_information=args.firm_name
     )
 
-    # Convert exhibits to pass to PDF generator
-    exhibits_for_pdf = []
-    for ex_key, ex_data in lawsuit_obj.exhibits.items():
-        exhibits_for_pdf.append((ex_data["caption"], ex_data["image_path"]))
+    # Convert exhibits for PDF generator
+    exhibits_for_pdf = [
+        (ex_data["caption"], ex_data["image_path"])
+        for ex_data in lawsuit_obj.exhibits.values()
+    ]
 
-    # We'll track heading info for the TOC
+    # We'll track heading info for the Table of Contents
     heading_positions = []
 
     # 1) Generate the main PDF (and also a corresponding .docx)
@@ -1024,6 +1051,7 @@ def main():
     # Print the Lawsuit object
     print("Dumped Lawsuit object:")
     print(lawsuit_obj)
+
 
 if __name__ == "__main__":
     main()
