@@ -2,61 +2,145 @@ SUPERIOR COURT OF THE STATE OF CALIFORNIA
 FOR THE COUNTY OF SAN FRANCISCO
 
 BO SHANG,
-Plaintiff,
+    Plaintiff,
 
 v.
 
-TWITCH INTERACTIVE,
-SAMANTHA BRIASCO-STEWART,
-Defendant.
+TWITCH INTERACTIVE, INC.;
+SAMANTHA BRIASCO-STEWART;
+LINKEDIN CORPORATION,
+    Defendants.
+
 Case No.: ____________________
-COMPLAINT FOR FRAUD
 
+INITIAL COMPLAINT
 
-Plaintiff, BO SHANG ("Plaintiff"), an American individual residing in the State of Massachusetts, by and through his undersigned counsel or in pro per, hereby alleges the following against Defendant, SAMANTHA BRIASCO-STEWART ("Defendant"), and states as follows:
+Plaintiff, BO SHANG (“Plaintiff”), an American individual residing in the State of Massachusetts, by and through his undersigned counsel or in pro per, hereby alleges the following against Defendants TWITCH INTERACTIVE, INC. (“Twitch”), SAMANTHA BRIASCO-STEWART (“Briasco-Stewart”), and LINKEDIN CORPORATION (“LinkedIn”), and states as follows:
 
-Plaintiff emphasizes that he believed in, and was harmed by, Twitch’s alleged fabrications about user data protection and the legitimacy of streaming as a profession, which were perpetrated in conjunction with LinkedIn’s platform and exploited alongside Microsoft Windows’ known vulnerabilities in SMBv2 and Address Space Layout Randomization (ASLR). Plaintiff alleges these acts contributed to a broader mask of lies and Ponzi-scheme deception, designed to present gaming streams as a viable livelihood while in reality exerting a destructive, negative-sum extractive influence on American and allied nations’ brain development.
-I. PARTIES
-1. Plaintiff BO SHANG is, and at all relevant times was, an American individual residing in the State of Massachusetts. He was exposed to various statements and claims appearing on LinkedIn and connected with Twitch’s operations, which led him to believe that streaming on Twitch was a legitimate, sustainable profession and that Twitch properly protected user credentials.
-2. Defendant SAMANTHA BRIASCO-STEWART is an individual believed to reside in San Francisco, California. Upon information and belief, she worked at Twitch, also based in San Francisco, for seven (7) years, constituting her entire career.
-3. LinkedIn Corporation is headquartered in Sunnyvale, California (the broader San Francisco Bay Area). The alleged fraudulent statements were published on or referenced LinkedIn, including references to Twitch’s official LinkedIn presence.
-II. JURISDICTION AND VENUE
-4. This Court has subject matter jurisdiction over the causes of action alleged herein pursuant to the California Constitution and the general jurisdiction of the California Superior Courts. The amount in controversy, exclusive of interest and costs, is within the jurisdictional limits of this Court.
-5. Venue is proper in the County of San Francisco under California Code of Civil Procedure §§ 395(a) and 395.5, in that Defendant resides in San Francisco, and the acts alleged (including LinkedIn publications and references to Twitch’s operations) were directed to, or occurred within, San Francisco County.
-III. FACTUAL ALLEGATIONS
-6. Plaintiff specifically points to Twitch’s purported public assurances that it would protect user credentials, especially in light of widely publicized technology concerns regarding Microsoft Windows SMBv2 and Address Space Layout Randomization (ASLR). Plaintiff contends that these vulnerabilities, left insufficiently addressed, enabled or exacerbated the data protection failures of which Twitch and its representatives, including Defendant, were aware.
-7. Twitch, where Defendant worked her entire career, is alleged by Plaintiff to be “nothing more than a Ponzi scheme on the brain,” given that every aspect of its operations is purportedly fraudulent. By way of example, Plaintiff points to a publicly touted $100 million contract supposedly entered into between another streamer (xQc) and the Kick platform, despite serious questions regarding its legitimacy.
-8. Plaintiff further alleges that popular Twitch streamer Pokimane questioned the legitimacy of xQc’s purported Kick contract. Plaintiff finds it ironic given Pokimane herself allegedly sold her “undying love and appreciation” as a subscription product, in conjunction with Twitch’s Terms of Sales, thereby committing fraud in exchange for monetary gain.
-9. Plaintiff also contends that xQc was only able to assert such a lucrative contract figure after streaming himself laundering approximately $685 million in cryptocurrency on illicit gambling websites while broadcasting on Twitch. These actions, if true, would constitute violations of federal statutes prohibiting the transmission of wagering information (18 U.S.C. § 1084), operation of illegal gambling businesses (18 U.S.C. § 1955), and money laundering (18 U.S.C. §§ 1956, 1957). Plaintiff further cites analogous California laws, including Penal Code §§ 330, 331, and case law such as Kelly v. First Astri Corp., 72 Cal.App.4th 462, 85 Cal.Rptr.2d 303 (1999).
-10. In addition to these allegations, Plaintiff asserts that Defendant made false and misleading statements on or referencing her LinkedIn profile, specifically claiming that she developed a “credential checker” at Twitch that alerts users if their plaintext credentials were leaked, directly contradicting Twitch’s publicly stated security policies purportedly relying on OAuth protocols and its disclaimers about not storing credentials in plaintext.
-11. Furthermore, Plaintiff accuses Twitch of repeatedly misrepresenting streaming as a legitimate profession. Plaintiff contends that it is actually a negative-sum extractive industry, damaging the mental welfare of Americans and allied nations by surrounding users with an entire mask of misrepresentations—allegedly a multi-layer Ponzi-scheme deception. Plaintiff states that these overarching lies, combined with LinkedIn’s amplification of them and Microsoft Windows’ security gaps in SMBv2 and ASLR, all contributed to Plaintiff’s reliance and resulting harm.
-12. Plaintiff avers that these misrepresentations served to bolster Defendant’s and Twitch’s professional profile at Plaintiff’s expense, thereby constituting actionable fraud under California law. Plaintiff specifically emphasizes that he was misled into believing that streaming was both secure and viable, leading him to invest time, resources, and emotional energy predicated on Twitch’s deceptive assertions.
-IV. CAUSE OF ACTION - FRAUD
-California Civil Code and Case Authority:
-Under Cal. Civ. Code § 1572 (defining Actual Fraud) and §§ 1709-1710 (defining Deceit), a cause of action for fraud in California consists of: (1) a misrepresentation of material fact; (2) knowledge of its falsity; (3) intent to defraud/induce reliance; (4) justifiable reliance; and (5) resulting damage. See Lazar v. Superior Court, 12 Cal.4th 631, 638, 49 Cal.Rptr.2d 377, 909 P.2d 981 (1996), and Engalla v. Permanente Medical Group, Inc., 15 Cal.4th 951, 974, 64 Cal.Rptr.2d 843, 938 P.2d 903 (1997).
-13. Plaintiff re-alleges and incorporates by reference the allegations in paragraphs 1 through 12, inclusive, as though fully set forth herein.
-14. Defendant, through her LinkedIn postings and references, represented that she built or worked on a tool at Twitch that monitors potential plaintext credential leaks, implying that Twitch retains or processes credentials in plaintext contrary to Twitch’s official statements.
-15. Defendant knew or should have known that such statements were false or misleading. Twitch’s public documentation references OAuth flows and denies storing credentials in plaintext, thus negating the purported justification for a “plaintext credential checker.”
-16. Defendant intended that such statements enhance her professional credibility, standing, and reputation on LinkedIn, to the detriment or confusion of Plaintiff and the general public.
-17. Plaintiff justifiably relied on these representations, believing them to be true, and thereby expended time and resources to investigate Twitch’s actual security practices. Plaintiff further suffered emotional distress over the potential exposure of his credentials, given Microsoft Windows SMBv2 and ASLR vulnerabilities that might have been exploited.
-18. As a proximate result of Defendant’s misrepresentations, Plaintiff has suffered damages including, but not limited to, time lost, investigative costs, and emotional harm. The precise amount of these damages will be proven at trial.
-V. PRAYER FOR RELIEF
-WHEREFORE, Plaintiff respectfully requests that this Court enter judgment in favor of Plaintiff and against Defendant as follows:
+I. INTRODUCTION AND OVERVIEW OF ALLEGATIONS
+
+1. This is an action for fraud arising from a complex tapestry of deceitful and misleading statements made by and through Twitch, Briasco-Stewart, and LinkedIn. These statements included representations regarding Twitch’s user-data protection measures, the viability of streaming on Twitch as a legitimate profession, and the sufficiency of Microsoft Windows security features (including SMBv2 and Address Space Layout Randomization, “ASLR”). Plaintiff alleges these misrepresentations form part of a broader Ponzi-scheme-like enterprise—an extractive, negative-sum venture—that damages the mental welfare of American citizens and allied nations by fostering gambling, laundering activities, and systemic deceit under the guise of online streaming and professional development.
+
+2. Plaintiff specifically contends that:
+   (a) Twitch’s platform—promulgated and publicized via LinkedIn—is effectively a “Ponzi scheme on the brain,” creating systematic risk and moral hazard by deceiving users into believing in the sustainability and safety of streaming as a profession.
+   (b) Briasco-Stewart, who worked at Twitch her entire career (allegedly seven years), made false or misleading statements about data security tools and processes related to plaintext credential storage, contradicting official Twitch statements regarding OAuth and the non-plaintext storage of user credentials.
+   (c) LinkedIn actively amplified or materially contributed to these misrepresentations through its platform, thereby exceeding the role of a mere interactive computer service. By creating and shaping the content and associated endorsements, LinkedIn became an information content provider as to the fraudulent or misleading statements.
+   (d) As a result, Twitch, LinkedIn, and Briasco-Stewart are not immune under Section 230 of the Communications Decency Act (47 U.S.C. § 230) because each entity or individual contributed to the “development” or “creation” of the offending content, going beyond a mere editorial or publishing function. Plaintiff further cites case law making clear that online platforms or individual users who participate in the creation or development of unlawful content are not entitled to Section 230 immunity.
+
+II. PARTIES
+
+3. Plaintiff BO SHANG is, and at all relevant times was, an American individual residing in the State of Massachusetts. He was exposed to various statements and claims on LinkedIn and Twitch’s official marketing channels, leading him to believe that streaming on Twitch was a legitimate, sustainable profession and that Twitch properly secured user credentials.
+
+4. Defendant TWITCH INTERACTIVE, INC. is a Delaware corporation with its principal place of business in San Francisco, California. Twitch markets itself as a “live streaming service” for gaming, esports, and other interactive content. Plaintiff alleges that Twitch is, in actuality, a fraudulent enterprise—a negative-sum, deceptive Ponzi scheme targeting the mental well-being of U.S. and allied citizens.
+
+5. Defendant SAMANTHA BRIASCO-STEWART is an individual believed to reside in San Francisco, California. Upon information and belief, she worked at Twitch for seven (7) years, constituting her entire career, and made statements on or referencing her LinkedIn profile regarding Twitch’s security practices.
+
+6. Defendant LINKEDIN CORPORATION is headquartered in Sunnyvale, California (the broader San Francisco Bay Area). Upon information and belief, LinkedIn not only hosted but actively shaped or contributed to the alleged fraudulent statements by highlighting, endorsing, or otherwise presenting Briasco-Stewart’s or Twitch’s statements in a manner that amounted to content development or co-creation, thus removing it from safe-harbor eligibility under 47 U.S.C. § 230.  
+
+III. JURISDICTION AND VENUE
+
+7. This Court has subject matter jurisdiction over the causes of action alleged herein pursuant to the California Constitution and the general jurisdiction of the California Superior Courts. The amount in controversy, exclusive of interest and costs, is within the jurisdictional limits of this Court.
+
+8. Venue is proper in the County of San Francisco under California Code of Civil Procedure §§ 395(a) and 395.5, in that Defendants reside in San Francisco County or direct substantial operations from within San Francisco County, and the acts alleged herein (including LinkedIn publications, Twitch marketing statements, and Briasco-Stewart’s role) were directed to, or occurred within, San Francisco County.
+
+IV. FACTUAL ALLEGATIONS
+
+A. Misrepresentations Regarding Data Security and Credential Storage
+
+9. Twitch and Briasco-Stewart made repeated claims—amplified by LinkedIn’s platform—that Twitch protected user credentials through industry-standard protocols (e.g., OAuth) and that Twitch did not store user credentials in plaintext.
+
+10. In direct contradiction, Briasco-Stewart posted or referenced on her LinkedIn profile that she developed a “plaintext credential checker” or a tool that checks if plaintext credentials have been leaked. This implicitly admitted that Twitch either internally stored or processed plaintext credentials, or at minimum recognized the potential for such storage. This statement contradicts Twitch’s public disclaimers and developer documentation.
+
+11. Plaintiff specifically relied on these contradictory statements, devoting time and resources to investigate the scope of Twitch’s data protection measures, only to conclude that Twitch’s posture was misleading and that LinkedIn’s portrayal of Briasco-Stewart’s “credential checker” role suggested a deeper involvement in content development and security promises.
+
+B. “Ponzi Scheme on the Brain” Allegations Against Twitch
+
+12. Plaintiff alleges that Twitch’s core business model is tantamount to a Ponzi scheme that extracts time, money, and mental energy from unwary participants—particularly younger Americans and those in allied nations—fostering a culture of gambling, illicit activities, and psychological exploitation.
+
+13. By way of example, Plaintiff references a publicly touted $100 million contract involving streamer “xQc” and the Kick platform, which is closely related to or spun off from Twitch gambling streams. Questions have arisen as to the contract’s legitimacy, leading to popular streamer Pokimane publicly doubting it, while ironically participating in monetized, parasocial subscription practices that Twitch fosters.
+
+14. Plaintiff contends that xQc’s alleged $100 million figure is linked to a history of suspicious online gambling streams, with an estimated $685 million laundered on illicit cryptocurrency gambling websites. The streaming or broadcast of illegal gambling, if true, would violate multiple federal statutes, including:
+   - 18 U.S.C. § 1084 (transmission of wagering information)
+   - 18 U.S.C. § 1955 (illegal gambling businesses)
+   - 18 U.S.C. §§ 1956, 1957 (money laundering)
+   Analogous state law violations also exist, such as California Penal Code §§ 330, 331 and relevant interpretations (e.g., Kelly v. First Astri Corp., 72 Cal.App.4th 462, 85 Cal.Rptr.2d 303 (1999)).
+
+15. Plaintiff alleges that Twitch knowingly profits from such illicit or questionable activities, thereby contributing to a culture of fraud and systemic risk. These issues, in turn, are deceptively marketed on LinkedIn as legitimate business accomplishments, furthering the Ponzi-like fraud and misinformation.
+
+C. LinkedIn’s Active Role in the Development of Misleading Content
+
+16. LinkedIn is not a passive “interactive computer service” merely providing a neutral platform. Rather, it amplifies certain user-generated content through features like “Suggested Posts,” algorithmic ranking, endorsements, and direct editorial involvement in presenting “success stories.” By shaping or selectively promoting claims about Twitch’s legitimacy and Briasco-Stewart’s alleged accomplishments, LinkedIn acted as an “information content provider” under 47 U.S.C. § 230(f)(3).
+
+17. Because LinkedIn contributed materially to the presentation and credibility of the statements at issue, it is not entitled to Section 230 immunity. See Fair Housing Council of San Fernando Valley v. Roommates.com, LLC, 521 F.3d 1157, 1165–67 (9th Cir. 2008) (en banc) (holding that a website that significantly contributes to the content’s illegality or development is an information content provider and not entitled to immunity). See also FTC v. Accusearch, Inc., 570 F.3d 1187, 1199–1201 (10th Cir. 2009) (denying Section 230 immunity when the defendant was responsible for the “creation or development” of the harmful content).
+
+D. Microsoft Windows SMBv2 and ASLR Vulnerabilities Exacerbating the Harm
+
+18. Plaintiff further alleges that longstanding security flaws in Microsoft Windows (particularly SMBv2 and ASLR) are well-known, and that Twitch and LinkedIn, acting in concert, exploited or failed to disclose the significance of these vulnerabilities. This concealment intensified the risk of credential leaks, identity theft, and unauthorized data access.
+
+19. Plaintiff was led to believe that Twitch’s security was robust enough to account for or protect against these known vulnerabilities, but was later alarmed to discover contradictory evidence suggesting Twitch was either ignorant of, or deliberately indifferent to, the potential exploit pathways.
+
+E. Harm to Plaintiff
+
+20. As a direct and proximate result of these misrepresentations, Plaintiff:
+   (a) Expended significant time and resources under the false belief that Twitch was a secure, legitimate career path and that any data stored there was protected.
+   (b) Suffered emotional distress stemming from the realization that the platform was allegedly a negative-sum Ponzi scheme, exposing him—and by extension, the nation—to systemic risks of mental degradation and fraud.
+   (c) Lost opportunities and resources by relying on LinkedIn’s and Twitch’s portrayals of streaming as a sustainable profession and of Twitch’s “leading security practices.”
+
+V. SECTION 230 NON-IMMUNITY ALLEGATIONS
+
+21. Defendants Twitch, Briasco-Stewart, and LinkedIn are not entitled to immunity under Section 230 of the Communications Decency Act (47 U.S.C. § 230) for the following reasons:
+
+    (a) Twitch and Briasco-Stewart Authored or Developed Fraudulent Statements.
+        Twitch and Briasco-Stewart did not merely host third-party content; they actively authored or participated in the creation of statements regarding data security and streaming viability. Such direct content creation removes them from Section 230’s safe-harbor protections. See 47 U.S.C. § 230(f)(3) (“information content provider” is someone “responsible, in whole or in part, for the creation or development of information”).
+
+    (b) LinkedIn Actively Shaped or Developed the Content.
+        LinkedIn’s algorithms, “Suggested Posts,” and editorial-style amplification transformed it from a passive host to an active content developer. The Ninth Circuit has held that where a platform “materially contributes” to the alleged unlawfulness of the content, it may be deemed a co-developer. Fair Housing Council of San Fernando Valley v. Roommates.com, supra.
+
+    (c) Defendants’ Conduct Involved Fraud and Unlawful Misrepresentations.
+        Section 230 does not provide immunity from claims based on the defendants’ own fraudulent statements or conduct. See Barnes v. Yahoo!, Inc., 570 F.3d 1096, 1107–09 (9th Cir. 2009) (recognizing that an online service can be held liable for its own promises or misrepresentations).
+
+    (d) Commercial Viability Claims and Ponzi-Scheme Allegations.
+        The fraudulent inducement for Plaintiff to join or invest time in Twitch’s streaming ecosystem is based on original, self-authored content by Twitch, LinkedIn’s promotional mechanisms, and Briasco-Stewart’s personal statements. These are not purely user-generated comments from random third parties, but direct representations by the platform owners or employees themselves.
+
+22. Accordingly, none of the Defendants may invoke Section 230 as a shield against liability for fraud under California law because they are each “information content providers” with respect to the statements at issue.
+
+VI. CAUSE OF ACTION – FRAUD
+(Cal. Civ. Code § 1572; §§ 1709–1710; Lazar v. Superior Court)
+
+23. Plaintiff re-alleges and incorporates by reference the allegations in paragraphs 1 through 22, inclusive, as though fully set forth herein.
+
+24. Defendants made material misrepresentations of fact—including, but not limited to, statements about credential protection, streaming’s viability as a legitimate profession, and the actual functioning of Twitch’s security features—either through direct statements or implied endorsements on LinkedIn.
+
+25. Defendants knew or should have known these statements were false or misleading at the time they were made. Twitch’s own documentation contends that credentials are secured via OAuth, contradicting Briasco-Stewart’s claims of building a “plaintext credential checker.” LinkedIn represented these claims in a manner that gave them heightened credibility, despite having the ability to verify or challenge them.
+
+26. Defendants intended Plaintiff (and the public) to rely on these statements, and Plaintiff did reasonably and justifiably rely, believing that Twitch was a secure, viable, and legitimate platform for career prospects and streaming activities.
+
+27. As a proximate result of Defendants’ misrepresentations, Plaintiff has suffered damages including, but not limited to, lost time, monetary expenditures, investigation costs, emotional distress, and other consequential harm. The full amount of damages will be proven at trial.
+
+VII. PRAYER FOR RELIEF
+
+WHEREFORE, Plaintiff respectfully requests that this Court enter judgment in favor of Plaintiff and against Defendants TWITCH INTERACTIVE, INC., SAMANTHA BRIASCO-STEWART, and LINKEDIN CORPORATION as follows:
+
 A. For compensatory damages according to proof at trial;
+
 B. For special and consequential damages in an amount to be determined at trial;
-C. For punitive or exemplary damages as permitted by law, including but not limited to Cal. Civ. Code § 3294;
+
+C. For punitive or exemplary damages as permitted by law (Cal. Civ. Code § 3294);
+
 D. For costs of suit and reasonable attorneys’ fees, as permitted by law;
+
 E. For pre-judgment and post-judgment interest as permitted by law; and
+
 F. For such other and further relief as the Court deems just and proper.
 
-DEMAND FOR JURY TRIAL: Plaintiff hereby demands a trial by jury on all causes of action so triable at law.
+DEMAND FOR JURY TRIAL
 
-Dated: _______________________
+Plaintiff hereby demands a jury trial on all causes of action so triable at law.
 
+Dated: ______________________
 
-______________________________________
-Bo Shang, Pro Se
+________________________________________
+BO SHANG, Pro Se
 Resident of Massachusetts
 Phone: 555-123-4567
 Email: bo.shang@example.com
-
