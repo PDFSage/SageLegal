@@ -15,7 +15,7 @@ from reportlab.lib.utils import ImageReader
 import docx
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import Pt
+from docx.shared import Pt, Inches
 
 ###############################################################################
 #  LAWSUIT CLASS
@@ -146,7 +146,7 @@ def draw_exhibit_page(pdf_canvas,
                       total_pages):
     """
     Draws a single exhibit page with bounding box, firm/case name, exhibit caption at top,
-    and the exhibit image centered below.
+    and the exhibit image scaled to fill all remaining space below the caption.
     """
     # Bounding box
     pdf_canvas.setLineWidth(2)
@@ -177,17 +177,23 @@ def draw_exhibit_page(pdf_canvas,
         pdf_canvas.drawString(left_margin, current_y, cap_line)
         current_y -= line_spacing
 
-    # Prepare to place the exhibit image
+    # We will now calculate the available space for the image below the caption
+    # so that the image auto-shrinks to fill the rest of the page.
     spacing_lines = 2
-    margin = 1.0 * inch
-    max_img_width = page_width - 2 * margin
-    max_img_height = page_height - 2 * margin
+    top_of_image_area = current_y - (spacing_lines * line_spacing)
+    bottom_of_image_area = 0.5 * inch  # bounding box bottom
+    if top_of_image_area < bottom_of_image_area:
+        top_of_image_area = bottom_of_image_area
+
+    available_height = top_of_image_area - bottom_of_image_area
+    available_width = (page_width - 1.0 * inch)  # bounding box is from 0.5 inch to page_width - 0.5 inch
 
     # Try loading the image
     try:
         img_reader = ImageReader(exhibit_image)
         img_width, img_height = img_reader.getSize()
     except Exception as e:
+        # If the image can't be loaded, print an error message in the middle
         pdf_canvas.setFont("Times-Italic", 10)
         pdf_canvas.drawCentredString(
             page_width / 2.0,
@@ -195,20 +201,16 @@ def draw_exhibit_page(pdf_canvas,
             f"Unable to load image: {exhibit_image} Error: {e}"
         )
     else:
-        scale = min(max_img_width / img_width, max_img_height / img_height, 1.0)
+        # Scale the image so it fits the available width and height
+        scale = min(available_width / img_width, available_height / img_height, 1.0)
         new_width = img_width * scale
         new_height = img_height * scale
 
-        y_img_top = current_y - (spacing_lines * line_spacing)
-        y_img_bottom = y_img_top - new_height
-        bottom_margin = 1.0 * inch
+        # Center the image horizontally, and place it at the bottom margin
+        x_img = 0.5 * inch + (available_width - new_width) / 2.0
+        y_img_bottom = bottom_of_image_area
 
-        # If the image goes too low, adjust upward
-        if y_img_bottom < bottom_margin:
-            y_img_bottom = bottom_margin
-            y_img_top = y_img_bottom + new_height
-
-        x_img = (page_width - new_width) / 2.0
+        # Draw the image
         pdf_canvas.drawImage(img_reader,
                              x_img,
                              y_img_bottom,
@@ -604,12 +606,12 @@ def generate_complaint_docx(docx_filename, firm_name, case_name, header_od, sect
     run.bold = True
     run.font.size = Pt(14)
 
-    # Insert lines from header_od["content"]
+    # Insert lines from header_od.get("content", "")
     header_text = header_od.get("content", "")
     for line in header_text.splitlines():
         para = doc.add_paragraph()
         line_stripped = line.strip()
-        # If line is all caps, we center it; else left-align
+        # If line is all caps, center it; else left-align
         if is_line_all_caps(line_stripped):
             para.alignment = WD_ALIGN_PARAGRAPH.CENTER
         else:
@@ -653,9 +655,10 @@ def generate_complaint_docx(docx_filename, firm_name, case_name, header_od, sect
 
 def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions):
     """
-    Generates a Table of Contents in DOCX form (similar to the PDF index).
-    We'll simply list each heading with (page:line) on the right. Subsections
-    will be smaller or non-bold.
+    Generates a Table of Contents in DOCX form (similar to the PDF index),
+    placing each heading and its page:line reference into a two-column table
+    to avoid having to manage tab stops (which can cause attribute errors
+    in certain python-docx versions).
     """
     doc = Document()
 
@@ -671,8 +674,17 @@ def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions):
     run.bold = True
     run.font.size = Pt(14)
 
-    # List headings in order encountered
+    # Create a table for the TOC
+    table = doc.add_table(rows=0, cols=2)
+    table.autofit = True
+
     for (heading_text, pg_num, ln_num, is_sub) in heading_positions:
+        # Insert a new row
+        row_cells = table.add_row().cells
+        left_cell = row_cells[0]
+        right_cell = row_cells[1]
+
+        # Decide styling based on subsection or main heading
         if is_sub:
             this_font_size = 11
             this_bold = False
@@ -680,22 +692,19 @@ def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions):
             this_font_size = 12
             this_bold = True
 
-        para = doc.add_paragraph()
-        para_format = para.paragraph_format
-        # We'll do a simple alignment left for text, put page:line to the far right
-        tab_stops = para.tabs
-        # Add a right tab stop around 6.5 inches (roughly page width margins)
-        tab_stops.add_tab_stop(docx.shared.Inches(6.5), alignment=WD_ALIGN_PARAGRAPH.RIGHT)
+        # Left cell: heading text
+        left_par = left_cell.paragraphs[0]
+        run_left = left_par.add_run(heading_text)
+        run_left.font.size = Pt(this_font_size)
+        run_left.bold = this_bold
 
-        run_heading = para.add_run(heading_text)
-        run_heading.font.size = Pt(this_font_size)
-        run_heading.bold = this_bold
-
-        # Add the "page:line" as a separate run, preceded by a tab
-        run_tab = para.add_run("\t")  # to jump to the right tab stop
-        run_pgline = para.add_run(f"{pg_num}:{ln_num}")
-        run_pgline.font.size = Pt(this_font_size)
-        run_pgline.bold = False
+        # Right cell: "page:line"
+        right_par = right_cell.paragraphs[0]
+        run_right = right_par.add_run(f"{pg_num}:{ln_num}")
+        run_right.font.size = Pt(this_font_size)
+        run_right.bold = False
+        # Right-align that paragraph
+        right_par.alignment = WD_ALIGN_PARAGRAPH.RIGHT
 
     doc.save(docx_filename)
     print(f"Table of Contents DOCX saved as: {docx_filename}")
@@ -717,9 +726,6 @@ def parse_header_and_sections(raw_text):
     header_od = OrderedDict()
     sections_od = OrderedDict()
 
-    # Updated pattern to match either digits or Roman numerals followed by a dot,
-    # repeated one or more times, then some space, then the heading text.
-    # Example matches: "I. INTRO", "II. PARTIES", "1. INTRO", "1.1 SUBINTRO", "III.1.1 SOMETHING"
     heading_pattern = re.compile(r'^((?:[IVXLCDM]+\.|[0-9]+\.)+)\s+(.*)$', re.IGNORECASE)
 
     lines = raw_text.splitlines()
@@ -750,7 +756,6 @@ def parse_header_and_sections(raw_text):
             heading_number = match_heading.group(1).strip()
             heading_title = match_heading.group(2).strip()
 
-            # Confirm heading title is all caps to treat it as a heading
             if is_line_all_caps(heading_title):
                 # Save previous heading's body if we had one
                 if current_heading_key is not None:
@@ -1027,7 +1032,6 @@ def main():
     # Print the Lawsuit object
     print("Dumped Lawsuit object:")
     print(lawsuit_obj)
-
 
 if __name__ == "__main__":
     main()
