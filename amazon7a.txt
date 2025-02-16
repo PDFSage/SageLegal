@@ -108,13 +108,16 @@ SUPERIOR COURT OF WASHINGTON
 
 FOR KING COUNTY
 
-BO SHANG, an individual,               )
-Plaintiff,                            )
-)   Case No. ___________________
-v.                                        )
-)   COMPLAINT FOR DAMAGES,
-AMAZON.COM, INC.,                     )   INJUNCTIVE RELIEF, AND
-Defendant.                           )   OTHER RELIEF
+BO SHANG, an individual,               
+Plaintiff,                            
+   Case No. ___________________
+v.                                        
+   COMPLAINT FOR DAMAGES,
+AMAZON.COM, INC.,                        
+Defendant.       
+
+INJUNCTIVE RELIEF, AND
+OTHER RELIEF
 
 I. INTRODUCTION
 	1.	Plaintiff, Bo Shang (“Plaintiff”), brings this action against Amazon.com, Inc. (“Amazon” or “Defendant”), alleging that Defendant sold or facilitated the sale of a stolen Google Pixel 7A smartphone through its Amazon Prime shipping program, in contravention of Washington law prohibiting trafficking or possession of stolen property.

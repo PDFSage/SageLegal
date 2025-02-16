@@ -29,24 +29,35 @@ class Lawsuit:
                   and each value as the full text of that heading.
       - exhibits: an OrderedDict keyed by a simple index string ("1", "2", etc.).
                   Each value is another OrderedDict with 'caption' and 'image_path'.
+      - documents: an OrderedDict for storing entire detected bracketed documents.
 
     This class also automatically stores case_information and law_firm_information
     from command line arguments.
     """
 
-    def __init__(self, sections=None, exhibits=None, header=None,
-                 case_information="", law_firm_information=""):
+    def __init__(
+        self,
+        sections=None,
+        exhibits=None,
+        header=None,
+        documents=None,
+        case_information="",
+        law_firm_information=""
+    ):
         if sections is None:
             sections = OrderedDict()
         if exhibits is None:
             exhibits = OrderedDict()
         if header is None:
             header = OrderedDict()
+        if documents is None:
+            documents = OrderedDict()
 
         # Ensure they are all OrderedDict:
         self.sections = OrderedDict(sections)
         self.exhibits = OrderedDict(exhibits)
         self.header   = OrderedDict(header)
+        self.documents = OrderedDict(documents)
 
         # Store the command-line-provided info
         self.case_information     = case_information
@@ -65,6 +76,11 @@ class Lawsuit:
             exhibits_str.append(f"  {ex_key}:\n      {ex_inner}")
         exhibits_str = "\n".join(exhibits_str)
 
+        documents_str = []
+        for doc_key, doc_text in self.documents.items():
+            documents_str.append(f"  {doc_key}:\n      {doc_text}")
+        documents_str = "\n".join(documents_str)
+
         return (
             "Lawsuit Object:\n\n"
             "CASE INFORMATION:\n"
@@ -76,7 +92,9 @@ class Lawsuit:
             "SECTIONS:\n"
             f"{sections_str}\n\n"
             "EXHIBITS:\n"
-            f"{exhibits_str}\n"
+            f"{exhibits_str}\n\n"
+            "DOCUMENTS:\n"
+            f"{documents_str}\n"
         )
 
 ###############################################################################
@@ -136,15 +154,17 @@ def wrap_text_to_lines(pdf_canvas, full_text, font_name, font_size, max_width):
             all_lines.append((current_line, False))
     return all_lines
 
-def draw_exhibit_page(pdf_canvas,
-                      page_width,
-                      page_height,
-                      firm_name,
-                      case_name,
-                      exhibit_caption,
-                      exhibit_image,
-                      page_number,
-                      total_pages):
+def draw_exhibit_page(
+    pdf_canvas,
+    page_width,
+    page_height,
+    firm_name,
+    case_name,
+    exhibit_caption,
+    exhibit_image,
+    page_number,
+    total_pages
+):
     """
     Draws a single exhibit page with bounding box, firm/case name, exhibit caption at top,
     and the exhibit image scaled to fill the remaining space.
@@ -178,8 +198,8 @@ def draw_exhibit_page(pdf_canvas,
         pdf_canvas.drawString(left_margin, current_y, cap_line)
         current_y -= line_spacing
 
-    # Calculate space for the image below
-    spacing_lines = 2
+    # We only want 1 blank line below the last caption line before the image:
+    spacing_lines = 1
     top_of_image_area = current_y - (spacing_lines * line_spacing)
     bottom_of_image_area = 0.5 * inch  # bounding box bottom
     if top_of_image_area < bottom_of_image_area:
@@ -209,13 +229,15 @@ def draw_exhibit_page(pdf_canvas,
         x_img = 0.5 * inch + (available_width - new_width) / 2.0
         y_img_bottom = bottom_of_image_area
 
-        pdf_canvas.drawImage(img_reader,
-                             x_img,
-                             y_img_bottom,
-                             width=new_width,
-                             height=new_height,
-                             preserveAspectRatio=True,
-                             anchor='c')
+        pdf_canvas.drawImage(
+            img_reader,
+            x_img,
+            y_img_bottom,
+            width=new_width,
+            height=new_height,
+            preserveAspectRatio=True,
+            anchor='c'
+        )
 
     # Footer with page number
     pdf_canvas.setFont("Times-Italic", 9)
@@ -322,24 +344,26 @@ def draw_legal_page_title_block(
     footer_text = f"Page {page_number} of {total_pages}"
     pdf_canvas.drawCentredString(page_width / 2.0, 0.5 * inch - 0.1 * inch, footer_text)
 
-def draw_page_of_segments(pdf_canvas,
-                          page_width,
-                          page_height,
-                          segments,
-                          start_index,
-                          max_lines_per_page,
-                          firm_name,
-                          case_name,
-                          page_number,
-                          total_pages,
-                          line_offset_x,
-                          line_offset_y,
-                          line_spacing,
-                          heading_positions):
+def draw_page_of_segments(
+    pdf_canvas,
+    page_width,
+    page_height,
+    segments,
+    start_index,
+    max_lines_per_page,
+    firm_name,
+    case_name,
+    page_number,
+    total_pages,
+    line_offset_x,
+    line_offset_y,
+    line_spacing,
+    heading_positions
+):
     """
     Draws up to max_lines_per_page items from the 'segments' onto the PDF page,
     each with line numbers on the far left/right (unless it's a forced new-page block).
-    
+
     Returns the index of the next segment that hasn't been drawn yet.
     """
     # Page bounding box
@@ -385,8 +409,7 @@ def draw_page_of_segments(pdf_canvas,
                     total_pages,
                 )
                 end_index += 1
-                # We used this entire page for the bracket block, so we are done with it
-                # (the calling loop will showPage()).
+                # We used this entire page for the bracket block, so we are done with it.
                 return end_index
 
         # Otherwise, normal line-based segment
@@ -398,12 +421,14 @@ def draw_page_of_segments(pdf_canvas,
 
         # If heading => record for table of contents
         if seg["is_heading"] or seg["is_subheading"]:
-            heading_positions.append((
-                seg["text"],
-                page_number,
-                line_number,
-                seg["is_subheading"]
-            ))
+            heading_positions.append(
+                (
+                    seg["text"],
+                    page_number,
+                    line_number,
+                    seg["is_subheading"]
+                )
+            )
 
         # Draw text according to alignment
         pdf_canvas.setFont(seg["font_name"], seg["font_size"])
@@ -468,13 +493,15 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
         text_lines = [w[0] for w in wrapped] if wrapped else [""]
 
         for i, txt_line in enumerate(text_lines):
-            flattened_lines.append((
-                txt_line,
-                pg_num,
-                ln_num,
-                is_sub,
-                (i == 0)  # is_first_line
-            ))
+            flattened_lines.append(
+                (
+                    txt_line,
+                    pg_num,
+                    ln_num,
+                    is_sub,
+                    (i == 0)  # is_first_line
+                )
+            )
 
     usable_height = page_height - (top_margin + bottom_margin) - 1.0 * inch
     max_lines_per_page = int(usable_height // line_spacing)
@@ -723,7 +750,41 @@ def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions):
     print(f"Table of Contents DOCX saved as: {docx_filename}")
 
 ###############################################################################
-#  PARSING
+#  ADDITIONAL PARSER FOR MULTIPLE DOCUMENTS
+###############################################################################
+def parse_documents_from_text(raw_text):
+    """
+    Parse multiple bracketed documents (separated by lines of '=====...') from the raw text.
+    Each matched pair of full-equals lines forms one document. Those bracket lines are removed,
+    and the content in between is considered a single document.
+    Returns a list of document-strings (without the bracket lines).
+    """
+    lines = raw_text.splitlines()
+    docs = []
+    i = 0
+    n = len(lines)
+
+    while i < n:
+        if is_full_equals_line(lines[i]):
+            j = i + 1
+            doc_lines = []
+            while j < n and not is_full_equals_line(lines[j]):
+                doc_lines.append(lines[j])
+                j += 1
+            if j < n:
+                # found a bottom bracket
+                docs.append("\n".join(doc_lines))
+                i = j + 1
+            else:
+                # no matching bottom bracket
+                break
+        else:
+            i += 1
+
+    return docs
+
+###############################################################################
+#  PARSING HEADER AND SECTIONS
 ###############################################################################
 def parse_header_and_sections(raw_text):
     """
@@ -766,6 +827,7 @@ def parse_header_and_sections(raw_text):
             heading_number = match_heading.group(1).strip()
             heading_title = match_heading.group(2).strip()
             if is_line_all_caps(heading_title):
+                # finalize old heading
                 if current_heading_key is not None:
                     sections_od[current_heading_key] = "\n".join(current_body_lines)
                 current_body_lines = []
@@ -881,7 +943,7 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
             lines_cleaned = [ln.strip() for ln in block_lines]
             segments.append({
                 "legal_page_title": True,
-                "page_always_new": True,  # <=== ensures we start on a new page
+                "page_always_new": True,  # ensure it starts on a new page
                 "lines": lines_cleaned
             })
         else:
@@ -919,7 +981,9 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
         })
 
         # Heading line(s) (wrapped if needed)
-        heading_wrapped = wrap_text_to_lines(pdf_canvas, section_key, heading_font_name, heading_font_size, max_text_width)
+        heading_wrapped = wrap_text_to_lines(
+            pdf_canvas, section_key, heading_font_name, heading_font_size, max_text_width
+        )
         for (wl, _) in heading_wrapped:
             segments.append({
                 "text": wl,
@@ -947,7 +1011,9 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
                         "is_subheading": False
                     })
                 else:
-                    wrapped = wrap_text_to_lines(pdf_canvas, line_str, body_font_name, body_font_size, max_text_width)
+                    wrapped = wrap_text_to_lines(
+                        pdf_canvas, line_str, body_font_name, body_font_size, max_text_width
+                    )
                     for (wl, _) in wrapped:
                         segments.append({
                             "text": wl,
@@ -980,14 +1046,15 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
 ###############################################################################
 #  MAIN PDF GENERATION
 ###############################################################################
-def generate_legal_document(firm_name,
-                            case_name,
-                            output_filename,
-                            header_od,
-                            sections_od,
-                            text_body,
-                            exhibits,
-                            heading_positions):
+def generate_legal_document(
+    firm_name,
+    case_name,
+    output_filename,
+    header_od,
+    sections_od,
+    exhibits,
+    heading_positions
+):
     """
     Generate the main PDF with line-numbered text (including bracket-block pages).
     Then append exhibits. Also produce a DOCX version of the same content.
@@ -1013,7 +1080,7 @@ def generate_legal_document(firm_name,
     line_offset_y = page_height - top_margin
     max_text_width = page_width - right_margin - line_offset_x - 0.2 * inch
 
-    # Build segments
+    # Build segments for main content
     segments = prepare_main_pdf_segments(
         header_text=header_od.get("content", ""),
         sections_od=sections_od,
@@ -1022,34 +1089,32 @@ def generate_legal_document(firm_name,
         max_text_width=max_text_width
     )
 
-    # Count pages needed for text segments
+    # Count how many pages the text segments will require
     current_index = 0
     text_pages = 0
     total_segments = len(segments)
 
     while current_index < total_segments:
-        # Check if the next segment is a forced-new-page block and we're at an empty page
         seg = segments[current_index]
         if seg.get("page_always_new"):
-            # This block alone will consume one page
+            # This block alone will consume one full page
             text_pages += 1
             current_index += 1
         else:
-            # Simulate how many lines can fit
+            # We can fit up to max_lines_per_page segments on this page
             lines_used = 0
             local_i = current_index
             while local_i < total_segments and lines_used < max_lines_per_page:
                 s = segments[local_i]
                 if s.get("page_always_new"):
-                    # we can't place it here if we have lines used;
-                    # or if lines_used=0, that block uses the page alone
+                    # must stop to start new page for that block
                     break
-                else:
-                    lines_used += 1
-                    local_i += 1
+                lines_used += 1
+                local_i += 1
             text_pages += 1
             current_index = local_i
 
+    # The total number of exhibit pages is the number of exhibits
     exhibit_pages = len(exhibits)
     total_pages = text_pages + exhibit_pages
 
@@ -1057,7 +1122,7 @@ def generate_legal_document(firm_name,
     page_number = 1
     current_index = 0
     while current_index < total_segments:
-        # Start a new page for these segments
+        # Start a new page
         next_index = draw_page_of_segments(
             pdf_canvas=pdf_canvas,
             page_width=page_width,
@@ -1111,9 +1176,11 @@ def generate_legal_document(firm_name,
 ###############################################################################
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate a legal-style PDF (with bracketed blocks each on a new page), "
-                    "line numbering, exhibits, a separate table-of-contents PDF, and DOCX files. "
-                    "Also pickles the Lawsuit object if requested."
+        description=(
+            "Generate a legal-style PDF (with bracketed blocks each on a new page), "
+            "line numbering, exhibits, a separate table-of-contents PDF, and DOCX files. "
+            "Also pickles the Lawsuit object if requested."
+        )
     )
     parser.add_argument("--firm_name", required=True,
                         help="Firm name placed vertically on pages.")
@@ -1128,8 +1195,10 @@ def main():
     parser.add_argument("--index", default="index.pdf",
                         help="PDF filename for the table of contents (default: index.pdf).")
     parser.add_argument("--pickle", nargs='?', const=None,
-                        help="Optional path to store the Lawsuit object in pickle format. "
-                             "If no path is given, defaults to 'lawsuit.pickle'.")
+                        help=(
+                            "Optional path to store the Lawsuit object in pickle format. "
+                            "If no path is given, defaults to 'lawsuit.pickle'."
+                        ))
 
     args = parser.parse_args()
 
@@ -1148,7 +1217,7 @@ def main():
     ex_index = 1
     for i in range(0, len(args.exhibits), 2):
         cap_file = args.exhibits[i]
-        image_file = args.exhibits[i+1]
+        image_file = args.exhibits[i + 1]
         with open(cap_file, 'r', encoding='utf-8') as cfp:
             cap_text = cfp.read()
         exhibits_od[str(ex_index)] = OrderedDict([
@@ -1157,21 +1226,29 @@ def main():
         ])
         ex_index += 1
 
-    # Add sample metadata to the header
+    # Add sample metadata to the header (you can adjust or remove this as needed)
     header_od["DocumentTitle"] = "Complaint for Damages"
     header_od["DateFiled"] = "2025-02-14"
     header_od["Court"] = "Sample Court"
 
-    # Create Lawsuit object
+    # Parse bracketed documents from raw_text (if any). Each bracket-block pair is considered a separate document.
+    found_documents = parse_documents_from_text(raw_text)
+    documents_od = OrderedDict()
+    if found_documents:
+        for idx, doc_text in enumerate(found_documents, start=1):
+            documents_od[str(idx)] = doc_text
+
+    # Create Lawsuit object, including the newly parsed documents
     lawsuit_obj = Lawsuit(
         sections=sections_od,
         exhibits=exhibits_od,
         header=header_od,
+        documents=documents_od,
         case_information=args.case,
         law_firm_information=args.firm_name
     )
 
-    # Convert exhibits for PDF
+    # Convert exhibits for PDF generation
     exhibits_for_pdf = []
     for key, val in lawsuit_obj.exhibits.items():
         exhibits_for_pdf.append((val["caption"], val["image_path"]))
@@ -1179,19 +1256,18 @@ def main():
     # Track headings for TOC
     heading_positions = []
 
-    # Generate main PDF + docx
+    # Generate main PDF + DOCX
     generate_legal_document(
         firm_name=args.firm_name,
         case_name=args.case,
         output_filename=args.output,
         header_od=header_od,
         sections_od=sections_od,
-        text_body=raw_text,
         exhibits=exhibits_for_pdf,
         heading_positions=heading_positions
     )
 
-    # Generate TOC PDF + docx
+    # Generate TOC PDF + DOCX
     generate_index_pdf(
         index_filename=args.index,
         firm_name=args.firm_name,
