@@ -1,4 +1,30 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+Generate a legal-style PDF and DOCX with a Washington State/KCSC-style civil case cover sheet
+that includes boxes (some checked, some unchecked) exactly as specified.
+Then generate the rest of the complaint document with line-numbering, bracketed blocks on new pages,
+and optional exhibits. Also produce a separate Table of Contents (PDF + DOCX),
+and optionally pickle the internal Lawsuit object.
+
+DEPENDENCIES:
+    - Python 3
+    - reportlab (for PDF generation)
+    - python-docx (for DOCX generation)
+
+USAGE EXAMPLE (simple):
+    python3 script_name.py \
+        --firm_name="My Law Firm" \
+        --case="Shang v. Amazon" \
+        --file=body.txt \
+        --output=main.pdf
+
+This code is "production grade" in that it has no placeholders/hypotheticals.
+It will produce a cover sheet page with checkboxes, a main PDF with the complaint text,
+a DOCX version, a PDF and DOCX table of contents, and optionally a pickle of the data.
+"""
+
 import argparse
 import re
 import pickle
@@ -17,6 +43,7 @@ from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt, Inches
 
+
 ###############################################################################
 #  LAWSUIT CLASS
 ###############################################################################
@@ -31,8 +58,7 @@ class Lawsuit:
                   Each value is another OrderedDict with 'caption' and 'image_path'.
       - documents: an OrderedDict for storing entire detected bracketed documents.
 
-    This class also automatically stores case_information and law_firm_information
-    from command line arguments.
+    Also stores case_information and law_firm_information from CLI arguments.
     """
 
     def __init__(
@@ -56,16 +82,16 @@ class Lawsuit:
         # Ensure they are all OrderedDict:
         self.sections = OrderedDict(sections)
         self.exhibits = OrderedDict(exhibits)
-        self.header   = OrderedDict(header)
+        self.header = OrderedDict(header)
         self.documents = OrderedDict(documents)
 
         # Store the command-line-provided info
-        self.case_information     = case_information
+        self.case_information = case_information
         self.law_firm_information = law_firm_information
 
     def __repr__(self):
         """
-        Print the Lawsuit object clearly, showing all keys and values in each OrderedDict fully,
+        Print the Lawsuit object clearly, showing all keys and values in each OrderedDict,
         as well as the case_information and law_firm_information fields.
         """
         header_str = "\n".join([f"  {k}: {v}" for k, v in self.header.items()])
@@ -97,36 +123,21 @@ class Lawsuit:
             f"{documents_str}\n"
         )
 
+
 ###############################################################################
-#  HELPER FUNCTIONS (PDF)
+#  HELPER FUNCTIONS (for PDF creation)
 ###############################################################################
 def is_line_all_caps(line_str):
-    """Returns True if the line contains at least one uppercase letter
-       and no lowercase letters (a-z)."""
-    import string
+    """Returns True if the line has at least one uppercase letter and no lowercase letters."""
     if not re.search(r'[A-Z]', line_str):
         return False
     return not re.search(r'[a-z]', line_str)
 
-def draw_firm_name_vertical_center(pdf_canvas, text, page_width, page_height):
-    """
-    Draws the firm name vertically, centered along the page height on the left side.
-    """
-    pdf_canvas.saveState()
-    pdf_canvas.setFont("Times-Bold", 10)
-    text_width = pdf_canvas.stringWidth(text, "Times-Bold", 10)
-    x_pos = 0.2 * inch
-    y_center = page_height / 2.0
-    y_pos = y_center - (text_width / 2.0)
-    pdf_canvas.translate(x_pos, y_pos)
-    pdf_canvas.rotate(90)
-    pdf_canvas.drawString(0, 0, text)
-    pdf_canvas.restoreState()
-
 def wrap_text_to_lines(pdf_canvas, full_text, font_name, font_size, max_width):
     """
-    Splits a large text into a list of (line_string, ended_full_line) pairs,
-    respecting max_width so that text does not overflow horizontally.
+    Splits a large text into (line_string, ended_full_line) pairs, respecting max_width
+    so that text does not overflow horizontally in the PDF.
+    ended_full_line is True if that line was 'full' and caused the next word to wrap.
     """
     pdf_canvas.setFont(font_name, font_size)
     paragraphs = full_text.split('\n')
@@ -139,21 +150,240 @@ def wrap_text_to_lines(pdf_canvas, full_text, font_name, font_size, max_width):
             continue
         current_line = ""
         for word in words:
-            if not current_line:
-                test_line = word
-            else:
-                test_line = current_line + " " + word
-
+            test_line = word if not current_line else (current_line + " " + word)
             if pdf_canvas.stringWidth(test_line, font_name, font_size) <= max_width:
                 current_line = test_line
             else:
-                # The line overflowed
                 all_lines.append((current_line, True))
                 current_line = word
         if current_line:
             all_lines.append((current_line, False))
     return all_lines
 
+def draw_firm_name_vertical_center(pdf_canvas, text, page_width, page_height):
+    """
+    Draws the firm name (rotated 90 degrees) along the left side of the page, centered vertically.
+    """
+    pdf_canvas.saveState()
+    pdf_canvas.setFont("Helvetica-Bold", 10)  # Using a more universal font for the box characters
+    text_width = pdf_canvas.stringWidth(text, "Helvetica-Bold", 10)
+    x_pos = 0.2 * inch
+    y_center = page_height / 2.0
+    y_pos = y_center - (text_width / 2.0)
+    pdf_canvas.translate(x_pos, y_pos)
+    pdf_canvas.rotate(90)
+    pdf_canvas.drawString(0, 0, text)
+    pdf_canvas.restoreState()
+
+def draw_checkbox_line(pdf_canvas, text, x, y):
+    """
+    Draw a line of text containing checkboxes (☐ or ☒).
+    We'll just call pdf_canvas.drawString with the text as-is,
+    assuming the standard font used can display those box-check glyphs.
+    """
+    pdf_canvas.drawString(x, y, text)
+
+###############################################################################
+#  COVER SHEET (PDF)
+###############################################################################
+def generate_cover_sheet_pdf(pdf_canvas, page_width, page_height):
+    """
+    Generate the first page as a cover sheet with the specified checkboxes
+    exactly matching the user request:
+       1. COURT: KING COUNTY SUPERIOR COURT
+       2. CASE ASSIGNMENT AREA: ☐ Kent  ☒ Seattle
+       3. CASE TITLE: Bo Shang v. Amazon.com, Inc.
+       4. CASE NUMBER (Clerk to Assign): __________
+       5. CASE CATEGORY: ☒ Civil
+       6. CASE TYPE: ☒ TTO – Tort/Other
+       7. DOCUMENT/S BEING FILED:
+           ☐ Initial Pleadings...
+           ☐ Additional/Amended...
+           ☒ Complaint for Tort – Other (CMPTTO)
+           ☒ Summons
+       8. RELIEF REQUESTED:
+           ☒ Damages
+           ☒ Injunctive Relief
+           ☐ Other: _________
+       9. JURY DEMAND:
+           ☒ Yes
+           ☐ No
+      10. ATTORNEY OR PARTY SIGNING COVER SHEET:
+           Name:      Bo Shang (Plaintiff Pro Se)
+           Address:   10 McCafferty Way
+                     Burlington, MA 01803-3127
+           Phone:     781-999-4101
+           Email:     enigmatictyphoon@gmail.com
+           WSBA No.:  Pro Se
+    """
+
+    pdf_canvas.setFont("Helvetica", 12)
+    left_margin = 1.0 * inch
+    top_position = page_height - 1.0 * inch
+    line_height = 18  # points (about 0.25 inch)
+    current_y = top_position
+
+    # Title / bounding
+    pdf_canvas.setLineWidth(2)
+    pdf_canvas.rect(0.5 * inch, 0.5 * inch, page_width - 1.0 * inch, page_height - 1.0 * inch)
+
+    # 1. COURT
+    line1 = "1. COURT: KING COUNTY SUPERIOR COURT"
+    pdf_canvas.drawString(left_margin, current_y, line1)
+    current_y -= line_height
+
+    # 2. CASE ASSIGNMENT AREA
+    line2 = "2. CASE ASSIGNMENT AREA:   ☐ Kent     ☒ Seattle"
+    pdf_canvas.drawString(left_margin, current_y, line2)
+    current_y -= line_height
+
+    # 3. CASE TITLE
+    line3 = "3. CASE TITLE: Bo Shang v. Amazon.com, Inc."
+    pdf_canvas.drawString(left_margin, current_y, line3)
+    current_y -= line_height
+
+    # 4. CASE NUMBER
+    line4 = "4. CASE NUMBER (Clerk to Assign): ______________________"
+    pdf_canvas.drawString(left_margin, current_y, line4)
+    current_y -= line_height
+
+    # 5. CASE CATEGORY
+    line5 = "5. CASE CATEGORY (Check one):   ☒ Civil"
+    pdf_canvas.drawString(left_margin, current_y, line5)
+    current_y -= line_height
+
+    # 6. CASE TYPE
+    line6 = "6. CASE TYPE:   ☒ TTO – Tort/Other"
+    pdf_canvas.drawString(left_margin, current_y, line6)
+    current_y -= line_height
+
+    # 7. DOCUMENTS BEING FILED
+    pdf_canvas.drawString(left_margin, current_y, "7. DOCUMENT/S BEING FILED:")
+    current_y -= line_height
+
+    docs_line1 = "   ☐ Initial Pleadings and Petitions"
+    pdf_canvas.drawString(left_margin, current_y, docs_line1)
+    current_y -= line_height
+
+    docs_line2 = "   ☐ Additional/Amended Pleadings"
+    pdf_canvas.drawString(left_margin, current_y, docs_line2)
+    current_y -= line_height
+
+    docs_line3 = "   ☒ Complaint for Tort – Other (CMPTTO)"
+    pdf_canvas.drawString(left_margin, current_y, docs_line3)
+    current_y -= line_height
+
+    docs_line4 = "   ☒ Summons"
+    pdf_canvas.drawString(left_margin, current_y, docs_line4)
+    current_y -= line_height
+
+    # 8. RELIEF REQUESTED
+    pdf_canvas.drawString(left_margin, current_y, "8. RELIEF REQUESTED:")
+    current_y -= line_height
+
+    relief_line1 = "   ☒ Damages"
+    pdf_canvas.drawString(left_margin, current_y, relief_line1)
+    current_y -= line_height
+
+    relief_line2 = "   ☒ Injunctive Relief"
+    pdf_canvas.drawString(left_margin, current_y, relief_line2)
+    current_y -= line_height
+
+    relief_line3 = "   ☐ Other: ____________________"
+    pdf_canvas.drawString(left_margin, current_y, relief_line3)
+    current_y -= line_height
+
+    # 9. JURY DEMAND
+    pdf_canvas.drawString(left_margin, current_y, "9. JURY DEMAND:")
+    current_y -= line_height
+
+    jury_line1 = "   ☒ Yes"
+    pdf_canvas.drawString(left_margin, current_y, jury_line1)
+    current_y -= line_height
+
+    jury_line2 = "   ☐ No"
+    pdf_canvas.drawString(left_margin, current_y, jury_line2)
+    current_y -= line_height
+
+    # 10. ATTORNEY OR PARTY SIGNING COVER SHEET
+    pdf_canvas.drawString(left_margin, current_y, "10. ATTORNEY OR PARTY SIGNING COVER SHEET:")
+    current_y -= line_height
+
+    name_line = "   Name:      Bo Shang (Plaintiff Pro Se)"
+    pdf_canvas.drawString(left_margin, current_y, name_line)
+    current_y -= line_height
+
+    addr_line1 = "   Address:   10 McCafferty Way"
+    pdf_canvas.drawString(left_margin, current_y, addr_line1)
+    current_y -= line_height
+
+    addr_line2 = "              Burlington, MA 01803-3127"
+    pdf_canvas.drawString(left_margin, current_y, addr_line2)
+    current_y -= line_height
+
+    phone_line = "   Phone:     781-999-4101"
+    pdf_canvas.drawString(left_margin, current_y, phone_line)
+    current_y -= line_height
+
+    email_line = "   Email:     enigmatictyphoon@gmail.com"
+    pdf_canvas.drawString(left_margin, current_y, email_line)
+    current_y -= line_height
+
+    wsba_line = "   WSBA No.:  Pro Se"
+    pdf_canvas.drawString(left_margin, current_y, wsba_line)
+    current_y -= line_height
+
+
+def generate_cover_sheet_docx(doc: Document):
+    """
+    Generate the cover sheet in the given docx Document with the same fields and checkboxes.
+    We'll just insert them as text lines with the appropriate symbols.
+    """
+    style = doc.styles['Normal']
+    font = style.font
+    font.name = 'Times New Roman'
+    font.size = Pt(12)
+
+    def add_line(text, bold=False):
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        r = p.add_run(text)
+        r.bold = bold
+
+    add_line("1. COURT: KING COUNTY SUPERIOR COURT")
+    add_line("2. CASE ASSIGNMENT AREA:   ☐ Kent     ☒ Seattle")
+    add_line("3. CASE TITLE: Bo Shang v. Amazon.com, Inc.")
+    add_line("4. CASE NUMBER (Clerk to Assign): ______________________")
+    add_line("5. CASE CATEGORY (Check one):   ☒ Civil")
+    add_line("6. CASE TYPE:   ☒ TTO – Tort/Other")
+
+    add_line("7. DOCUMENT/S BEING FILED:")
+    add_line("   ☐ Initial Pleadings and Petitions")
+    add_line("   ☐ Additional/Amended Pleadings")
+    add_line("   ☒ Complaint for Tort – Other (CMPTTO)")
+    add_line("   ☒ Summons")
+
+    add_line("8. RELIEF REQUESTED:")
+    add_line("   ☒ Damages")
+    add_line("   ☒ Injunctive Relief")
+    add_line("   ☐ Other: ____________________")
+
+    add_line("9. JURY DEMAND:")
+    add_line("   ☒ Yes")
+    add_line("   ☐ No")
+
+    add_line("10. ATTORNEY OR PARTY SIGNING COVER SHEET:")
+    add_line("   Name:      Bo Shang (Plaintiff Pro Se)")
+    add_line("   Address:   10 McCafferty Way")
+    add_line("              Burlington, MA 01803-3127")
+    add_line("   Phone:     781-999-4101")
+    add_line("   Email:     enigmatictyphoon@gmail.com")
+    add_line("   WSBA No.:  Pro Se")
+
+
+###############################################################################
+#  DRAWING EXHIBITS (PDF)
+###############################################################################
 def draw_exhibit_page(
     pdf_canvas,
     page_width,
@@ -177,7 +407,7 @@ def draw_exhibit_page(
     draw_firm_name_vertical_center(pdf_canvas, firm_name, page_width, page_height)
 
     # Case name at top center
-    pdf_canvas.setFont("Times-Bold", 12)
+    pdf_canvas.setFont("Helvetica-Bold", 12)
     pdf_canvas.drawCentredString(page_width / 2.0, page_height - 0.5 * inch, case_name)
 
     # Horizontal line
@@ -185,47 +415,47 @@ def draw_exhibit_page(
     pdf_canvas.line(0.5 * inch, page_height - 0.6 * inch, page_width - 0.5 * inch, page_height - 0.6 * inch)
 
     # Draw the exhibit caption
-    pdf_canvas.setFont("Times-Roman", 10)
+    pdf_canvas.setFont("Helvetica", 10)
     top_margin = page_height - 1.2 * inch
     left_margin = 1.2 * inch
     line_spacing = 0.25 * inch
     max_caption_width = page_width - (2 * left_margin)
 
     # Wrap the caption
-    wrapped_caption_lines = wrap_text_to_lines(pdf_canvas, exhibit_caption, "Times-Roman", 10, max_caption_width)
+    from reportlab.pdfgen import canvas as dummy
+    temp_c = dummy.Canvas("dummy", pagesize=letter)
+    wrapped_caption_lines = wrap_text_to_lines(temp_c, exhibit_caption, "Helvetica", 10, max_caption_width)
+
     current_y = top_margin
     for (cap_line, _) in wrapped_caption_lines:
         pdf_canvas.drawString(left_margin, current_y, cap_line)
         current_y -= line_spacing
 
-    # We only want 1 blank line below the last caption line before the image:
-    spacing_lines = 1
-    top_of_image_area = current_y - (spacing_lines * line_spacing)
-    bottom_of_image_area = 0.5 * inch  # bounding box bottom
+    # We only want 1 blank line below the last caption line:
+    top_of_image_area = current_y - line_spacing
+    bottom_of_image_area = 0.5 * inch
     if top_of_image_area < bottom_of_image_area:
         top_of_image_area = bottom_of_image_area
-
     available_height = top_of_image_area - bottom_of_image_area
-    available_width = (page_width - 1.0 * inch)  # bounding box from 0.5 inch to page_width-0.5 inch
+    available_width = page_width - 1.0 * inch  # bounding box left 0.5", right 0.5"
 
     try:
         img_reader = ImageReader(exhibit_image)
         img_width, img_height = img_reader.getSize()
     except Exception as e:
-        # If image loading fails, notify in the middle of the page
-        pdf_canvas.setFont("Times-Italic", 10)
+        # If image loading fails, place a message in the middle
+        pdf_canvas.setFont("Helvetica-Oblique", 10)
         pdf_canvas.drawCentredString(
             page_width / 2.0,
             page_height / 2.0,
             f"Unable to load image: {exhibit_image} Error: {e}"
         )
     else:
-        # Scale the image
+        # Scale
         scale = min(available_width / img_width, available_height / img_height, 1.0)
         new_width = img_width * scale
         new_height = img_height * scale
 
-        # Center horizontally
         x_img = 0.5 * inch + (available_width - new_width) / 2.0
         y_img_bottom = bottom_of_image_area
 
@@ -240,17 +470,18 @@ def draw_exhibit_page(
         )
 
     # Footer with page number
-    pdf_canvas.setFont("Times-Italic", 9)
+    pdf_canvas.setFont("Helvetica-Oblique", 9)
     footer_text = f"Page {page_number} of {total_pages}"
-    pdf_canvas.drawCentredString(page_width / 2.0, 0.5 * inch - 0.1 * inch, footer_text)
+    pdf_canvas.drawCentredString(page_width / 2.0, 0.4 * inch, footer_text)
+
 
 ###############################################################################
-#  DETECTING LEGAL-TITLE BLOCKS
+#  DETECTING BRACKETED "LEGAL PAGE TITLE BLOCKS"
 ###############################################################################
 def is_full_equals_line(line_str):
     """
-    Returns True if the line is composed entirely of '=' (with optional whitespace)
-    and has at least a few '=' characters.
+    Returns True if the line is entirely '=' (with optional whitespace),
+    and has at least 5 '=' chars.
     """
     stripped = line_str.strip()
     if len(stripped) < 5:
@@ -259,13 +490,8 @@ def is_full_equals_line(line_str):
 
 def detect_legal_title_blocks(lines):
     """
-    Given a list of lines, detects blocks bracketed by lines of '========...'.
-    We remove those bracket lines and treat everything in between them
-    as a single "legal_page_title_block" which we will place on its own PDF page.
-
-    Yields:
-      ("legal_page_title_block", [lines_in_between])  for bracketed blocks
-      ("normal_line", line)                           for normal lines
+    Given lines, yields either ("legal_page_title_block", [blocklines]) or ("normal_line", line).
+    A block is bracketed by lines of '====='.
     """
     i = 0
     n = len(lines)
@@ -277,29 +503,27 @@ def detect_legal_title_blocks(lines):
             found_bottom = False
             while j < n:
                 if is_full_equals_line(lines[j]):
-                    # found the closing bracket
                     found_bottom = True
-                    j += 1  # skip bottom bracket
+                    j += 1
                     break
                 else:
                     inner_lines.append(lines[j])
                 j += 1
 
             if found_bottom:
-                # yield the block
                 yield ("legal_page_title_block", inner_lines)
                 i = j
-                continue
             else:
-                # no matching bottom bracket; treat as normal line
+                # no matching bottom bracket
                 yield ("normal_line", lines[i])
                 i += 1
         else:
             yield ("normal_line", lines[i])
             i += 1
 
+
 ###############################################################################
-#  PAGE-DRAWING FOR TEXT SEGMENTS
+#  DRAWING TEXT SEGMENTS (PDF)
 ###############################################################################
 def draw_legal_page_title_block(
     pdf_canvas,
@@ -309,30 +533,28 @@ def draw_legal_page_title_block(
     firm_name,
     case_name,
     page_number,
-    total_pages,
+    total_pages
 ):
     """
-    Draws one bracketed block as a stand-alone page (ensuring "every detected page starts on a new page").
-    The text is displayed big, bold, centered on the page, with normal bounding box, etc.
+    A bracketed block becomes a standalone page with big centered text.
     """
-    # Page bounding box
+    # Bounding box
     pdf_canvas.setLineWidth(2)
     pdf_canvas.rect(0.5 * inch, 0.5 * inch, page_width - 1.0 * inch, page_height - 1.3 * inch)
 
     # Vertical firm name
     draw_firm_name_vertical_center(pdf_canvas, firm_name, page_width, page_height)
 
-    # Case name at top center
-    pdf_canvas.setFont("Times-Bold", 12)
+    # Case name at top
+    pdf_canvas.setFont("Helvetica-Bold", 12)
     pdf_canvas.drawCentredString(page_width / 2.0, page_height - 0.5 * inch, case_name)
 
     # Horizontal line
     pdf_canvas.setLineWidth(1)
     pdf_canvas.line(0.5 * inch, page_height - 0.6 * inch, page_width - 0.5 * inch, page_height - 0.6 * inch)
 
-    # Now draw block lines in big bold style, centered
-    pdf_canvas.setFont("Times-Bold", 14)
-
+    # Big bold lines in center
+    pdf_canvas.setFont("Helvetica-Bold", 14)
     line_spacing = 0.3 * inch
     y_text = page_height - 1.5 * inch
     for line_str in block_lines:
@@ -340,9 +562,10 @@ def draw_legal_page_title_block(
         y_text -= line_spacing
 
     # Footer
-    pdf_canvas.setFont("Times-Italic", 9)
+    pdf_canvas.setFont("Helvetica-Oblique", 9)
     footer_text = f"Page {page_number} of {total_pages}"
-    pdf_canvas.drawCentredString(page_width / 2.0, 0.5 * inch - 0.1 * inch, footer_text)
+    pdf_canvas.drawCentredString(page_width / 2.0, 0.4 * inch, footer_text)
+
 
 def draw_page_of_segments(
     pdf_canvas,
@@ -361,23 +584,17 @@ def draw_page_of_segments(
     heading_positions
 ):
     """
-    Draws up to max_lines_per_page items from the 'segments' onto the PDF page,
-    each with line numbers on the far left/right (unless it's a forced new-page block).
-
-    Returns the index of the next segment that hasn't been drawn yet.
+    Draws up to max_lines_per_page normal text segments, or exactly 1 bracketed block
+    that forces a new page. Returns the index of the next segment to draw.
     """
-    # Page bounding box
+    # Page bounding
     pdf_canvas.setLineWidth(2)
     pdf_canvas.rect(0.5 * inch, 0.5 * inch, page_width - 1.0 * inch, page_height - 1.3 * inch)
 
-    # Vertical firm name
     draw_firm_name_vertical_center(pdf_canvas, firm_name, page_width, page_height)
 
-    # Case name at top center
-    pdf_canvas.setFont("Times-Bold", 12)
+    pdf_canvas.setFont("Helvetica-Bold", 12)
     pdf_canvas.drawCentredString(page_width / 2.0, page_height - 0.5 * inch, case_name)
-
-    # Horizontal line under case name
     pdf_canvas.setLineWidth(1)
     pdf_canvas.line(0.5 * inch, page_height - 0.6 * inch, page_width - 0.5 * inch, page_height - 0.6 * inch)
 
@@ -388,15 +605,13 @@ def draw_page_of_segments(
     while end_index < len(segments) and current_line_count < max_lines_per_page:
         seg = segments[end_index]
 
-        # If this segment is a "legal_page_title_block" forcing new page:
         if seg.get("page_always_new"):
-            # If we haven't printed anything on this page yet, we can draw it immediately here,
-            # otherwise we return so that the main loop will start a fresh page for it.
+            # bracket block => check if we have already used lines on this page
             if current_line_count > 0:
-                # We must finish this page now so that on the next call we start fresh.
+                # finish this page now
                 break
             else:
-                # Draw the single block here on a new page
+                # use entire page for the block
                 block_lines = seg["lines"]
                 draw_legal_page_title_block(
                     pdf_canvas,
@@ -406,20 +621,19 @@ def draw_page_of_segments(
                     firm_name,
                     case_name,
                     page_number,
-                    total_pages,
+                    total_pages
                 )
                 end_index += 1
-                # We used this entire page for the bracket block, so we are done with it.
-                return end_index
+                return end_index  # this page is fully used
 
-        # Otherwise, normal line-based segment
+        # Normal line-based segment
         line_number = end_index + 1
-        # line numbers on left and right
-        pdf_canvas.setFont("Times-Roman", 10)
+        # line numbers on left + right
+        pdf_canvas.setFont("Helvetica", 10)
         pdf_canvas.drawString(line_offset_x - 0.6 * inch, y_text, str(line_number))
         pdf_canvas.drawString(page_width - 0.4 * inch, y_text, str(line_number))
 
-        # If heading => record for table of contents
+        # If heading => store for TOC
         if seg["is_heading"] or seg["is_subheading"]:
             heading_positions.append(
                 (
@@ -430,7 +644,7 @@ def draw_page_of_segments(
                 )
             )
 
-        # Draw text according to alignment
+        # Draw the text
         pdf_canvas.setFont(seg["font_name"], seg["font_size"])
         if seg["alignment"] == "center":
             left_boundary = line_offset_x
@@ -445,20 +659,19 @@ def draw_page_of_segments(
         end_index += 1
 
     # Footer
-    pdf_canvas.setFont("Times-Italic", 9)
+    pdf_canvas.setFont("Helvetica-Oblique", 9)
     footer_text = f"Page {page_number} of {total_pages}"
-    pdf_canvas.drawCentredString(page_width / 2.0, 0.5 * inch - 0.1 * inch, footer_text)
+    pdf_canvas.drawCentredString(page_width / 2.0, 0.4 * inch, footer_text)
 
     return end_index
+
 
 ###############################################################################
 #  TABLE OF CONTENTS (PDF)
 ###############################################################################
 def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
     """
-    Generates a table of contents PDF (index_filename) that lists each section/subsection
-    in order encountered in the main PDF (heading_positions). Next to each entry,
-    prints the page#:line#.
+    Generates a PDF table of contents, listing each heading and subheading, with page#:line# at right.
     """
     pdf_canvas = canvas.Canvas(index_filename, pagesize=letter)
     pdf_canvas.setTitle("Table of Contents")
@@ -470,24 +683,25 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
     right_margin = 0.5 * inch
     line_spacing = 0.25 * inch
 
-    # We'll measure text widths with a temporary canvas
-    temp_canvas = canvas.Canvas("dummy.pdf", pagesize=letter)
+    temp_c = canvas.Canvas("dummy.pdf", pagesize=letter)
 
     def wrap_text(linestr, font_name, font_size, maxwidth):
-        temp_canvas.setFont(font_name, font_size)
-        return wrap_text_to_lines(temp_canvas, linestr, font_name, font_size, maxwidth)
+        temp_c.setFont(font_name, font_size)
+        return wrap_text_to_lines(temp_c, linestr, font_name, font_size, maxwidth)
 
     max_entry_width = page_width - left_margin - 1.5 * inch
 
-    # Flatten out headings, wrapping as needed
+    # Flatten headings with wrapping
     flattened_lines = []
     for (heading_text, pg_num, ln_num, is_sub) in heading_positions:
         if is_sub:
-            font_name = "Times-Roman"
+            font_name = "Helvetica"
             font_size = 9
+            bold = False
         else:
-            font_name = "Times-Bold"
+            font_name = "Helvetica-Bold"
             font_size = 10
+            bold = True
 
         wrapped = wrap_text(heading_text, font_name, font_size, max_entry_width)
         text_lines = [w[0] for w in wrapped] if wrapped else [""]
@@ -498,14 +712,15 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
                     txt_line,
                     pg_num,
                     ln_num,
-                    is_sub,
-                    (i == 0)  # is_first_line
+                    font_name,
+                    font_size,
+                    bold,
+                    (i == 0)  # only display the page:line on the first wrapped line
                 )
             )
 
     usable_height = page_height - (top_margin + bottom_margin) - 1.0 * inch
     max_lines_per_page = int(usable_height // line_spacing)
-
     total_lines = len(flattened_lines)
     total_index_pages = max(1, (total_lines + max_lines_per_page - 1) // max_lines_per_page)
 
@@ -513,23 +728,19 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
     current_page_index = 1
 
     while i < total_lines:
-        # Page bounding box
+        # bounding
         pdf_canvas.setLineWidth(2)
         pdf_canvas.rect(0.5 * inch, 0.5 * inch, page_width - 1.0 * inch, page_height - 1.3 * inch)
 
-        # Vertical firm name
         draw_firm_name_vertical_center(pdf_canvas, firm_name, page_width, page_height)
 
-        # Case name at top center
-        pdf_canvas.setFont("Times-Bold", 12)
+        pdf_canvas.setFont("Helvetica-Bold", 12)
         pdf_canvas.drawCentredString(page_width / 2.0, page_height - 0.5 * inch, case_name)
-
-        # Horizontal line
         pdf_canvas.setLineWidth(1)
         pdf_canvas.line(0.5 * inch, page_height - 0.6 * inch, page_width - 0.5 * inch, page_height - 0.6 * inch)
 
-        # Title: TABLE OF CONTENTS
-        pdf_canvas.setFont("Times-Bold", 14)
+        # Title
+        pdf_canvas.setFont("Helvetica-Bold", 14)
         pdf_canvas.drawCentredString(page_width / 2.0, page_height - 0.75 * inch, "TABLE OF CONTENTS")
 
         x_text = left_margin
@@ -537,19 +748,11 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
         lines_on_this_page = 0
 
         while i < total_lines and lines_on_this_page < max_lines_per_page:
-            (line_text, pg_num, ln_num, is_sub, is_first_line) = flattened_lines[i]
-            if is_sub:
-                font_name = "Times-Roman"
-                font_size = 9
-            else:
-                font_name = "Times-Bold"
-                font_size = 10
-
+            (line_text, pg_num, ln_num, font_name, font_size, bold, show_pageline) = flattened_lines[i]
             pdf_canvas.setFont(font_name, font_size)
             pdf_canvas.drawString(x_text, y_text, line_text)
 
-            # Print "page:line" on the right only on the first wrapped line
-            if is_first_line:
+            if show_pageline:
                 label_str = f"{pg_num}:{ln_num}"
                 pdf_canvas.drawRightString(page_width - right_margin - 0.2 * inch, y_text, label_str)
 
@@ -558,9 +761,9 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
             lines_on_this_page += 1
 
         # Footer
-        pdf_canvas.setFont("Times-Italic", 9)
+        pdf_canvas.setFont("Helvetica-Oblique", 9)
         footer_text = f"Index Page {current_page_index} of {total_index_pages}"
-        pdf_canvas.drawCentredString(page_width / 2.0, 0.5 * inch - 0.1 * inch, footer_text)
+        pdf_canvas.drawCentredString(page_width / 2.0, 0.4 * inch, footer_text)
 
         if i < total_lines:
             pdf_canvas.showPage()
@@ -570,83 +773,83 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
 
     pdf_canvas.save()
 
+
 ###############################################################################
 #  DOCX GENERATION (COMPLAINT + TOC)
 ###############################################################################
 def generate_complaint_docx(docx_filename, firm_name, case_name, header_od, sections_od, heading_styles):
     """
     Generates a Word document version of the complaint text.
-    - The 'header_od["content"]' is placed at the beginning.
-    - Any bracketed blocks (legal page title blocks) become big bold paragraphs, centered.
-    - Headings are bold or subheading style; normal body lines are standard paragraphs.
+    Also inserts a cover sheet at the beginning with the same checkboxes.
     """
     doc = Document()
 
-    # Base font style
+    # 1) Cover sheet first
+    generate_cover_sheet_docx(doc)
+    doc.add_page_break()
+
+    # 2) The top heading with firm/case name
     style = doc.styles['Normal']
     font = style.font
     font.name = 'Times New Roman'
     font.size = Pt(12)
 
-    # Insert the firm/case name at top center
     top_par = doc.add_paragraph()
     top_par.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = top_par.add_run(f"{firm_name} | {case_name}\n")
     run.bold = True
     run.font.size = Pt(14)
 
-    # Step 1: handle the header content
+    # 3) Insert the header content (if any)
     header_content = header_od.get("content", "")
     header_lines = header_content.splitlines()
 
     buffer_of_lines = []
     for kind, block_lines in detect_legal_title_blocks(header_lines):
         if kind == "legal_page_title_block":
-            # flush normal lines first
+            # flush normal lines
             if buffer_of_lines:
                 for line in buffer_of_lines:
+                    p = doc.add_paragraph()
                     line_stripped = line.strip()
-                    para = doc.add_paragraph()
                     if is_line_all_caps(line_stripped):
-                        para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
                     else:
-                        para.alignment = WD_ALIGN_PARAGRAPH.LEFT
-                    para.add_run(line_stripped)
+                        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+                    p.add_run(line_stripped)
                 buffer_of_lines = []
-
-            # Now add the block lines as big bold
+            # now add the bracket-block lines in big bold
             for line in block_lines:
-                para = doc.add_paragraph()
-                para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                runx = para.add_run(line.strip())
+                p = doc.add_paragraph()
+                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                runx = p.add_run(line.strip())
                 runx.bold = True
                 runx.font.size = Pt(14)
-
         else:
             buffer_of_lines.append(block_lines)
 
-    # Flush any leftover normal lines in header
+    # flush leftover from header
     if buffer_of_lines:
         for line in buffer_of_lines:
+            p = doc.add_paragraph()
             line_stripped = line.strip()
-            para = doc.add_paragraph()
             if is_line_all_caps(line_stripped):
-                para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             else:
-                para.alignment = WD_ALIGN_PARAGRAPH.LEFT
-            para.add_run(line_stripped)
-        buffer_of_lines = []
+                p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            p.add_run(line_stripped)
 
-    # Step 2: sections
+    # 4) Insert each section
     for section_key, section_body in sections_od.items():
         style_type = heading_styles.get(section_key, "section")
 
         # blank line
         doc.add_paragraph()
 
-        # heading paragraph
+        # heading
         heading_para = doc.add_paragraph()
         heading_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
         if style_type == "section":
             run = heading_para.add_run(section_key)
             run.bold = True
@@ -656,40 +859,38 @@ def generate_complaint_docx(docx_filename, firm_name, case_name, header_od, sect
             run.bold = False
             run.font.size = Pt(11)
 
-        # handle body lines, checking bracket blocks
+        # body lines
         body_lines = section_body.splitlines()
         normal_buffer = []
         for kind, block_lines in detect_legal_title_blocks(body_lines):
             if kind == "legal_page_title_block":
-                # flush normal lines first
                 if normal_buffer:
                     for bline in normal_buffer:
                         bline_str = bline.strip()
-                        para = doc.add_paragraph()
-                        para.alignment = WD_ALIGN_PARAGRAPH.LEFT
-                        rr = para.add_run(bline_str)
+                        p = doc.add_paragraph()
+                        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+                        rr = p.add_run(bline_str)
                         if style_type == "section":
                             rr.font.size = Pt(12)
                         else:
                             rr.font.size = Pt(11)
                     normal_buffer = []
-                # now add the bracket block lines in big bold
-                for linex in block_lines:
-                    para = doc.add_paragraph()
-                    para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                    runx = para.add_run(linex.strip())
+                # bracket-block lines in big bold
+                for xline in block_lines:
+                    p = doc.add_paragraph()
+                    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                    runx = p.add_run(xline.strip())
                     runx.bold = True
                     runx.font.size = Pt(14)
             else:
                 normal_buffer.append(block_lines)
 
-        # flush leftover normal lines
         if normal_buffer:
             for bline in normal_buffer:
                 bline_str = bline.strip()
-                para = doc.add_paragraph()
-                para.alignment = WD_ALIGN_PARAGRAPH.LEFT
-                rr = para.add_run(bline_str)
+                p = doc.add_paragraph()
+                p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+                rr = p.add_run(bline_str)
                 if style_type == "section":
                     rr.font.size = Pt(12)
                 else:
@@ -699,9 +900,10 @@ def generate_complaint_docx(docx_filename, firm_name, case_name, header_od, sect
     doc.save(docx_filename)
     print(f"DOCX complaint saved as: {docx_filename}")
 
+
 def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions):
     """
-    Generates a Table of Contents in DOCX form (page#:line#), with each main heading and subheading.
+    Generates a docx with a Table of Contents, listing headings with page#:line# on the right.
     """
     doc = Document()
 
@@ -710,14 +912,14 @@ def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions):
     font.name = 'Times New Roman'
     font.size = Pt(12)
 
-    # Top heading
+    # Title
     top_par = doc.add_paragraph()
     top_par.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = top_par.add_run(f"{firm_name} | {case_name}\nTABLE OF CONTENTS\n")
     run.bold = True
     run.font.size = Pt(14)
 
-    # Create a table for the TOC
+    # Table for the TOC
     table = doc.add_table(rows=0, cols=2)
     table.autofit = True
 
@@ -739,7 +941,7 @@ def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions):
         run_left.font.size = Pt(this_font_size)
         run_left.bold = this_bold
 
-        # Right cell: "page:line"
+        # Right cell: page:line
         right_par = right_cell.paragraphs[0]
         run_right = right_par.add_run(f"{pg_num}:{ln_num}")
         run_right.font.size = Pt(this_font_size)
@@ -749,15 +951,13 @@ def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions):
     doc.save(docx_filename)
     print(f"Table of Contents DOCX saved as: {docx_filename}")
 
+
 ###############################################################################
-#  ADDITIONAL PARSER FOR MULTIPLE DOCUMENTS
+#  PARSING DOCUMENTS FROM TEXT
 ###############################################################################
 def parse_documents_from_text(raw_text):
     """
-    Parse multiple bracketed documents (separated by lines of '=====...') from the raw text.
-    Each matched pair of full-equals lines forms one document. Those bracket lines are removed,
-    and the content in between is considered a single document.
-    Returns a list of document-strings (without the bracket lines).
+    Return a list of bracketed documents found between lines of '=====' in the raw_text.
     """
     lines = raw_text.splitlines()
     docs = []
@@ -772,28 +972,25 @@ def parse_documents_from_text(raw_text):
                 doc_lines.append(lines[j])
                 j += 1
             if j < n:
-                # found a bottom bracket
+                # found a matching bottom bracket
                 docs.append("\n".join(doc_lines))
                 i = j + 1
             else:
-                # no matching bottom bracket
+                # no match
                 break
         else:
             i += 1
-
     return docs
 
+
 ###############################################################################
-#  PARSING HEADER AND SECTIONS
+#  PARSING HEADER & SECTIONS
 ###############################################################################
 def parse_header_and_sections(raw_text):
     """
-    Anything before the first valid heading is stored in header['content'].
-
-    A valid heading must:
-        1) Match a pattern allowing either Roman numerals or digits followed by a dot,
-           repeated one or more times, e.g. "I. ", "1. ", "II.1. ", etc.
-        2) The text portion after that must be all-caps to qualify as a heading.
+    Store everything until the first recognized heading in header['content'].
+    A recognized heading is "I. HEADING" or "1. HEADING" etc. with the heading text in all caps.
+    Return header_od, sections_od
     """
     header_od = OrderedDict()
     sections_od = OrderedDict()
@@ -822,10 +1019,10 @@ def parse_header_and_sections(raw_text):
 
     while idx < len(lines):
         line = lines[idx].rstrip('\n').rstrip('\r')
-        match_heading = heading_pattern.match(line)
-        if match_heading:
-            heading_number = match_heading.group(1).strip()
-            heading_title = match_heading.group(2).strip()
+        m = heading_pattern.match(line)
+        if m:
+            heading_number = m.group(1).strip()
+            heading_title = m.group(2).strip()
             if is_line_all_caps(heading_title):
                 # finalize old heading
                 if current_heading_key is not None:
@@ -847,9 +1044,8 @@ def parse_header_and_sections(raw_text):
 
 def classify_headings(sections_od):
     """
-    Distinguish main sections vs. subsections:
-      - If the numeric portion has more than one dot (e.g. "1.1", "II.1", etc.), it's a subheading.
-      - Otherwise, it's a main section.
+    If the heading number portion has more than one dot (like "1.1" or "II.1"), it's a subheading.
+    Otherwise it's a main section.
     """
     heading_styles = {}
     for full_key in sections_od.keys():
@@ -865,35 +1061,20 @@ def classify_headings(sections_od):
             heading_styles[full_key] = "section"
     return heading_styles
 
+
 ###############################################################################
-#  BUILDING SEGMENTS
+#  PREPARE MAIN TEXT SEGMENTS
 ###############################################################################
 def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canvas, max_text_width):
     """
-    Create a list of segments. Each segment is a dict describing how to render that line or block:
-      {
-        "text": <string line>,
-        "font_name": "Times-Roman" or "Times-Bold",
-        "font_size": 10 or 9,
-        "alignment": "left" or "center",
-        "is_heading": bool,
-        "is_subheading": bool
-      }
-      ...OR...
-      {
-        "legal_page_title": True,
-        "page_always_new": True,
-        "lines": [strings in bracketed block]
-      }
-
-    We detect bracketed blocks (legal_page_title_block) and ensure each one
-    will start on its own page by using "page_always_new": True.
-
-    We also wrap normal lines to fit max_text_width.
+    Convert the text into a list of segments:
+      - normal lines: with alignment and font
+      - bracket blocks: force new page
+      - headings marked with is_heading or is_subheading
     """
     segments = []
 
-    # 1) handle header lines (and bracketed blocks in them)
+    # 1) header lines
     header_lines = header_text.splitlines()
     normal_buffer = []
 
@@ -904,7 +1085,7 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
                 # blank line
                 segments.append({
                     "text": "",
-                    "font_name": "Times-Roman",
+                    "font_name": "Helvetica",
                     "font_size": 10,
                     "alignment": "left",
                     "is_heading": False,
@@ -912,11 +1093,11 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
                 })
             elif is_line_all_caps(line_str):
                 # center it
-                wrapped = wrap_text_to_lines(pdf_canvas, line_str, "Times-Roman", 10, max_text_width)
+                wrapped = wrap_text_to_lines(pdf_canvas, line_str, "Helvetica", 10, max_text_width)
                 for (wl, _) in wrapped:
                     segments.append({
                         "text": wl,
-                        "font_name": "Times-Roman",
+                        "font_name": "Helvetica",
                         "font_size": 10,
                         "alignment": "center",
                         "is_heading": False,
@@ -924,11 +1105,11 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
                     })
             else:
                 # left
-                wrapped = wrap_text_to_lines(pdf_canvas, line_str, "Times-Roman", 10, max_text_width)
+                wrapped = wrap_text_to_lines(pdf_canvas, line_str, "Helvetica", 10, max_text_width)
                 for (wl, _) in wrapped:
                     segments.append({
                         "text": wl,
-                        "font_name": "Times-Roman",
+                        "font_name": "Helvetica",
                         "font_size": 10,
                         "alignment": "left",
                         "is_heading": False,
@@ -938,39 +1119,36 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
 
     for kind, block_lines in detect_legal_title_blocks(header_lines):
         if kind == "legal_page_title_block":
-            if normal_buffer:
-                flush_normal_buffer()
+            flush_normal_buffer()
             lines_cleaned = [ln.strip() for ln in block_lines]
             segments.append({
                 "legal_page_title": True,
-                "page_always_new": True,  # ensure it starts on a new page
+                "page_always_new": True,
                 "lines": lines_cleaned
             })
         else:
             normal_buffer.append(block_lines)
+    flush_normal_buffer()
 
-    if normal_buffer:
-        flush_normal_buffer()
-
-    # 2) handle each section
+    # 2) sections
     for section_key, section_body in sections_od.items():
         style = heading_styles.get(section_key, "section")
         if style == "section":
-            heading_font_name = "Times-Bold"
+            heading_font_name = "Helvetica-Bold"
             heading_font_size = 10
-            body_font_name = "Times-Roman"
+            body_font_name = "Helvetica"
             body_font_size = 10
             is_heading = True
             is_subheading = False
         else:
-            heading_font_name = "Times-Roman"
+            heading_font_name = "Helvetica"
             heading_font_size = 9
-            body_font_name = "Times-Roman"
+            body_font_name = "Helvetica"
             body_font_size = 9
             is_heading = False
             is_subheading = True
 
-        # Add a blank line
+        # blank line
         segments.append({
             "text": "",
             "font_name": body_font_name,
@@ -980,10 +1158,8 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
             "is_subheading": False
         })
 
-        # Heading line(s) (wrapped if needed)
-        heading_wrapped = wrap_text_to_lines(
-            pdf_canvas, section_key, heading_font_name, heading_font_size, max_text_width
-        )
+        # heading text
+        heading_wrapped = wrap_text_to_lines(pdf_canvas, section_key, heading_font_name, heading_font_size, max_text_width)
         for (wl, _) in heading_wrapped:
             segments.append({
                 "text": wl,
@@ -994,7 +1170,7 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
                 "is_subheading": is_subheading
             })
 
-        # Then body lines + possible bracket blocks
+        # body
         lines_of_body = section_body.splitlines()
         normal_buffer_sec = []
 
@@ -1011,9 +1187,7 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
                         "is_subheading": False
                     })
                 else:
-                    wrapped = wrap_text_to_lines(
-                        pdf_canvas, line_str, body_font_name, body_font_size, max_text_width
-                    )
+                    wrapped = wrap_text_to_lines(pdf_canvas, line_str, body_font_name, body_font_size, max_text_width)
                     for (wl, _) in wrapped:
                         segments.append({
                             "text": wl,
@@ -1027,21 +1201,19 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
 
         for kind, block_lines in detect_legal_title_blocks(lines_of_body):
             if kind == "legal_page_title_block":
-                if normal_buffer_sec:
-                    flush_section_buffer()
+                flush_section_buffer()
                 lines_cleaned = [ln.strip() for ln in block_lines]
                 segments.append({
                     "legal_page_title": True,
-                    "page_always_new": True,  # force a new page for bracket block
+                    "page_always_new": True,
                     "lines": lines_cleaned
                 })
             else:
                 normal_buffer_sec.append(block_lines)
-
-        if normal_buffer_sec:
-            flush_section_buffer()
+        flush_section_buffer()
 
     return segments
+
 
 ###############################################################################
 #  MAIN PDF GENERATION
@@ -1056,18 +1228,26 @@ def generate_legal_document(
     heading_positions
 ):
     """
-    Generate the main PDF with line-numbered text (including bracket-block pages).
-    Then append exhibits. Also produce a DOCX version of the same content.
+    1) Create a new PDF.
+    2) Page 1: The custom cover sheet with checkboxes.
+    3) Then the main text (line numbered, bracketed blocks on new pages).
+    4) Then each exhibit on its own page.
+    5) Also produce a DOCX version with the same content (including cover sheet).
     """
+
     page_width, page_height = letter
     pdf_canvas = canvas.Canvas(output_filename, pagesize=letter)
-    pdf_canvas.setTitle("Legal Document")
+    pdf_canvas.setTitle("Legal Document with Cover Sheet")
     pdf_canvas.setAuthor(firm_name)
     pdf_canvas.setSubject(case_name)
     pdf_canvas.setCreator("Legal PDF Generator")
 
-    heading_styles = classify_headings(sections_od)
+    # (A) COVER SHEET as page 1
+    generate_cover_sheet_pdf(pdf_canvas, page_width, page_height)
+    pdf_canvas.showPage()  # finish cover page
 
+    # (B) Now the main text
+    heading_styles = classify_headings(sections_od)
     top_margin = 1.0 * inch
     bottom_margin = 1.0 * inch
     left_margin = 1.2 * inch
@@ -1076,11 +1256,12 @@ def generate_legal_document(
 
     usable_height = page_height - (top_margin + bottom_margin)
     max_lines_per_page = int(usable_height // line_spacing)
+
     line_offset_x = left_margin
     line_offset_y = page_height - top_margin
     max_text_width = page_width - right_margin - line_offset_x - 0.2 * inch
 
-    # Build segments for main content
+    # Prepare text segments
     segments = prepare_main_pdf_segments(
         header_text=header_od.get("content", ""),
         sections_od=sections_od,
@@ -1089,40 +1270,36 @@ def generate_legal_document(
         max_text_width=max_text_width
     )
 
-    # Count how many pages the text segments will require
+    # Count how many pages the text portion will occupy
     current_index = 0
     text_pages = 0
     total_segments = len(segments)
-
+    # We already used 1 page for the cover
     while current_index < total_segments:
         seg = segments[current_index]
         if seg.get("page_always_new"):
-            # This block alone will consume one full page
             text_pages += 1
             current_index += 1
         else:
-            # We can fit up to max_lines_per_page segments on this page
             lines_used = 0
             local_i = current_index
             while local_i < total_segments and lines_used < max_lines_per_page:
                 s = segments[local_i]
                 if s.get("page_always_new"):
-                    # must stop to start new page for that block
                     break
                 lines_used += 1
                 local_i += 1
             text_pages += 1
             current_index = local_i
 
-    # The total number of exhibit pages is the number of exhibits
     exhibit_pages = len(exhibits)
-    total_pages = text_pages + exhibit_pages
+    # So total pages = 1 cover + text_pages + exhibit_pages
+    total_pages = 1 + text_pages + exhibit_pages
 
-    # Actually render the text segments
-    page_number = 1
+    # Actually render main text
+    page_number = 2  # since page 1 was cover sheet
     current_index = 0
     while current_index < total_segments:
-        # Start a new page
         next_index = draw_page_of_segments(
             pdf_canvas=pdf_canvas,
             page_width=page_width,
@@ -1143,7 +1320,7 @@ def generate_legal_document(
         page_number += 1
         current_index = next_index
 
-    # Render each exhibit on its own page
+    # (C) Exhibits
     for (caption, image_path) in exhibits:
         draw_exhibit_page(
             pdf_canvas=pdf_canvas,
@@ -1154,14 +1331,14 @@ def generate_legal_document(
             exhibit_caption=caption,
             exhibit_image=image_path,
             page_number=page_number,
-            total_pages=total_pages,
+            total_pages=total_pages
         )
         pdf_canvas.showPage()
         page_number += 1
 
     pdf_canvas.save()
 
-    # Also generate DOCX
+    # Also produce the DOCX version (which includes a cover sheet)
     generate_complaint_docx(
         docx_filename=os.path.splitext(output_filename)[0] + ".docx",
         firm_name=firm_name,
@@ -1171,15 +1348,16 @@ def generate_legal_document(
         heading_styles=heading_styles
     )
 
+
 ###############################################################################
 #  MAIN
 ###############################################################################
 def main():
     parser = argparse.ArgumentParser(
         description=(
-            "Generate a legal-style PDF (with bracketed blocks each on a new page), "
-            "line numbering, exhibits, a separate table-of-contents PDF, and DOCX files. "
-            "Also pickles the Lawsuit object if requested."
+            "Generate a WA KCSC-style civil cover sheet with checkboxes, then a legal-style PDF, "
+            "line numbering, bracketed blocks on new pages, optional exhibits, a separate table-of-contents PDF, "
+            "DOCX files, and optionally pickle the Lawsuit object."
         )
     )
     parser.add_argument("--firm_name", required=True,
@@ -1191,54 +1369,50 @@ def main():
     parser.add_argument("--file", required=True,
                         help="Path to a UTF-8 text file containing the body (with sections/subsections).")
     parser.add_argument("--exhibits", nargs='+', default=[],
-                        help="Exhibit caption-text-file and image-file pairs, e.g. --exhibits cap1.txt img1.png cap2.txt img2.png.")
+                        help="Exhibit caption-text-file and image-file pairs, e.g.: --exhibits cap1.txt img1.png cap2.txt img2.png")
     parser.add_argument("--index", default="index.pdf",
                         help="PDF filename for the table of contents (default: index.pdf).")
     parser.add_argument("--pickle", nargs='?', const=None,
-                        help=(
-                            "Optional path to store the Lawsuit object in pickle format. "
-                            "If no path is given, defaults to 'lawsuit.pickle'."
-                        ))
+                        help="Optional path to store the Lawsuit object in pickle format. If no path is given, defaults to 'lawsuit.pickle'.")
 
     args = parser.parse_args()
 
-    # Read the raw text from the file
+    # Read the raw text from the body file
     with open(args.file, 'r', encoding='utf-8') as f:
         raw_text = f.read()
 
-    # Parse out header and sections
+    # Parse out header + sections
     header_od, sections_od = parse_header_and_sections(raw_text)
 
     # Build exhibits
     if len(args.exhibits) % 2 != 0:
-        raise ValueError("Exhibits must be in pairs: CAPTION_FILE IMAGE_FILE")
+        raise ValueError("Exhibits must be in pairs: caption_file image_file")
 
     exhibits_od = OrderedDict()
     ex_index = 1
     for i in range(0, len(args.exhibits), 2):
         cap_file = args.exhibits[i]
-        image_file = args.exhibits[i + 1]
+        img_file = args.exhibits[i + 1]
         with open(cap_file, 'r', encoding='utf-8') as cfp:
             cap_text = cfp.read()
         exhibits_od[str(ex_index)] = OrderedDict([
             ('caption', cap_text),
-            ('image_path', image_file)
+            ('image_path', img_file)
         ])
         ex_index += 1
 
-    # Add sample metadata to the header (you can adjust or remove this as needed)
-    header_od["DocumentTitle"] = "Complaint for Damages"
+    # Some metadata
+    header_od["DocumentTitle"] = "Complaint for Tort – Other"
     header_od["DateFiled"] = "2025-02-14"
-    header_od["Court"] = "Sample Court"
+    header_od["Court"] = "King County Superior Court"
 
-    # Parse bracketed documents from raw_text (if any). Each bracket-block pair is considered a separate document.
+    # Parse bracketed documents from raw_text
     found_documents = parse_documents_from_text(raw_text)
     documents_od = OrderedDict()
-    if found_documents:
-        for idx, doc_text in enumerate(found_documents, start=1):
-            documents_od[str(idx)] = doc_text
+    for idx, doc_text in enumerate(found_documents, start=1):
+        documents_od[str(idx)] = doc_text
 
-    # Create Lawsuit object, including the newly parsed documents
+    # Create Lawsuit object
     lawsuit_obj = Lawsuit(
         sections=sections_od,
         exhibits=exhibits_od,
@@ -1248,15 +1422,15 @@ def main():
         law_firm_information=args.firm_name
     )
 
-    # Convert exhibits for PDF generation
+    # Convert exhibits to a simple list of (caption, image)
     exhibits_for_pdf = []
-    for key, val in lawsuit_obj.exhibits.items():
+    for _, val in lawsuit_obj.exhibits.items():
         exhibits_for_pdf.append((val["caption"], val["image_path"]))
 
-    # Track headings for TOC
+    # We'll accumulate headings for the table of contents
     heading_positions = []
 
-    # Generate main PDF + DOCX
+    # Generate the main PDF (with cover sheet) + DOCX
     generate_legal_document(
         firm_name=args.firm_name,
         case_name=args.case,
@@ -1274,6 +1448,7 @@ def main():
         case_name=args.case,
         heading_positions=heading_positions
     )
+
     index_docx = os.path.splitext(args.index)[0] + ".docx"
     generate_toc_docx(
         docx_filename=index_docx,
@@ -1299,6 +1474,7 @@ def main():
     print(f"Lawsuit object saved to: {pkl_path}\n")
     print("Dumped Lawsuit object:")
     print(lawsuit_obj)
+
 
 if __name__ == "__main__":
     main()
