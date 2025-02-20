@@ -6,30 +6,15 @@ import re
 import pickle
 import os
 from collections import OrderedDict
-
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.lib.utils import ImageReader
-
 import docx
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt, Inches
 
-###############################################################################
-# Regex for citations (example heuristic)
-###############################################################################
-citation_pattern = re.compile(
-    r'\([^()]*?(?:v\.|§|F\.3d|Cal\. Civ\. Code|U\.S\.|en\s+banc)[^()]*?\)'
-)
-
-def extract_citations(text):
-    return citation_pattern.findall(text)
-
-###############################################################################
-# LAWSUIT CLASS
-###############################################################################
 class Lawsuit:
     def __init__(
         self,
@@ -40,10 +25,14 @@ class Lawsuit:
         case_information="",
         law_firm_information=""
     ):
-        if sections is None: sections = OrderedDict()
-        if exhibits is None: exhibits = OrderedDict()
-        if header is None: header = OrderedDict()
-        if documents is None: documents = OrderedDict()
+        if sections is None:
+            sections = OrderedDict()
+        if exhibits is None:
+            exhibits = OrderedDict()
+        if header is None:
+            header = OrderedDict()
+        if documents is None:
+            documents = OrderedDict()
         self.sections = OrderedDict(sections)
         self.exhibits = OrderedDict(exhibits)
         self.header = OrderedDict(header)
@@ -52,17 +41,16 @@ class Lawsuit:
         self.law_firm_information = law_firm_information
 
     def __repr__(self):
-        header_str = "\n".join([f"  {k}: {v}" for k, v in self.header.items()])
-        sections_str = "\n".join([f"  {sec_key}: {sec_value}" for sec_key, sec_value in self.sections.items()])
-        exhibits_str = []
-        for ex_key, ex_data in self.exhibits.items():
-            ex_inner = "\n      ".join([f"{ik}: {iv}" for ik, iv in ex_data.items()])
-            exhibits_str.append(f"  {ex_key}:\n      {ex_inner}")
-        exhibits_str = "\n".join(exhibits_str)
-        documents_str = []
-        for doc_key, doc_text in self.documents.items():
-            documents_str.append(f"  {doc_key}:\n      {doc_text}")
-        documents_str = "\n".join(documents_str)
+        h = "\n".join([f"  {k}: {v}" for k, v in self.header.items()])
+        s = "\n".join([f"  {k}: {v}" for k, v in self.sections.items()])
+        e = []
+        for ek, ev in self.exhibits.items():
+            e.append(f"  {ek}: " + ", ".join([f"{k}={v}" for k, v in ev.items()]))
+        e = "\n".join(e)
+        d = []
+        for dk, dv in self.documents.items():
+            d.append(f"  {dk}: {dv}")
+        d = "\n".join(d)
         return (
             "Lawsuit Object:\n\n"
             "CASE INFORMATION:\n"
@@ -70,18 +58,15 @@ class Lawsuit:
             "LAW FIRM INFORMATION:\n"
             f"  {self.law_firm_information}\n\n"
             "HEADER:\n"
-            f"{header_str}\n\n"
+            f"{h}\n\n"
             "SECTIONS:\n"
-            f"{sections_str}\n\n"
+            f"{s}\n\n"
             "EXHIBITS:\n"
-            f"{exhibits_str}\n\n"
+            f"{e}\n\n"
             "DOCUMENTS:\n"
-            f"{documents_str}\n"
+            f"{d}\n"
         )
 
-###############################################################################
-# HELPER FUNCTIONS
-###############################################################################
 def is_line_all_caps(line_str):
     if not re.search(r'[A-Z]', line_str):
         return False
@@ -123,9 +108,6 @@ def draw_firm_name_vertical_center(pdf_canvas, text, page_width, page_height):
 def draw_checkbox_line(pdf_canvas, text, x, y):
     pdf_canvas.drawString(x, y, text)
 
-###############################################################################
-# COVER SHEET (PDF)
-###############################################################################
 def generate_cover_sheet_pdf(pdf_canvas, page_width, page_height):
     pdf_canvas.setFont("Helvetica", 12)
     left_margin = 1.0 * inch
@@ -134,88 +116,66 @@ def generate_cover_sheet_pdf(pdf_canvas, page_width, page_height):
     current_y = top_position
     pdf_canvas.setLineWidth(2)
     pdf_canvas.rect(0.5 * inch, 0.5 * inch, page_width - 1.0 * inch, page_height - 1.0 * inch)
-    line1 = "1. COURT: KING COUNTY SUPERIOR COURT"
-    pdf_canvas.drawString(left_margin, current_y, line1)
+    pdf_canvas.drawString(left_margin, current_y, "1. COURT: KING COUNTY SUPERIOR COURT")
     current_y -= line_height
-    line2 = "2. CASE ASSIGNMENT AREA:   ☐ Kent     ☒ Seattle"
-    pdf_canvas.drawString(left_margin, current_y, line2)
+    pdf_canvas.drawString(left_margin, current_y, "2. CASE ASSIGNMENT AREA:   ☐ Kent     ☒ Seattle")
     current_y -= line_height
-    line3 = "3. CASE TITLE: Bo Shang v. Amazon.com, Inc."
-    pdf_canvas.drawString(left_margin, current_y, line3)
+    pdf_canvas.drawString(left_margin, current_y, "3. CASE TITLE: Bo Shang v. Amazon.com, Inc.")
     current_y -= line_height
-    line4 = "4. CASE NUMBER (Clerk to Assign): ______________________"
-    pdf_canvas.drawString(left_margin, current_y, line4)
+    pdf_canvas.drawString(left_margin, current_y, "4. CASE NUMBER (Clerk to Assign): ______________________")
     current_y -= line_height
-    line5 = "5. CASE CATEGORY (Check one):   ☒ Civil"
-    pdf_canvas.drawString(left_margin, current_y, line5)
+    pdf_canvas.drawString(left_margin, current_y, "5. CASE CATEGORY (Check one):   ☒ Civil")
     current_y -= line_height
-    line6 = "6. CASE TYPE:   ☒ TTO – Tort/Other"
-    pdf_canvas.drawString(left_margin, current_y, line6)
+    pdf_canvas.drawString(left_margin, current_y, "6. CASE TYPE:   ☒ TTO – Tort/Other")
     current_y -= line_height
     pdf_canvas.drawString(left_margin, current_y, "7. DOCUMENT/S BEING FILED:")
     current_y -= line_height
-    docs_line1 = "   ☐ Initial Pleadings and Petitions"
-    pdf_canvas.drawString(left_margin, current_y, docs_line1)
+    pdf_canvas.drawString(left_margin, current_y, "   ☐ Initial Pleadings and Petitions")
     current_y -= line_height
-    docs_line2 = "   ☐ Additional/Amended Pleadings"
-    pdf_canvas.drawString(left_margin, current_y, docs_line2)
+    pdf_canvas.drawString(left_margin, current_y, "   ☐ Additional/Amended Pleadings")
     current_y -= line_height
-    docs_line3 = "   ☒ Complaint for Tort – Other (CMPTTO)"
-    pdf_canvas.drawString(left_margin, current_y, docs_line3)
+    pdf_canvas.drawString(left_margin, current_y, "   ☒ Complaint for Tort – Other (CMPTTO)")
     current_y -= line_height
-    docs_line4 = "   ☒ Summons"
-    pdf_canvas.drawString(left_margin, current_y, docs_line4)
+    pdf_canvas.drawString(left_margin, current_y, "   ☒ Summons")
     current_y -= line_height
     pdf_canvas.drawString(left_margin, current_y, "8. RELIEF REQUESTED:")
     current_y -= line_height
-    relief_line1 = "   ☒ Damages"
-    pdf_canvas.drawString(left_margin, current_y, relief_line1)
+    pdf_canvas.drawString(left_margin, current_y, "   ☒ Damages")
     current_y -= line_height
-    relief_line2 = "   ☒ Injunctive Relief"
-    pdf_canvas.drawString(left_margin, current_y, relief_line2)
+    pdf_canvas.drawString(left_margin, current_y, "   ☒ Injunctive Relief")
     current_y -= line_height
-    relief_line3 = "   ☐ Other: ____________________"
-    pdf_canvas.drawString(left_margin, current_y, relief_line3)
+    pdf_canvas.drawString(left_margin, current_y, "   ☐ Other: ____________________")
     current_y -= line_height
     pdf_canvas.drawString(left_margin, current_y, "9. JURY DEMAND:")
     current_y -= line_height
-    jury_line1 = "   ☒ Yes"
-    pdf_canvas.drawString(left_margin, current_y, jury_line1)
+    pdf_canvas.drawString(left_margin, current_y, "   ☒ Yes")
     current_y -= line_height
-    jury_line2 = "   ☐ No"
-    pdf_canvas.drawString(left_margin, current_y, jury_line2)
+    pdf_canvas.drawString(left_margin, current_y, "   ☐ No")
     current_y -= line_height
     pdf_canvas.drawString(left_margin, current_y, "10. ATTORNEY OR PARTY SIGNING COVER SHEET:")
     current_y -= line_height
-    name_line = "   Name:      Bo Shang (Plaintiff Pro Se)"
-    pdf_canvas.drawString(left_margin, current_y, name_line)
+    pdf_canvas.drawString(left_margin, current_y, "   Name:      Bo Shang (Plaintiff Pro Se)")
     current_y -= line_height
-    addr_line1 = "   Address:   10 McCafferty Way"
-    pdf_canvas.drawString(left_margin, current_y, addr_line1)
+    pdf_canvas.drawString(left_margin, current_y, "   Address:   10 McCafferty Way")
     current_y -= line_height
-    addr_line2 = "              Burlington, MA 01803-3127"
-    pdf_canvas.drawString(left_margin, current_y, addr_line2)
+    pdf_canvas.drawString(left_margin, current_y, "              Burlington, MA 01803-3127")
     current_y -= line_height
-    phone_line = "   Phone:     781-999-4101"
-    pdf_canvas.drawString(left_margin, current_y, phone_line)
+    pdf_canvas.drawString(left_margin, current_y, "   Phone:     781-999-4101")
     current_y -= line_height
-    email_line = "   Email:     enigmatictyphoon@gmail.com"
-    pdf_canvas.drawString(left_margin, current_y, email_line)
+    pdf_canvas.drawString(left_margin, current_y, "   Email:     enigmatictyphoon@gmail.com")
     current_y -= line_height
-    wsba_line = "   WSBA No.:  Pro Se"
-    pdf_canvas.drawString(left_margin, current_y, wsba_line)
-    current_y -= line_height
+    pdf_canvas.drawString(left_margin, current_y, "   WSBA No.:  Pro Se")
 
 def generate_cover_sheet_docx(doc: Document):
     style = doc.styles['Normal']
     font = style.font
     font.name = 'Times New Roman'
     font.size = Pt(12)
-
-    def add_line(text):
+    def add_line(text, bold=False):
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        p.add_run(text)
+        r = p.add_run(text)
+        r.bold = bold
 
     add_line("1. COURT: KING COUNTY SUPERIOR COURT")
     add_line("2. CASE ASSIGNMENT AREA:   ☐ Kent     ☒ Seattle")
@@ -243,9 +203,6 @@ def generate_cover_sheet_docx(doc: Document):
     add_line("   Email:     enigmatictyphoon@gmail.com")
     add_line("   WSBA No.:  Pro Se")
 
-###############################################################################
-# EXHIBITS (PDF)
-###############################################################################
 def draw_exhibit_page(
     pdf_canvas,
     page_width,
@@ -311,9 +268,6 @@ def draw_exhibit_page(
     footer_text = f"Page {page_number} of {total_pages}"
     pdf_canvas.drawCentredString(page_width / 2.0, 0.4 * inch, footer_text)
 
-###############################################################################
-# TITLE BLOCKS
-###############################################################################
 def is_full_equals_line(line_str):
     stripped = line_str.strip()
     if len(stripped) < 5:
@@ -346,9 +300,6 @@ def detect_legal_title_blocks(lines):
             yield ("normal_line", lines[i])
             i += 1
 
-###############################################################################
-# DRAWING TEXT
-###############################################################################
 def draw_legal_page_title_block(
     pdf_canvas,
     page_width,
@@ -376,6 +327,26 @@ def draw_legal_page_title_block(
     footer_text = f"Page {page_number} of {total_pages}"
     pdf_canvas.drawCentredString(page_width / 2.0, 0.4 * inch, footer_text)
 
+############################################################################
+# Completely changed heuristics to detect references to case law/statutes
+############################################################################
+def extract_references(text):
+    pattern = re.compile(
+        r'(Barnes v\. Yahoo!.*?\(9th Cir\..*?\))|'
+        r'(Cal\.?\s*Civ\.?\s*Code\s*§+\s*\d+(?:[–\-]\d+)*)|'
+        r'(Lazar v\. Superior Court)|'
+        r'(Fair Housing Council.*Roommates\.com.*?\(9th Cir\..*?\))|'
+        r'(FTC v\. Accusearch.*?\(10th Cir\..*?\))',
+        re.IGNORECASE
+    )
+    matches = pattern.findall(text)
+    found = []
+    for match in matches:
+        for group in match:
+            if group.strip():
+                found.append(group.strip())
+    return found
+
 def draw_page_of_segments(
     pdf_canvas,
     page_width,
@@ -390,7 +361,8 @@ def draw_page_of_segments(
     line_offset_x,
     line_offset_y,
     line_spacing,
-    heading_positions
+    heading_positions,
+    reference_positions
 ):
     pdf_canvas.setLineWidth(2)
     pdf_canvas.rect(0.5 * inch, 0.5 * inch, page_width - 1.0 * inch, page_height - 1.3 * inch)
@@ -426,17 +398,19 @@ def draw_page_of_segments(
         pdf_canvas.drawString(line_offset_x - 0.6 * inch, y_text, str(line_number))
         pdf_canvas.drawString(page_width - 0.4 * inch, y_text, str(line_number))
         if seg["is_heading"] or seg["is_subheading"]:
-            heading_positions.append(
-                (seg["text"], page_number, line_number, seg["is_subheading"])
-            )
+            heading_positions.append((seg["text"], page_number, line_number, seg["is_subheading"]))
+        text_line = seg["text"]
+        references_found = extract_references(text_line)
+        for ref in references_found:
+            reference_positions.append((ref, page_number, line_number))
         pdf_canvas.setFont(seg["font_name"], seg["font_size"])
         if seg["alignment"] == "center":
             left_boundary = line_offset_x
             right_boundary = page_width - 0.5 * inch
             mid_x = (left_boundary + right_boundary) / 2.0
-            pdf_canvas.drawCentredString(mid_x, y_text, seg["text"])
+            pdf_canvas.drawCentredString(mid_x, y_text, text_line)
         else:
-            pdf_canvas.drawString(line_offset_x, y_text, seg["text"])
+            pdf_canvas.drawString(line_offset_x, y_text, text_line)
         y_text -= line_spacing
         current_line_count += 1
         end_index += 1
@@ -445,10 +419,7 @@ def draw_page_of_segments(
     pdf_canvas.drawCentredString(page_width / 2.0, 0.4 * inch, footer_text)
     return end_index
 
-###############################################################################
-# TABLE OF CONTENTS (PDF)
-###############################################################################
-def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
+def generate_index_pdf(index_filename, firm_name, case_name, heading_positions, reference_positions):
     pdf_canvas = canvas.Canvas(index_filename, pagesize=letter)
     pdf_canvas.setTitle("Table of Contents")
     page_width, page_height = letter
@@ -457,41 +428,44 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
     left_margin = 1.0 * inch
     right_margin = 0.5 * inch
     line_spacing = 0.25 * inch
-    temp_c = canvas.Canvas("dummy.pdf", pagesize=letter)
+    from reportlab.pdfgen import canvas as dummy
+    temp_c = dummy.Canvas("dummy.pdf", pagesize=letter)
 
     def wrap_text(linestr, font_name, font_size, maxwidth):
         temp_c.setFont(font_name, font_size)
-        return wrap_text_to_lines(temp_c, linestr, font_name, font_size, maxwidth)
+        wrapped = []
+        paragraphs = linestr.split('\n')
+        for paragraph in paragraphs:
+            subwrap = wrap_text_to_lines(temp_c, paragraph, font_name, font_size, maxwidth)
+            for (l, _) in subwrap:
+                wrapped.append(l)
+        return wrapped
 
     max_entry_width = page_width - left_margin - 1.5 * inch
-    flattened_lines = []
+    flattened_headings = []
     for (heading_text, pg_num, ln_num, is_sub) in heading_positions:
         if is_sub:
-            font_name = "Helvetica"
-            font_size = 9
-            bold = False
+            f_name = "Helvetica"
+            f_size = 9
+            bld = False
         else:
-            font_name = "Helvetica-Bold"
-            font_size = 10
-            bold = True
-        wrapped = wrap_text(heading_text, font_name, font_size, max_entry_width)
-        text_lines = [w[0] for w in wrapped] if wrapped else [""]
-        first_line = True
-        for txt_line in text_lines:
-            flattened_lines.append(
-                (txt_line, pg_num, ln_num, font_name, font_size, bold, first_line)
-            )
-            first_line = False
-        # capture citations if any
-        found_citations = extract_citations(heading_text)
-        for c in found_citations:
-            flattened_lines.append(
-                (f"   {c}", pg_num, ln_num, "Helvetica", 9, False, False)
-            )
-
+            f_name = "Helvetica-Bold"
+            f_size = 10
+            bld = True
+        lines = wrap_text(heading_text, f_name, f_size, max_entry_width)
+        for i, txt_line in enumerate(lines):
+            flattened_headings.append((txt_line, pg_num, ln_num, f_name, f_size, bld, (i==0)))
+    flattened_refs = []
+    for (ref_text, pg, ln) in reference_positions:
+        f_name = "Helvetica"
+        f_size = 9
+        lines = wrap_text(ref_text, f_name, f_size, max_entry_width)
+        for i, txt_line in enumerate(lines):
+            flattened_refs.append((txt_line, pg, ln, f_name, f_size, False, (i==0)))
+    all_index_entries = [('Heading', x) for x in flattened_headings] + [('Reference', x) for x in flattened_refs]
     usable_height = page_height - (top_margin + bottom_margin) - 1.0 * inch
     max_lines_per_page = int(usable_height // line_spacing)
-    total_lines = len(flattened_lines)
+    total_lines = len(all_index_entries)
     total_index_pages = max(1, (total_lines + max_lines_per_page - 1) // max_lines_per_page)
     i = 0
     current_page_index = 1
@@ -509,12 +483,13 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
         y_text = page_height - top_margin - 0.75 * inch
         lines_on_this_page = 0
         while i < total_lines and lines_on_this_page < max_lines_per_page:
-            line_text, pg_num, ln_num, font_name, font_size, bold, show_pageline = flattened_lines[i]
-            pdf_canvas.setFont(font_name, font_size)
-            pdf_canvas.drawString(x_text, y_text, line_text)
-            if show_pageline:
-                label_str = f"{pg_num}:{ln_num}"
-                pdf_canvas.drawRightString(page_width - right_margin - 0.2 * inch, y_text, label_str)
+            etype, data = all_index_entries[i]
+            (txt_line, pg_num, ln_num, fn, fs, bold, show_pg) = data
+            pdf_canvas.setFont(fn, fs)
+            pdf_canvas.drawString(x_text, y_text, txt_line)
+            if show_pg:
+                lbl = f"{pg_num}:{ln_num}"
+                pdf_canvas.drawRightString(page_width - right_margin - 0.2 * inch, y_text, lbl)
             y_text -= line_spacing
             i += 1
             lines_on_this_page += 1
@@ -528,9 +503,6 @@ def generate_index_pdf(index_filename, firm_name, case_name, heading_positions):
             break
     pdf_canvas.save()
 
-###############################################################################
-# DOCX GENERATION
-###############################################################################
 def generate_complaint_docx(docx_filename, firm_name, case_name, header_od, sections_od, heading_styles):
     doc = Document()
     generate_cover_sheet_docx(doc)
@@ -544,6 +516,14 @@ def generate_complaint_docx(docx_filename, firm_name, case_name, header_od, sect
     run = top_par.add_run(f"{firm_name} | {case_name}\n")
     run.bold = True
     run.font.size = Pt(14)
+
+    def add_center_big(line):
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        r = p.add_run(line.strip())
+        r.bold = True
+        r.font.size = Pt(14)
+
     header_content = header_od.get("content", "")
     header_lines = header_content.splitlines()
     buffer_of_lines = []
@@ -552,24 +532,26 @@ def generate_complaint_docx(docx_filename, firm_name, case_name, header_od, sect
             if buffer_of_lines:
                 for line in buffer_of_lines:
                     p = doc.add_paragraph()
-                    line_stripped = line.strip()
-                    p.alignment = WD_ALIGN_PARAGRAPH.CENTER if is_line_all_caps(line_stripped) else WD_ALIGN_PARAGRAPH.LEFT
-                    p.add_run(line_stripped)
+                    ls = line.strip()
+                    if is_line_all_caps(ls):
+                        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                    else:
+                        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+                    p.add_run(ls)
                 buffer_of_lines = []
             for line in block_lines:
-                p = doc.add_paragraph()
-                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                runx = p.add_run(line.strip())
-                runx.bold = True
-                runx.font.size = Pt(14)
+                add_center_big(line)
         else:
             buffer_of_lines.append(block_lines)
     if buffer_of_lines:
         for line in buffer_of_lines:
             p = doc.add_paragraph()
-            line_stripped = line.strip()
-            p.alignment = WD_ALIGN_PARAGRAPH.CENTER if is_line_all_caps(line_stripped) else WD_ALIGN_PARAGRAPH.LEFT
-            p.add_run(line_stripped)
+            ls = line.strip()
+            if is_line_all_caps(ls):
+                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            else:
+                p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            p.add_run(ls)
     for section_key, section_body in sections_od.items():
         style_type = heading_styles.get(section_key, "section")
         doc.add_paragraph()
@@ -585,35 +567,28 @@ def generate_complaint_docx(docx_filename, firm_name, case_name, header_od, sect
             run.font.size = Pt(11)
         body_lines = section_body.splitlines()
         normal_buffer = []
-        for kind, block_lines in detect_legal_title_blocks(body_lines):
-            if kind == "legal_page_title_block":
-                if normal_buffer:
-                    for bline in normal_buffer:
-                        p = doc.add_paragraph()
-                        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-                        r = p.add_run(bline.strip())
-                        if style_type == "section": r.font.size = Pt(12)
-                        else: r.font.size = Pt(11)
-                    normal_buffer = []
-                for xline in block_lines:
-                    p = doc.add_paragraph()
-                    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                    runx = p.add_run(xline.strip())
-                    runx.bold = True
-                    runx.font.size = Pt(14)
-            else:
-                normal_buffer.append(block_lines)
-        if normal_buffer:
+        def flush_buffer():
             for bline in normal_buffer:
+                bls = bline.strip()
                 p = doc.add_paragraph()
                 p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-                r = p.add_run(bline.strip())
-                if style_type == "section": r.font.size = Pt(12)
-                else: r.font.size = Pt(11)
-            normal_buffer = []
+                rr = p.add_run(bls)
+                if style_type == "section":
+                    rr.font.size = Pt(12)
+                else:
+                    rr.font.size = Pt(11)
+            normal_buffer.clear()
+        for kind, block_lines in detect_legal_title_blocks(body_lines):
+            if kind == "legal_page_title_block":
+                flush_buffer()
+                for xline in block_lines:
+                    add_center_big(xline)
+            else:
+                normal_buffer.append(block_lines)
+        flush_buffer()
     doc.save(docx_filename)
 
-def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions):
+def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions, reference_positions):
     doc = Document()
     style = doc.styles['Normal']
     font = style.font
@@ -621,40 +596,39 @@ def generate_toc_docx(docx_filename, firm_name, case_name, heading_positions):
     font.size = Pt(12)
     top_par = doc.add_paragraph()
     top_par.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = top_par.add_run(f"{firm_name} | {case_name}\nTABLE OF CONTENTS\n")
-    run.bold = True
-    run.font.size = Pt(14)
+    r = top_par.add_run(f"{firm_name} | {case_name}\nTABLE OF CONTENTS\n")
+    r.bold = True
+    r.font.size = Pt(14)
     table = doc.add_table(rows=0, cols=2)
     table.autofit = True
-    for (heading_text, pg_num, ln_num, is_sub) in heading_positions:
-        row_cells = table.add_row().cells
-        left_cell = row_cells[0]
-        right_cell = row_cells[1]
+    for (htext, pnum, lnum, is_sub) in heading_positions:
         if is_sub:
-            this_font_size = 11
-            this_bold = False
+            fs = 11
+            b = False
         else:
-            this_font_size = 12
-            this_bold = True
-        left_par = left_cell.paragraphs[0]
-        run_left = left_par.add_run(heading_text)
-        run_left.font.size = Pt(this_font_size)
-        run_left.bold = this_bold
-        right_par = right_cell.paragraphs[0]
-        run_right = right_par.add_run(f"{pg_num}:{ln_num}")
-        run_right.font.size = Pt(this_font_size)
-        run_right.bold = False
-        right_par.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        cits = extract_citations(heading_text)
-        for c in cits:
-            row2 = table.add_row().cells
-            row2[0].paragraphs[0].add_run(f"   {c}")
-            row2[1].paragraphs[0].add_run("")
+            fs = 12
+            b = True
+        row_cells = table.add_row().cells
+        lp = row_cells[0].paragraphs[0]
+        rp = row_cells[1].paragraphs[0]
+        rleft = lp.add_run(htext)
+        rleft.font.size = Pt(fs)
+        rleft.bold = b
+        rright = rp.add_run(f"{pnum}:{lnum}")
+        rright.font.size = Pt(fs)
+        rp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    for (ref_text, pnum, lnum) in reference_positions:
+        row_cells = table.add_row().cells
+        lp = row_cells[0].paragraphs[0]
+        rp = row_cells[1].paragraphs[0]
+        run_l = lp.add_run(ref_text)
+        run_l.font.size = Pt(11)
+        run_l.bold = False
+        run_r = rp.add_run(f"{pnum}:{lnum}")
+        run_r.font.size = Pt(11)
+        rp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     doc.save(docx_filename)
 
-###############################################################################
-# PARSING
-###############################################################################
 def parse_documents_from_text(raw_text):
     lines = raw_text.splitlines()
     docs = []
@@ -733,17 +707,14 @@ def classify_headings(sections_od):
             heading_styles[full_key] = "section"
     return heading_styles
 
-###############################################################################
-# PREPARE MAIN PDF SEGMENTS
-###############################################################################
 def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canvas, max_text_width):
     segments = []
     header_lines = header_text.splitlines()
     normal_buffer = []
     def flush_normal_buffer():
         for line in normal_buffer:
-            line_str = line.strip()
-            if not line_str:
+            ls = line.strip()
+            if not ls:
                 segments.append({
                     "text": "",
                     "font_name": "Helvetica",
@@ -752,8 +723,8 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
                     "is_heading": False,
                     "is_subheading": False
                 })
-            elif is_line_all_caps(line_str):
-                wrapped = wrap_text_to_lines(pdf_canvas, line_str, "Helvetica", 10, max_text_width)
+            elif is_line_all_caps(ls):
+                wrapped = wrap_text_to_lines(pdf_canvas, ls, "Helvetica", 10, max_text_width)
                 for (wl, _) in wrapped:
                     segments.append({
                         "text": wl,
@@ -764,7 +735,7 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
                         "is_subheading": False
                     })
             else:
-                wrapped = wrap_text_to_lines(pdf_canvas, line_str, "Helvetica", 10, max_text_width)
+                wrapped = wrap_text_to_lines(pdf_canvas, ls, "Helvetica", 10, max_text_width)
                 for (wl, _) in wrapped:
                     segments.append({
                         "text": wl,
@@ -775,7 +746,6 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
                         "is_subheading": False
                     })
         normal_buffer.clear()
-
     for kind, block_lines in detect_legal_title_blocks(header_lines):
         if kind == "legal_page_title_block":
             flush_normal_buffer()
@@ -788,61 +758,62 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
         else:
             normal_buffer.append(block_lines)
     flush_normal_buffer()
+
     for section_key, section_body in sections_od.items():
         style = heading_styles.get(section_key, "section")
         if style == "section":
-            heading_font_name = "Helvetica-Bold"
-            heading_font_size = 10
-            body_font_name = "Helvetica"
-            body_font_size = 10
-            is_heading = True
-            is_subheading = False
+            hfn = "Helvetica-Bold"
+            hfs = 10
+            bfn = "Helvetica"
+            bfs = 10
+            ish = True
+            issub = False
         else:
-            heading_font_name = "Helvetica"
-            heading_font_size = 9
-            body_font_name = "Helvetica"
-            body_font_size = 9
-            is_heading = False
-            is_subheading = True
+            hfn = "Helvetica"
+            hfs = 9
+            bfn = "Helvetica"
+            bfs = 9
+            ish = False
+            issub = True
         segments.append({
             "text": "",
-            "font_name": body_font_name,
-            "font_size": body_font_size,
+            "font_name": bfn,
+            "font_size": bfs,
             "alignment": "left",
             "is_heading": False,
             "is_subheading": False
         })
-        heading_wrapped = wrap_text_to_lines(pdf_canvas, section_key, heading_font_name, heading_font_size, max_text_width)
+        heading_wrapped = wrap_text_to_lines(pdf_canvas, section_key, hfn, hfs, max_text_width)
         for (wl, _) in heading_wrapped:
             segments.append({
                 "text": wl,
-                "font_name": heading_font_name,
-                "font_size": heading_font_size,
+                "font_name": hfn,
+                "font_size": hfs,
                 "alignment": "center",
-                "is_heading": is_heading,
-                "is_subheading": is_subheading
+                "is_heading": ish,
+                "is_subheading": issub
             })
         lines_of_body = section_body.splitlines()
         normal_buffer_sec = []
-        def flush_section_buffer():
+        def flush_section_buf():
             for line in normal_buffer_sec:
-                line_str = line.strip()
-                if not line_str:
+                ls = line.strip()
+                if not ls:
                     segments.append({
                         "text": "",
-                        "font_name": body_font_name,
-                        "font_size": body_font_size,
+                        "font_name": bfn,
+                        "font_size": bfs,
                         "alignment": "left",
                         "is_heading": False,
                         "is_subheading": False
                     })
                 else:
-                    wrapped = wrap_text_to_lines(pdf_canvas, line_str, body_font_name, body_font_size, max_text_width)
-                    for (wl, _) in wrapped:
+                    w = wrap_text_to_lines(pdf_canvas, ls, bfn, bfs, max_text_width)
+                    for (wl, _) in w:
                         segments.append({
                             "text": wl,
-                            "font_name": body_font_name,
-                            "font_size": body_font_size,
+                            "font_name": bfn,
+                            "font_size": bfs,
                             "alignment": "left",
                             "is_heading": False,
                             "is_subheading": False
@@ -850,7 +821,7 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
             normal_buffer_sec.clear()
         for kind, block_lines in detect_legal_title_blocks(lines_of_body):
             if kind == "legal_page_title_block":
-                flush_section_buffer()
+                flush_section_buf()
                 lines_cleaned = [ln.strip() for ln in block_lines]
                 segments.append({
                     "legal_page_title": True,
@@ -859,12 +830,9 @@ def prepare_main_pdf_segments(header_text, sections_od, heading_styles, pdf_canv
                 })
             else:
                 normal_buffer_sec.append(block_lines)
-        flush_section_buffer()
+        flush_section_buf()
     return segments
 
-###############################################################################
-# MAIN PDF GENERATION
-###############################################################################
 def generate_legal_document(
     firm_name,
     case_name,
@@ -923,6 +891,7 @@ def generate_legal_document(
     total_pages = 1 + text_pages + exhibit_pages
     page_number = 2
     current_index = 0
+    reference_positions = []
     while current_index < total_segments:
         next_index = draw_page_of_segments(
             pdf_canvas=pdf_canvas,
@@ -938,7 +907,8 @@ def generate_legal_document(
             line_offset_x=line_offset_x,
             line_offset_y=line_offset_y,
             line_spacing=line_spacing,
-            heading_positions=heading_positions
+            heading_positions=heading_positions,
+            reference_positions=reference_positions
         )
         pdf_canvas.showPage()
         page_number += 1
@@ -966,10 +936,8 @@ def generate_legal_document(
         sections_od=sections_od,
         heading_styles=heading_styles
     )
+    return reference_positions
 
-###############################################################################
-# MAIN
-###############################################################################
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--firm_name", required=True)
@@ -1016,7 +984,7 @@ def main():
     for _, val in lawsuit_obj.exhibits.items():
         exhibits_for_pdf.append((val["caption"], val["image_path"]))
     heading_positions = []
-    generate_legal_document(
+    reference_positions = generate_legal_document(
         firm_name=args.firm_name,
         case_name=args.case,
         output_filename=args.output,
@@ -1029,28 +997,25 @@ def main():
         index_filename=args.index,
         firm_name=args.firm_name,
         case_name=args.case,
-        heading_positions=heading_positions
+        heading_positions=heading_positions,
+        reference_positions=reference_positions
     )
     index_docx = os.path.splitext(args.index)[0] + ".docx"
     generate_toc_docx(
         docx_filename=index_docx,
         firm_name=args.firm_name,
         case_name=args.case,
-        heading_positions=heading_positions
+        heading_positions=heading_positions,
+        reference_positions=reference_positions
     )
     if args.pickle is not None:
-        pickle_filename = args.pickle if args.pickle else "lawsuit.pickle"
-        with open(pickle_filename, "wb") as pf:
+        pklfile = args.pickle if args.pickle else "lawsuit.pickle"
+        with open(pklfile, "wb") as pf:
             pickle.dump(lawsuit_obj, pf)
-        pkl_path = pickle_filename
-    else:
-        pkl_path = "Not saved (not requested)."
     print(f"PDF generated: {args.output}")
-    print(f"DOCX Complaint generated: {os.path.splitext(args.output)[0] + '.docx'}")
-    print(f"Index PDF generated: {args.index}")
-    print(f"Index DOCX generated: {index_docx}")
-    print(f"Lawsuit object saved to: {pkl_path}\n")
-    print("Dumped Lawsuit object:")
+    print(f"DOCX Complaint: {os.path.splitext(args.output)[0] + '.docx'}")
+    print(f"Index PDF: {args.index}")
+    print(f"Index DOCX: {index_docx}")
     print(lawsuit_obj)
 
 if __name__ == "__main__":
