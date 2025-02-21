@@ -11,3 +11,5 @@ Additionally, depending on the statute or constitutional claim involved, there m
 Also while originally catered for whatever, but anyways I see lots of Americans on social media bitching about taking legal action, and this repo contains no software license. I could drag an MIT license over but I'm lazy.
 
 So while Megan Twitch lawyer did seem indignant when replying to a "Copilot Pro makes these arguments on behalf of the Plaintiff" hallucination quote inserted after my signature, I cannot help represent you or provide(actually I can since I'm not a lawyer) legal advice.
+
+I believe corporations are basically immune, so.. especially the smart tech ones who provide a good samaritan effort (it was designed to be reasonable, to all parties, not to make corporations immune according to Megan's argument entirely)
