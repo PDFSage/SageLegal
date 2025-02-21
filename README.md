@@ -13,3 +13,7 @@ Also while originally catered for whatever, but anyways I see lots of Americans 
 So while Megan Twitch lawyer did seem indignant when replying to a "Copilot Pro makes these arguments on behalf of the Plaintiff" hallucination quote inserted after my signature, I cannot help represent you or provide(actually I can since I'm not a lawyer) legal advice.
 
 I believe corporations are basically immune, so.. especially the smart tech ones who provide a good samaritan effort (it was designed to be reasonable, to all parties, not to make corporations immune according to Megan's argument entirely)
+
+All Megan argued were an ad hominem or not, who cares, plus that corporations are fully immune for "3rd party content" and that eggplant was "impermissably" treating Twitch as a publisher when Twitch doesn't have any vested interest in advancing Pokimane's little whatever, plus xQc's little whatever, but in general, they are beyond "gaming disorder" they intentionally wield dishonestly and malice to advance their lies to the world. Luckily some countries aren't in NATO.
+
+I welcome you to go check out the only other lawsuit Twitch has ever faced! www.erosolar.info
