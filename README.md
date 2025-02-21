@@ -31,3 +31,8 @@ Also why does AOC get, while Matt Gaetz gets like 3 viewers and dick jokes or so
 ![aoc](https://github.com/user-attachments/assets/b711eb8d-efea-43dd-8eb3-2b920ef6c854)
 
 are like wayyy too happy about an Amazonian dildo, when Amazonian technology is reaping their brains LOL.... 
+
+
+----
+
+First of all, i'm going to sign back into bo@shang.software, cuz I could sign out, then sign in, you dumbasses.. it's an iCloud account.
