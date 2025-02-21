@@ -35,4 +35,4 @@ are like wayyy too happy about an Amazonian dildo, when Amazonian technology is 
 
 ----
 
-First of all, i'm going to sign back into bo@shang.software, cuz I could sign out, then sign in, you dumbasses.. it's an iCloud account.
+The only thing I have on bo@shang.software are the Tewksbury medical records, and I believe I've done enough especially when people review it.
